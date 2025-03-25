@@ -8,7 +8,8 @@
 %option noyywrap
 
 NAME [a-zA-Z][a-zA-Z0-9_]*
-COMMENT (//.*\n) | (\(* (.|\n)* *\))
+SINGLE_COMMENT "//".*
+MULTI_COMMENT "(\*"([^*]|\*+[^)*])*\*+")"
 INT_LITERAL [0-9]+
 STRING_LITERAL \"([^\\\"\n]|\\.)*\"
 BOOL_LITERAL "true" | "false"
@@ -29,6 +30,14 @@ BOOL_LITERAL "true" | "false"
 
 {NAME} {
     printf("A name: %s\n", yytext);
+}
+
+{SINGLE_COMMENT} {
+    printf("A comment: %s\n", yytext);
+}
+
+{MULTI_COMMENT} {
+    printf("This is a multi line comment: %s\n", yytext);
 }
 
 \n    { nLinhas++; }
