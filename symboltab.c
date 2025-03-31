@@ -7,18 +7,27 @@ unsigned int hash(const char *key) {
     while (*key) {
         hash = (hash * 33) + *key++;
     }
-    return hash % TABLE_SIZE;
+    return hash % MAX_TABLE_SIZE;
 }
 
-void insert_symbol(const char *name, SymbolType type, SymbolContent content) {
+void insert_symbol(const char *name) {
     unsigned int index = hash(name);
     Symbol *new_symbol = (Symbol *)malloc(sizeof(Symbol));
     new_symbol->name = strdup(name);
-    new_symbol->type = type;
-    new_symbol->content = content;
+    
     new_symbol->next = curr_table->symbols[index];
     curr_table->symbols[index] = new_symbol;
 }
+
+// void insert_symbol(const char *name, SymbolType type, SymbolContent content) {
+//     unsigned int index = hash(name);
+//     Symbol *new_symbol = (Symbol *)malloc(sizeof(Symbol));
+//     new_symbol->name = strdup(name);
+//     new_symbol->type = type;
+//     new_symbol->content = content;
+//     new_symbol->next = curr_table->symbols[index];
+//     curr_table->symbols[index] = new_symbol;
+// }
 
 Symbol *lookup_symbol(const char *name) {
     SymbolTable *aux_table = curr_table;
@@ -44,7 +53,7 @@ void insert_scope() {
         exit(1);
     }
 
-    for (int i = 0; i < TABLE_SIZE; i++) {
+    for (int i = 0; i < MAX_TABLE_SIZE; i++) {
         aux_table->symbols[i] = NULL;
     }
     aux_table->parent = curr_table;
@@ -52,7 +61,7 @@ void insert_scope() {
 }
 
 void remove_scope() {
-    for (int i = 0; i < TABLE_SIZE; i++) {
+    for (int i = 0; i < MAX_TABLE_SIZE; i++) {
         Symbol *aux = curr_table->symbols[i];
         while (aux) {
             Symbol *temp = aux;
@@ -70,4 +79,21 @@ void free_table() {
     while (curr_table) {
         remove_scope();
     }
+}
+
+void print_table() {
+    SymbolTable *aux_table = curr_table;
+    // printf("Table é nulo? %s\n", aux_table == NULL ? "Sim" : "Não");
+    while (aux_table) {
+        for (int i = 0; i < MAX_TABLE_SIZE; i++) {
+            Symbol *symbol = aux_table->symbols[i];
+            // printf("Symbol é nulo? %s\n", symbol == NULL ? "Sim" : "Não");
+            while (symbol) {
+                printf("Symbol: %s ", symbol->name);
+                symbol = symbol->next;
+            }
+        }
+        aux_table = aux_table->parent;
+    }
+    printf("\n");
 }
