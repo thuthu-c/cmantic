@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "stdlib.h": "c",
-        "symtable.h": "c",
-        "symboltab.h": "c"
-    }
-}
