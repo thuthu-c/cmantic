@@ -5,8 +5,9 @@
 #include <cstdlib>
 #include <cstdbool>
 #include <string>
+#include <vector>
 
-#define MAX_TABLE_SIZE 10
+#define MAX_TABLE_SIZE 11
 
 typedef struct Symbol Symbol;
 
@@ -18,48 +19,47 @@ typedef enum {
     VARIABLE
 } SymbolType;
 
+const std::string symbolTypeNames[] = {"PROCEDURE", "RECORD", "VARIABLE"};
+
 typedef enum {
     BOOL,
     FLOAT,
     INT,
     STRING,
-    REFERENCE,
-    OTHER
+    VOID,
+    NOTPRIMITIVE
+} PrimitiveType;
+
+const std::string primitiveTypeNames[] = {"BOOL", "FLOAT", "INT", "STRING", "VOID", "NOTPRIMITIVE"};
+
+typedef struct{
+    std::string record_name;
+    PrimitiveType p_type;
+    int n_ref;
 } VarType;
 
 typedef struct {
     std::string name;
     VarType type;
-    bool is_const;
-    bool is_ref;
 } Parameter;
 
 typedef struct {
     VarType return_type;
-    Parameter *params;
+    std::vector<Parameter> params;
 } Procedure;
 
 typedef struct {
     VarType type;
-    // VarValue value;
 } Variable;
-
-typedef union {
-    bool _bool;
-    double _float;
-    int _int;
-    char *_string;
-    Variable _ref;
-} VarValue;
 
 typedef struct {
     std::string name;
     VarType type;
-    VarValue value;
 } Field;
 
 typedef struct {
-    Field *fields;
+    std::vector<Field> fields;
+    size_t n_fields;
 } Record;
 
 typedef union {
@@ -80,10 +80,10 @@ typedef struct SymbolTable {
     SymbolTable *parent;
 } SymbolTable;
 
-unsigned int hash(const char *key);
+unsigned int hash(const std::string key);
 
 void insert_symbol(const std::string name);
-// void insert_symbol(const std::string name;, SymbolType type, SymbolContent content);
+// void insert_symbol(const std::string name, SymbolType type, SymbolContent content);
 Symbol *lookup_symbol(const std::string name);
 
 void insert_scope();
