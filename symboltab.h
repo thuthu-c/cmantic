@@ -1,10 +1,10 @@
 #ifndef SYMBOLTAB_H
 #define SYMBOLTAB_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
+#include <iostream>
+#include <cstdlib>
+#include <cstdbool>
+#include <string>
 #include <vector>
 
 #define MAX_TABLE_SIZE 11
