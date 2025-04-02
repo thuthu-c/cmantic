@@ -1,10 +1,10 @@
 #ifndef SYMBOLTAB_H
 #define SYMBOLTAB_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
+#include <iostream>
+#include <cstdlib>
+#include <cstdbool>
+#include <string>
 
 #define MAX_TABLE_SIZE 10
 
@@ -28,7 +28,7 @@ typedef enum {
 } VarType;
 
 typedef struct {
-    char *name;
+    std::string name;
     VarType type;
     bool is_const;
     bool is_ref;
@@ -53,7 +53,7 @@ typedef union {
 } VarValue;
 
 typedef struct {
-    char *name;
+    std::string name;
     VarType type;
     VarValue value;
 } Field;
@@ -69,7 +69,7 @@ typedef union {
 } SymbolContent;
 
 typedef struct Symbol {
-    char *name;
+    std::string name;
     // SymbolType type;
     // SymbolContent content;
     Symbol *next;
@@ -82,9 +82,9 @@ typedef struct SymbolTable {
 
 unsigned int hash(const char *key);
 
-void insert_symbol(const char *name);
-// void insert_symbol(const char *name, SymbolType type, SymbolContent content);
-Symbol *lookup_symbol(const char *name);
+void insert_symbol(const std::string name);
+// void insert_symbol(const std::string name;, SymbolType type, SymbolContent content);
+Symbol *lookup_symbol(const std::string name);
 
 void insert_scope();
 void remove_scope();

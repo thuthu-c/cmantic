@@ -2,18 +2,21 @@
 
 SymbolTable *curr_table = NULL;
 
-unsigned int hash(const char *key) {
+unsigned int hash(const std::string key) {
     unsigned int hash = 5333;
-    while (*key) {
-        hash = (hash * 33) + *key++;
+    for (char key_char : key) {
+        hash = (hash * 33) + key_char;
     }
+    // while (*key) {
+    //     hash = (hash * 33) + *key++;
+    // }
     return hash % MAX_TABLE_SIZE;
 }
 
-void insert_symbol(const char *name) {
+void insert_symbol(const std::string name) {
     unsigned int index = hash(name);
     Symbol *new_symbol = (Symbol *)malloc(sizeof(Symbol));
-    new_symbol->name = strdup(name);
+    new_symbol->name = name;
     
     new_symbol->next = curr_table->symbols[index];
     curr_table->symbols[index] = new_symbol;
@@ -29,13 +32,13 @@ void insert_symbol(const char *name) {
 //     curr_table->symbols[index] = new_symbol;
 // }
 
-Symbol *lookup_symbol(const char *name) {
+Symbol *lookup_symbol(const std::string name) {
     SymbolTable *aux_table = curr_table;
     while (aux_table) {
         unsigned int index = hash(name);
         Symbol *symbol = aux_table->symbols[index];
         while (symbol) {
-            if (strcmp(symbol->name, name) == 0) {
+            if (symbol->name == name) {
                 return symbol;
             }
             symbol = symbol->next;
@@ -66,7 +69,6 @@ void remove_scope() {
         while (aux) {
             Symbol *temp = aux;
             aux = aux->next;
-            free(temp->name);
             free(temp);
         }
     }
@@ -83,17 +85,15 @@ void free_table() {
 
 void print_table() {
     SymbolTable *aux_table = curr_table;
-    // printf("Table é nulo? %s\n", aux_table == NULL ? "Sim" : "Não");
     while (aux_table) {
         for (int i = 0; i < MAX_TABLE_SIZE; i++) {
             Symbol *symbol = aux_table->symbols[i];
-            // printf("Symbol é nulo? %s\n", symbol == NULL ? "Sim" : "Não");
             while (symbol) {
-                printf("Symbol: %s ", symbol->name);
+                std::cout << "Symbol: " << symbol->name << " ";
                 symbol = symbol->next;
             }
         }
         aux_table = aux_table->parent;
     }
-    printf("\n");
+    std::cout << std::endl;
 }
