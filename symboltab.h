@@ -16,10 +16,11 @@ typedef struct SymbolTable SymbolTable;
 typedef enum {
     PROCEDURE,
     RECORD,
-    VARIABLE
+    VARIABLE,
+    UNDEFINED
 } SymbolType;
 
-const std::string symbolTypeNames[] = {"PROCEDURE", "RECORD", "VARIABLE"};
+const std::string symbolTypeNames[] = {"PROCEDURE", "RECORD", "VARIABLE", "UNDEFINED"};
 
 typedef enum {
     BOOL,
@@ -70,8 +71,8 @@ typedef union {
 
 typedef struct Symbol {
     std::string name;
-    // SymbolType type;
-    // SymbolContent content;
+    SymbolType type;
+    SymbolContent content;
     Symbol *next;
 } Symbol;
 
@@ -92,5 +93,7 @@ void remove_scope();
 void free_table();
 
 void print_table();
+
+void print_table_();
 
 #endif
