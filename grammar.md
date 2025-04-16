@@ -1,5 +1,6 @@
 ## GRAMMAR
 
+```
 PROGRAM -> program NAME begin [ DECL {";" DECK}] end
 DECL -> VAR_DECL 
         | PROC_DECL 
@@ -86,6 +87,9 @@ TYPE → float
         | bool 
         | NAME 
         | ref "(" TYPE ")"
+
+```
+
 
 ## LL1 GRAMMAR
 
