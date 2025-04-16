@@ -43,8 +43,7 @@ VAR → NAME
     | EXP "." NAME
 
 VAR_OR_CALL -> EXP "." NAME
-                | NAME CALL_STMT_PARAMS
-CALL_STMT_PARAMS -> ["(" [ EXP { "," EXP } ] ")"]
+                | NAME ["(" [ EXP { "," EXP } ] ")"]
 
 
 REL_OP → ”<” 
@@ -64,23 +63,24 @@ LITERAL → FLOAT_LITERAL
         | null
 BOOL_LITERAL → true 
         | false
-
-
-
-
-STMT → ASSIGN_STMT
+STMT → ASSIGN_OR_CALL_STMT
         | IF_STMT
         | WHILE_STMT
         | RETURN_STMT
-        | CALL_STMT
-ASSIGN_STMT → DE_VAR ”:=” EXP
+<!-- ASSIGN_STMT → VAR ”:=” EXP 
+                | DEREF_VAR ”:=” EXP -->
+ASSIGN_OR_CALL_STMT -> DEREF_VAR ”:=” EXP
+                        | EXP "." NAME ”:=” EXP
+                        | NAME RS_ASSIGN_OR_CALL
+RS_ASSIGN_OR_CALL -> ”:=” EXP
+                        | "(" [ EXP { "," EXP } ] ")"
 IF_STMT → if EXP then STMT_LIST [ else STMT_LIST ] fi
             | unless EXP do STMT_LIST [ else STMT_LIST ] od
             | case EXP of CASE { ";" CASE } "}" [ otherwise STMT_LIST ] esac
 CASE → INT_LITERAL [ "." "." INT_LITERAL ] { "," INT_LITERAL [ "." "." INT_LITERAL ] } ":" STMT_LIST
 WHILE_STMT → while EXP do STMT_LIST od
 RETURN_STMT → return [ EXP ]
-CALL_STMT → NAME "(" [ EXP { "," EXP } ] ")"
+<!-- CALL_STMT → NAME "(" [ EXP { "," EXP } ] ")" -->
 TYPE → float 
         | int 
         | string 
