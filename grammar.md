@@ -1,5 +1,7 @@
 ## GRAMMAR
 
+### LEX FORMAT
+
 ```
 PROGRAM -> program NAME begin [ DECL {";" DECK}] end
 DECL -> VAR_DECL 
@@ -87,6 +89,102 @@ TYPE → float
         | bool 
         | NAME 
         | ref "(" TYPE ")"
+
+```
+
+### CRAZY FORMAT
+
+
+```
+PROGRAM -> program NAME begin DECLS end
+DECLS -> DECL ";" DECLS | DECL | ϵ
+DECL -> VAR_DECL | PROC_DECL | REC_DECL
+
+VAR_DECL -> var NAME RS_VAR_DECL
+RS_VAR_DECL -> ":" TYPE VAR_INIT | ":=" EXP
+VAR_INIT -> ":=" EXP | ϵ
+
+PROC_DECL -> procedure NAME "(" PARAMS ")" PROC_RET_DECL
+PROC_RET_DECL -> ":" TYPE PROC_BODY | PROC_BODY
+PROC_BODY -> begin DECLS_OPT STMT_LIST end
+DECLS_OPT -> DECLS in | in | ϵ
+
+REC_DECL -> struct NAME "{" REC_FIELDS "}"
+REC_FIELDS -> PARAMFIELD_DECL ";" REC_FIELDS | PARAMFIELD_DECL | ϵ
+
+PARAMFIELD_DECL -> NAME ":" TYPE
+PARAMS -> PARAMFIELD_DECL "," PARAMS | PARAMFIELD_DECL | ϵ
+
+STMT_LIST -> STMT ";" STMT_LIST | STMT | ϵ
+STMT -> ASSIGN_OR_CALL_STMT 
+        | IF_STMT 
+        | WHILE_STMT 
+        | RETURN_STMT
+
+ASSIGN_OR_CALL_STMT -> DEREF_VAR ":=" EXP 
+                     | EXP "." NAME ":=" EXP 
+                     | NAME RS_ASSIGN_OR_CALL
+RS_ASSIGN_OR_CALL -> ":=" EXP | "(" EXPS ")"
+EXPS -> EXP "," EXPS | EXP | ϵ
+
+IF_STMT -> if EXP then STMT_LIST ELSE_PART fi
+         | unless EXP do STMT_LIST ELSE_PART od
+         | case EXP of CASES CASE_DEFAULT esac
+
+ELSE_PART -> else STMT_LIST | ϵ
+CASES -> CASE ";" CASES | CASE
+CASE -> INTERVALS ":" STMT_LIST
+INTERVALS -> INTERVAL "," INTERVALS | INTERVAL
+INTERVAL -> INT_LITERAL CASE_RANGE
+CASE_RANGE -> ".." INT_LITERAL | ϵ
+CASE_DEFAULT -> otherwise STMT_LIST | ϵ
+
+WHILE_STMT -> while EXP do STMT_LIST od
+RETURN_STMT -> return EXP_OP
+EXP_OP -> EXP | ϵ
+
+EXP -> AND_EXP EXP_
+EXP_ -> "||" AND_EXP EXP_ | ϵ
+AND_EXP -> NOT_EXP AND_EXP_
+AND_EXP_ -> "&&" NOT_EXP AND_EXP_ | ϵ
+NOT_EXP -> "not" REL_EXP | REL_EXP
+REL_EXP -> ADD_EXP REL_EXP_
+REL_EXP_ -> REL_OP ADD_EXP REL_EXP_ | ϵ
+ADD_EXP -> MULT_EXP ADD_EXP_
+ADD_EXP_ -> ADD_OP MULT_EXP ADD_EXP_ | ϵ
+MULT_EXP -> POW_EXP MULT_EXP_
+MULT_EXP_ -> MULT_OP POW_EXP MULT_EXP_ | ϵ
+POW_EXP -> VALUE "^" POW_EXP | VALUE
+
+VALUE -> LITERAL 
+        | VAR_OR_CALL 
+        | REF_VAR 
+        | DEREF_VAR 
+        | "new" NAME 
+        | "(" EXP ")"
+
+REF_VAR -> ref "(" VAR ")"
+DEREF_VAR -> deref "(" DE_VAR ")"
+DE_VAR -> VAR | DEREF_VAR
+
+VAR -> NAME | EXP "." NAME
+
+VAR_OR_CALL -> EXP "." NAME | NAME FUNC_CALL
+FUNC_CALL -> "(" EXPS ")" | ϵ
+
+REL_OP -> "<" | "<=" | ">" | ">=" | "=" | "<>"
+ADD_OP -> "+" | "-"
+MULT_OP -> "*" | "/"
+
+LITERAL -> FLOAT_LITERAL 
+         | INT_LITERAL 
+         | STRING_LITERAL 
+         | BOOL_LITERAL 
+         | null
+
+BOOL_LITERAL -> true | false
+
+TYPE -> float | int | string | bool | NAME | ref "(" TYPE ")"
 
 ```
 
