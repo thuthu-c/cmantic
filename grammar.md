@@ -97,7 +97,8 @@ TYPE → float
 
 ```
 PROGRAM -> program NAME begin DECLS end
-DECLS -> DECL ";" DECLS | DECL | ϵ
+DECLS -> DECL DECLS_  | ϵ
+DECLS_ -> ";" DECLS | ϵ
 DECL -> VAR_DECL | PROC_DECL | REC_DECL
 
 VAR_DECL -> var NAME RS_VAR_DECL
@@ -125,7 +126,8 @@ ASSIGN_OR_CALL_STMT -> DEREF_VAR ":=" EXP
                      | EXP "." NAME ":=" EXP 
                      | NAME RS_ASSIGN_OR_CALL
 RS_ASSIGN_OR_CALL -> ":=" EXP | "(" EXPS ")"
-EXPS -> EXP "," EXPS | EXP | ϵ
+EXPS -> EXP EXPS_ | ϵ
+EXPS_ -> "," EXPS | ϵ
 
 IF_STMT -> if EXP then STMT_LIST ELSE_PART fi
          | unless EXP do STMT_LIST ELSE_PART od
@@ -134,7 +136,8 @@ IF_STMT -> if EXP then STMT_LIST ELSE_PART fi
 ELSE_PART -> else STMT_LIST | ϵ
 CASES -> CASE ";" CASES | CASE
 CASE -> INTERVALS ":" STMT_LIST
-INTERVALS -> INTERVAL "," INTERVALS | INTERVAL
+INTERVALS -> INTERVAL INTERVALS_
+INTERVALS_ -> "," INTERVALS | ϵ
 INTERVAL -> INT_LITERAL CASE_RANGE
 CASE_RANGE -> ".." INT_LITERAL | ϵ
 CASE_DEFAULT -> otherwise STMT_LIST | ϵ
