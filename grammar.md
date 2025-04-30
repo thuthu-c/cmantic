@@ -344,6 +344,159 @@ TYPE -> float | int | string | bool | NAME | ref "(" TYPE ")"
 
 ```
 
+### Princeton format
+
+```
+        PROGRAM ::= program NAME begin DECLS end
+        DECLS ::= DECL DECLS_  
+        DECLS ::= ''
+        DECLS_ ::= ";" DECLS 
+        DECLS_ ::= ''
+        DECL ::= VAR_DECL 
+        DECL ::= PROC_DECL 
+        DECL ::= REC_DECL
+
+        VAR_DECL ::= var NAME RS_VAR_DECL
+        RS_VAR_DECL ::= ":" TYPE VAR_INIT 
+        RS_VAR_DECL ::= ":=" EXP
+        VAR_INIT ::= ":=" EXP 
+        VAR_INIT ::= ''
+
+        PROC_DECL ::= procedure NAME "(" PARAMS ")" PROC_RET_DECL
+        PROC_RET_DECL ::= ":" TYPE PROC_BODY 
+        PROC_RET_DECL ::= PROC_BODY
+
+        PROC_BODY ::= begin DECLS_OPT STMT_LIST end
+        DECLS_OPT ::= DECL DECLS_ in 
+        DECLS_OPT ::= ''
+
+        REC_DECL ::= struct NAME "{" REC_FIELDS "}"
+        REC_FIELDS ::= PARAMFIELD_DECL REC_FIELDS_
+        REC_FIELDS ::= ''
+        REC_FIELDS_ ::= ";" REC_FIELDS 
+        REC_FIELDS_ ::= '' 
+
+        PARAMFIELD_DECL ::= NAME ":" TYPE
+        PARAMS ::= PARAMFIELD_DECL PARAMS_ 
+        PARAMS ::= ''
+        PARAMS_ ::= "," PARAMS
+        PARAMS_ ::= '' 
+
+        STMT_LIST ::= STMT STMT_LIST_
+        STMT_LIST ::= ''
+        STMT_LIST_ ::= ";" STMT_LIST 
+        STMT_LIST_ ::= ''
+        STMT ::= ASSIGN_OR_CALL_STMT  
+        STMT ::= IF_STMT  
+        STMT ::= WHILE_STMT  
+        STMT ::= RETURN_STMT
+
+        ASSIGN_OR_CALL_STMT ::= DEREF_VAR ":=" EXP 
+        ASSIGN_OR_CALL_STMT ::= EXP "." NAME ":=" EXP 
+        ASSIGN_OR_CALL_STMT ::= NAME RS_ASSIGN_OR_CALL
+        RS_ASSIGN_OR_CALL ::= ":=" EXP 
+        RS_ASSIGN_OR_CALL ::= "(" EXPS ")"
+        EXPS ::= EXP EXPS_ 
+        EXPS ::= ''
+        EXPS_ ::= "," EXPS 
+        EXPS_ ::= ''
+
+        IF_STMT ::= if EXP then STMT_LIST ELSE_PART fi
+        IF_STMT ::= unless EXP do STMT_LIST ELSE_PART od
+        IF_STMT ::= case EXP of CASES CASE_DEFAULT esac
+
+        ELSE_PART ::= else STMT_LIST 
+        ELSE_PART ::= ''
+        CASES ::= CASE CASE_
+        CASE_ ::= ";" CASES
+        CASE_ ::= ''
+        CASE ::= INTERVALS ":" STMT_LIST
+        INTERVALS ::= INTERVAL INTERVALS_
+        INTERVALS_ ::= "," INTERVALS 
+        INTERVALS_ ::= ''
+        INTERVAL ::= INT_LITERAL CASE_RANGE
+        CASE_RANGE ::= ".." INT_LITERAL 
+        CASE_RANGE ::= ''
+        CASE_DEFAULT ::= otherwise STMT_LIST 
+        CASE_DEFAULT ::= ''
+
+        WHILE_STMT ::= while EXP do STMT_LIST od
+        RETURN_STMT ::= return EXP_OP
+        EXP_OP ::= EXP 
+        EXP_OP ::= ''
+
+        EXP ::= AND_EXP EXP_
+        EXP_ ::= "||" AND_EXP EXP_ 
+        EXP_ ::= ''
+        AND_EXP ::= NOT_EXP AND_EXP_
+        AND_EXP_ ::= "&&" NOT_EXP AND_EXP_ 
+        AND_EXP_ ::= ''
+        NOT_EXP ::= "not" REL_EXP 
+        NOT_EXP ::= REL_EXP
+        REL_EXP ::= ADD_EXP REL_EXP_
+        REL_EXP_ ::= REL_OP ADD_EXP REL_EXP_ 
+        REL_EXP_ ::= ''
+        ADD_EXP ::= MULT_EXP ADD_EXP_
+        ADD_EXP_ ::= ADD_OP MULT_EXP ADD_EXP_ 
+        ADD_EXP_ ::= ''
+        MULT_EXP ::= POW_EXP MULT_EXP_
+        MULT_EXP_ ::= MULT_OP POW_EXP MULT_EXP_ 
+        MULT_EXP_ ::= ''
+        POW_EXP ::= VALUE POW_EXP_
+        POW_EXP_ ::= "^" POW_EXP
+        POW_EXP_ ::= ''
+
+        VALUE ::= LITERAL 
+        VALUE ::= VAR_OR_CALL 
+        VALUE ::= REF_VAR 
+        VALUE ::= DEREF_VAR 
+        VALUE ::= "new" NAME 
+        VALUE ::= "(" EXP ")"
+
+        REF_VAR ::= ref "(" VAR ")"
+        DEREF_VAR ::= deref "(" VAR ")"
+        DEREF_VAR ::= deref "(" DEREF_VAR ")"
+
+        VAR ::= NAME 
+        VAR ::= EXP "." NAME
+
+        VAR_OR_CALL ::= REGISTER ATRIBUTE
+        REGISTER ::= "(" REGISTER ")"
+        REGISTER ::= NAME FUNC_CALL
+        ATRIBUTE ::= "." NAME ATRIBUTE
+        ATRIBUTE ::= ""
+        FUNC_CALL ::= "(" EXPS ")"
+        FUNC_CALL ::=  ''
+
+        REL_OP ::= "<" 
+        REL_OP ::= "<=" 
+        REL_OP ::= ">" 
+        REL_OP ::= ">=" 
+        REL_OP ::= "=" 
+        REL_OP ::= "<>"
+        ADD_OP ::= "+" 
+        ADD_OP ::= "-"
+        MULT_OP ::= "*" 
+        MULT_OP ::= "/"
+
+        LITERAL ::= FLOAT_LITERAL 
+        LITERAL ::= INT_LITERAL 
+        LITERAL ::= STRING_LITERAL 
+        LITERAL ::= BOOL_LITERAL 
+        LITERAL ::= null
+
+        BOOL_LITERAL ::= true 
+        BOOL_LITERAL ::= false
+
+        TYPE ::= float 
+        TYPE ::= int 
+        TYPE ::= string 
+        TYPE ::= bool 
+        TYPE ::= NAME 
+        TYPE ::= ref "(" TYPE ")"
+
+```
+
 
 ## LL1 GRAMMAR
 
