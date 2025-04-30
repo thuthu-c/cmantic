@@ -229,10 +229,16 @@ TYPE -> float | int | string | bool | NAME | ref "(" TYPE ")"
         PARAMS_ -> "," PARAMS
         PARAMS_ -> '' 
 
-        STMT_LIST -> STMT STMT_LIST_
+        STMT_LIST -> STMT ";" STMT_LIST_
+        STMT_LIST -> STMT
         STMT_LIST -> ''
-        STMT_LIST_ -> ";" STMT_LIST 
-        STMT_LIST_ -> ''
+        STMT_LIST_ -> ";" STMT_LIST_ 
+        STMT_LIST_ -> STMT
+
+        EXP -> AND_EXP EXP_
+        EXP_ -> "||" AND_EXP EXP_ 
+
+
         STMT -> ASSIGN_OR_CALL_STMT  
         STMT -> IF_STMT  
         STMT -> WHILE_STMT  
@@ -384,7 +390,7 @@ TYPE -> float | int | string | bool | NAME | ref "(" TYPE ")"
 
         STMT_LIST ::= STMT STMT_LIST_
         STMT_LIST ::= ''
-        STMT_LIST_ ::= ";" STMT_LIST 
+        STMT_LIST_ ::= ";" STMT_LIST
         STMT_LIST_ ::= ''
         STMT ::= ASSIGN_OR_CALL_STMT  
         STMT ::= IF_STMT  
@@ -392,10 +398,8 @@ TYPE -> float | int | string | bool | NAME | ref "(" TYPE ")"
         STMT ::= RETURN_STMT
 
         ASSIGN_OR_CALL_STMT ::= DEREF_VAR ":=" EXP 
-        ASSIGN_OR_CALL_STMT ::= EXP "." NAME ":=" EXP 
-        ASSIGN_OR_CALL_STMT ::= NAME RS_ASSIGN_OR_CALL
-        RS_ASSIGN_OR_CALL ::= ":=" EXP 
-        RS_ASSIGN_OR_CALL ::= "(" EXPS ")"
+        ASSIGN_OR_CALL_STMT ::= REGISTER ATRIBUTE ":=" EXP''
+
         EXPS ::= EXP EXPS_ 
         EXPS ::= ''
         EXPS_ ::= "," EXPS 
@@ -408,7 +412,7 @@ TYPE -> float | int | string | bool | NAME | ref "(" TYPE ")"
         ELSE_PART ::= else STMT_LIST 
         ELSE_PART ::= ''
         CASES ::= CASE CASE_
-        CASE_ ::= ";" CASES
+        CASE_ ::= CASES
         CASE_ ::= ''
         CASE ::= INTERVALS ":" STMT_LIST
         INTERVALS ::= INTERVAL INTERVALS_
@@ -454,14 +458,14 @@ TYPE -> float | int | string | bool | NAME | ref "(" TYPE ")"
         VALUE ::= "(" EXP ")"
 
         REF_VAR ::= ref "(" VAR ")"
-        DEREF_VAR ::= deref "(" VAR ")"
-        DEREF_VAR ::= deref "(" DEREF_VAR ")"
+        DEREF_VAR ::= deref "(" DE_VAR ")"
 
-        VAR ::= NAME 
-        VAR ::= EXP "." NAME
+        DE_VAR ::= VAR
+        DE_VAR ::= DEREF_VAR
+
+        VAR ::= NAME ATRIBUTE
 
         VAR_OR_CALL ::= REGISTER ATRIBUTE
-        REGISTER ::= "(" REGISTER ")"
         REGISTER ::= NAME FUNC_CALL
         ATRIBUTE ::= "." NAME ATRIBUTE
         ATRIBUTE ::= ""
