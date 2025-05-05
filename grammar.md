@@ -425,9 +425,7 @@ TYPE -> float | int | string | bool | NAME | ref "(" TYPE ")"
         CASE_DEFAULT ::= ''
 
         WHILE_STMT ::= while EXP do STMT_LIST od
-        RETURN_STMT ::= return EXP_OP
-        EXP_OP ::= EXP 
-        EXP_OP ::= ''
+        RETURN_STMT ::= return EXP
 
         EXP ::= AND_EXP EXP_
         EXP_ ::= "||" AND_EXP EXP_ 
