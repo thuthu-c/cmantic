@@ -3,3 +3,4 @@ lex.*
 .idea/
 .vscode/
 test
+build

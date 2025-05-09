@@ -1,4 +1,4 @@
-#include "symboltab.h"
+#include "symboltab.hpp"
 
 SymbolTable *curr_table = NULL;
 

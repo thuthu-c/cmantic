@@ -1,13 +1,24 @@
-%{
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include "symboltab.h"
+%option c++
+%option noyywrap
+%option nounput
+%option noreject
+%option noyy_top_state
 
-    int qtdNumeros=0, nLinhas=0;
+
+%{
+    #undef yyFlexLexer
+    #define yyFlexLexer MyFlexLexer
+    #include <FlexLexer.h>
+
+    #include "program_map.hpp"
+    #include "symboltab.hpp"
+    #include <iostream>
+
+extern int line_number;
+
+void yyerror(MyFlexLexer* lexer, const char *message);
 
 %}
-
-%option noyywrap
 
 NAME [a-zA-Z][a-zA-Z0-9_]*
 SINGLE_COMMENT "//".*
@@ -20,266 +31,273 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 %%
 
 {INT_LITERAL} {
-    printf("An integer: %s\n", yytext);
+    return T_INT_LITERAL;
 }
 
 {FLOAT_LITERAL} {
-    printf("A float: %s\n", yytext);
+    return T_FLOAT_LITERAL;
 }
 
 "if" {
-    printf( "A if: %s\n", yytext);
+    return T_IF;
 }
 
 "then" {
-    printf( "A then: %s\n", yytext);
+    return T_THEN;
 }
 
 "else" {
-    printf( "A else: %s\n", yytext);
+    return T_ELSE;
 }
 
 "fi" {
-    printf( "A fi: %s\n", yytext);
+    return T_FI;
 }
 
 "while" {
-    printf( "A while: %s\n", yytext);
+    return T_WHILE;
 }
 
 "do" {
-    printf( "A do: %s\n", yytext);
+    return T_DO;
 }
 
 "od" {
-    printf( "A od: %s\n", yytext);
+    return T_OD;
 }
 
 "return" {
-    printf( "A return: %s\n", yytext);
+    return T_RETURN;
 }
 
 "unless" {
-    printf( "A unless: %s\n", yytext);
+    return T_UNLESS;
 }
 
 "case" {
-    printf( "A case: %s\n", yytext);
+    return T_CASE;
 }
 
 "of" {
-    printf( "A of: %s\n", yytext);
+    return T_OF;
 }
 
 "esac" {
-    printf( "A esac: %s\n", yytext);
+    return T_ESAC;
 }
 
 "otherwise" {
-    printf( "A otherwise: %s\n", yytext);
+    return T_OTHERWISE;
 }
 
 "true" {
-    printf("A true: %s\n", yytext);
+    return T_TRUE;
 }
 
 "false" {
-    printf("A false: %s\n", yytext);
+    return T_FALSE;
 }
 
 "float" {
-    printf("A float: %s\n", yytext);
+    return T_FLOAT;
 }
 
 "int" {
-    printf("A int: %s\n", yytext);
+    return T_INT;
 }
 
 "string" {
-    printf("A string: %s\n", yytext);
+    return T_STRING;
 }
 
 "bool" {
-    printf("A bool: %s\n", yytext);
+    return T_BOOL;
 }
 
 "null" {
-    printf("A null: %s\n", yytext);
+    return T_NULL;
 }
 
 "program" {
-    printf("A program: %s\n", yytext);
+    return T_PROGRAM;
 }
 
 "begin" {
-    printf("A begin: %s\n", yytext);
+    return T_BEGIN;
 }
 
 "end" {
-    printf("A end: %s\n", yytext);
+    return T_END;
 }
 
 "var" {
-    printf("A var: %s\n", yytext);
+    return T_VAR;
 }
 
 "procedure" {
-    printf("A procedure: %s\n", yytext);
+    return T_PROCEDURE;
 }
 
 "struct" {
-    printf("A struct: %s\n", yytext);
+    return T_STRUCT;
 }
 
 "in" {
-    printf("A in: %s\n", yytext);
+    return T_IN;
 }
 
 "not" {
-    printf("A not: %s\n", yytext);
+    return T_NOT;
 }
 
 "new" {
-    printf("A new: %s\n", yytext);
+    return T_NEW;
 }
 
 "ref" {
-    printf("A ref: %s\n", yytext);
+    return T_REF;
 }
 
 "deref" {
-    printf("A deref: %s\n", yytext);
+    return T_DEREF;
 }
 
 ";" {
-    printf("A ;: %s\n", yytext);
+    return T_SEMICOLON;
 }
 
 ":" {
-    printf("A :: %s\n", yytext);
+    return T_COLON;
 }
 
 "," {
-    printf("A ,: %s\n", yytext);
+    return T_COMMA;
 }
 
 ":=" {
-    printf("A :=: %s\n", yytext);
+    return T_ASSIGN;
 }
 
 "." {
-    printf("A .: %s\n", yytext);
+    return T_DOT;
 }
 
 "[" {
-    printf("A [: %s\n", yytext);
+    return T_LEFT_BRACKET;
 }
 
 "]" {
-    printf("A ]: %s\n", yytext);
+    return T_RIGHT_BRACKET;
 }
 
 "(" {
-    printf("A (: %s\n", yytext);
+    return T_LEFT_PARENTHESIS;
 }
 
 ")" {
-    printf("A ): %s\n", yytext);
+    return T_RIGHT_PARENTHESIS;
 }
 
 "{" {
-    printf("A {: %s\n", yytext);
+    return T_LEFT_BRACES;
 }
 
 "}" {
-    printf("A }: %s\n", yytext);
+    return T_RIGHT_BRACES;
 }
 
 "||" {
-    printf("A ||: %s\n", yytext);
+    return T_OR_LOGIC;
 }
 
 "&&" {
-    printf("A &&: %s\n", yytext);
+    return T_AND_LOGIC;
 }
 
 "<" {
-    printf("A <: %s\n", yytext);
+    return T_LESS_THAN;
 }
 
 "<=" {
-    printf("A <=: %s\n", yytext);
+    return T_LESS_THAN_EQUAL;
 }
 
 ">" {
-    printf("A >: %s\n", yytext);
+    return T_GREATER_THAN;
 }
 
 ">=" {
-    printf("A >=: %s\n", yytext);
+    return T_GREATER_THAN_EQUAL;
 }
 
 "=" {
-    printf("A =: %s\n", yytext);
+    return T_EQUAL;
 }
 
 "<>" {
-    printf("A <>: %s\n", yytext);
+    return T_DIFFERENT;
 }
 
 "+" {
-    printf("A +: %s\n", yytext);
+    return T_PLUS;
 }
 
 "-" {
-    printf("A -: %s\n", yytext);
+    return T_MINUS;
 }
 
 "*" {
-    printf("A *: %s\n", yytext);
+    return T_MULTIPLY;
 }
 
 "/" {
-    printf("A /: %s\n", yytext);
+    return T_DIVIDE;
 }
 
 "^" {
-    printf("A ^: %s\n", yytext);
+    return T_POWER;
 }
 
 {STRING_LITERAL} {
-    printf("A string: %s\n", yytext);
+    return T_STRING_LITERAL;
 }
 
 {NAME} {
     insert_symbol(yytext);
-    printf("A name: %s\n", yytext);
+    return T_NAME;
 }
 
 {SINGLE_COMMENT} {
-    printf("A comment: %s\n", yytext);
+    return T_SINGLE_COMMENT;
 }
 
 {MULTI_COMMENT} {
-    printf("This is a multi line comment: %s\n", yytext);
+    return T_MULTI_COMMENT;
 }
 
-\n    { nLinhas++; }
+\n    { 
+    line_number++;
+    return T_END_LINE; 
+    }
 
-.     { }
+[ \t\r]+  { /* Ignore whitespace */ }
+
+<<EOF>> {
+    return T_EOF;  // Retorna T_EOF quando o EOF for alcançado
+}
+
+.     { yyerror(this, "Invalid character"); }
 
 %%
 
-int main (int argc, char **argv)
+void yyerror(MyFlexLexer* lexer, const char *message)
 {
-    ++argv,--argc;
-    if ( argc > 0 )
-        yyin = fopen( argv[0], "r" ); 
-    else 
-        yyin = stdin;
-    
-    insert_scope();
-    yylex();
-    print_table();
-    return 0;
+    std::cerr << "Error: \"" << message << "\" in line " << line_number
+              << ". Token = " << lexer->YYText() << std::endl;
+    exit(1);
+}
+
+
+int MyFlexLexer::yywrap() {
+    return 1;
 }
