@@ -23,271 +23,271 @@ void yyerror(MyFlexLexer* lexer, const char *message);
 NAME [a-zA-Z][a-zA-Z0-9_]*
 SINGLE_COMMENT "//".*
 MULTI_COMMENT "(\*"([^*]|\*+[^)*])*\*+")"
-INT_LITERAL [0-9]+
+INA_LITERAL [0-9]+
 STRING_LITERAL \"([^\\\"\n]|\\.)*\"
 BOOL_LITERAL "true" | "false"
-FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
+FLOAA_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 
 %%
 
-{INT_LITERAL} {
-    return T_INT_LITERAL;
+{INA_LITERAL} {
+    return A_INA_LITERAL;
 }
 
-{FLOAT_LITERAL} {
-    return T_FLOAT_LITERAL;
+{FLOAA_LITERAL} {
+    return A_FLOAA_LITERAL;
 }
 
 "if" {
-    return T_IF;
+    return A_IF;
 }
 
 "then" {
-    return T_THEN;
+    return A_THEN;
 }
 
 "else" {
-    return T_ELSE;
+    return A_ELSE;
 }
 
 "fi" {
-    return T_FI;
+    return A_FI;
 }
 
 "while" {
-    return T_WHILE;
+    return A_WHILE;
 }
 
 "do" {
-    return T_DO;
+    return A_DO;
 }
 
 "od" {
-    return T_OD;
+    return A_OD;
 }
 
 "return" {
-    return T_RETURN;
+    return A_RETURN;
 }
 
 "unless" {
-    return T_UNLESS;
+    return A_UNLESS;
 }
 
 "case" {
-    return T_CASE;
+    return A_CASE;
 }
 
 "of" {
-    return T_OF;
+    return A_OF;
 }
 
 "esac" {
-    return T_ESAC;
+    return A_ESAC;
 }
 
 "otherwise" {
-    return T_OTHERWISE;
+    return A_OTHERWISE;
 }
 
 "true" {
-    return T_TRUE;
+    return A_TRUE;
 }
 
 "false" {
-    return T_FALSE;
+    return A_FALSE;
 }
 
 "float" {
-    return T_FLOAT;
+    return A_FLOAT;
 }
 
 "int" {
-    return T_INT;
+    return A_INT;
 }
 
 "string" {
-    return T_STRING;
+    return A_STRING;
 }
 
 "bool" {
-    return T_BOOL;
+    return A_BOOL;
 }
 
 "null" {
-    return T_NULL;
+    return A_NULL;
 }
 
 "program" {
-    return T_PROGRAM;
+    return A_PROGRAM;
 }
 
 "begin" {
-    return T_BEGIN;
+    return A_BEGIN;
 }
 
 "end" {
-    return T_END;
+    return A_END;
 }
 
 "var" {
-    return T_VAR;
+    return A_VAR;
 }
 
 "procedure" {
-    return T_PROCEDURE;
+    return A_PROCEDURE;
 }
 
 "struct" {
-    return T_STRUCT;
+    return A_STRUCT;
 }
 
 "in" {
-    return T_IN;
+    return A_IN;
 }
 
 "not" {
-    return T_NOT;
+    return A_NOT;
 }
 
 "new" {
-    return T_NEW;
+    return A_NEW;
 }
 
 "ref" {
-    return T_REF;
+    return A_REF;
 }
 
 "deref" {
-    return T_DEREF;
+    return A_DEREF;
 }
 
 ";" {
-    return T_SEMICOLON;
+    return A_SEMICOLON;
 }
 
 ":" {
-    return T_COLON;
+    return A_COLON;
 }
 
 "," {
-    return T_COMMA;
+    return A_COMMA;
 }
 
 ":=" {
-    return T_ASSIGN;
+    return A_ASSIGN;
 }
 
 ".." {
-    return T_RANGE;
+    return A_RANGE;
 }
 
 "." {
-    return T_DOT;
+    return A_DOT;
 }
 
 "[" {
-    return T_LEFT_BRACKET;
+    return A_LEFA_BRACKET;
 }
 
 "]" {
-    return T_RIGHT_BRACKET;
+    return A_RIGHA_BRACKET;
 }
 
 "(" {
-    return T_LEFT_PARENTHESIS;
+    return A_LEFA_PARENTHESIS;
 }
 
 ")" {
-    return T_RIGHT_PARENTHESIS;
+    return A_RIGHA_PARENTHESIS;
 }
 
 "{" {
-    return T_LEFT_BRACES;
+    return A_LEFA_BRACES;
 }
 
 "}" {
-    return T_RIGHT_BRACES;
+    return A_RIGHA_BRACES;
 }
 
 "||" {
-    return T_OR_LOGIC;
+    return A_OR_LOGIC;
 }
 
 "&&" {
-    return T_AND_LOGIC;
+    return A_AND_LOGIC;
 }
 
 "<" {
-    return T_LESS_THAN;
+    return A_LESS_THAN;
 }
 
 "<=" {
-    return T_LESS_THAN_EQUAL;
+    return A_LESS_THAN_EQUAL;
 }
 
 ">" {
-    return T_GREATER_THAN;
+    return A_GREATER_THAN;
 }
 
 ">=" {
-    return T_GREATER_THAN_EQUAL;
+    return A_GREATER_THAN_EQUAL;
 }
 
 "==" {
-    return T_EQUAL;
+    return A_EQUAL;
 }
 
 "<>" {
-    return T_DIFFERENT;
+    return A_DIFFERENT;
 }
 
 "+" {
-    return T_PLUS;
+    return A_PLUS;
 }
 
 "-" {
-    return T_MINUS;
+    return A_MINUS;
 }
 
 "*" {
-    return T_MULTIPLY;
+    return A_MULTIPLY;
 }
 
 "/" {
-    return T_DIVIDE;
+    return A_DIVIDE;
 }
 
 "^" {
-    return T_POWER;
+    return A_POWER;
 }
 
 {STRING_LITERAL} {
-    return T_STRING_LITERAL;
+    return A_STRING_LITERAL;
 }
 
 {NAME} {
     insert_symbol(yytext);
-    return T_NAME;
+    return A_NAME;
 }
 
 {SINGLE_COMMENT} {
-    return T_SINGLE_COMMENT;
+    return A_SINGLE_COMMENT;
 }
 
 {MULTI_COMMENT} {
-    return T_MULTI_COMMENT;
+    return A_MULTI_COMMENT;
 }
 
 \n    { 
     line_number++;
-    return T_END_LINE; 
+    return A_END_LINE; 
     }
 
 [ \t\r]+  { /* Ignore whitespace */ }
 
 <<EOF>> {
-    return T_EOF;  // Retorna T_EOF quando o EOF for alcançado
+    return A_EOF;  // Retorna A_EOF quando o EOF for alcançado
 }
 
 .     { yyerror(this, "Invalid character"); }

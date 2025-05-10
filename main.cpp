@@ -1,11 +1,10 @@
-#undef yyFlexLexer
-#define yyFlexLexer MyFlexLexer
-#include <FlexLexer.h>
 #include <fstream>
 #include <iostream>
-#include "program_map.hpp"
 
-# define SYNTAX_ANALYZER 1 // 0 -> PREDICTIVE | 1 -> RECURSIVE
+#include "recursive_parser.hpp"
+#include "predictive_parser.hpp"
+
+#define SYNTAX_ANALYZER 0 // 0 -> PREDICTIVE | 1 -> RECURSIVE
 
 int line_number = 0;
 
@@ -21,16 +20,15 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    MyFlexLexer lexer(&file);
+    #if SYNTAX_ANALYZER == 0
+    PredictiveParser lexer(&file);
+    lexer.parse();
 
-    int token;
-    while ((token = lexer.yylex()) != 0) {
-        #if SYNTAX_ANALYZER == 0
-        std::cout << token << std::endl;
-        # elif SYNTAX_ANALYZER == 1
-        std::cout << token << std::endl;
-        #endif
-    }
+    # elif SYNTAX_ANALYZER == 1
+    RecursiveParser lexer(&file);
+    lexer.parse();
+    // std::cout << token << std::endl;
+    #endif
 
     return 0;
 }
