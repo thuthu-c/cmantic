@@ -178,6 +178,10 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
     return T_ASSIGN;
 }
 
+".." {
+    return T_RANGE;
+}
+
 "." {
     return T_DOT;
 }
@@ -230,7 +234,7 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
     return T_GREATER_THAN_EQUAL;
 }
 
-"=" {
+"==" {
     return T_EQUAL;
 }
 

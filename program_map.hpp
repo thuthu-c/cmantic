@@ -49,7 +49,7 @@ typedef enum
     T_SEMICOLON,            // 38 - ";"
     T_COLON,                // 39 - ":"
     T_COMMA,                // 40 - ","
-    T_ASSIGN,               // 41 - "="
+    T_ASSIGN,               // 41 - ":="
     T_DOT,                  // 42 - "."
     T_LEFT_BRACKET,         // 43 - "["
     T_RIGHT_BRACKET,        // 44 - "]"
@@ -64,13 +64,14 @@ typedef enum
     T_GREATER_THAN,         // 53 - ">"
     T_GREATER_THAN_EQUAL,   // 54 - ">="
     T_EQUAL,                // 55 - "=="
-    T_DIFFERENT,            // 56 - "!="
+    T_DIFFERENT,            // 56 - "<>"
     T_PLUS,                 // 57 - "+"
     T_MINUS,                // 58 - "-"
     T_MULTIPLY,             // 59 - "*"
     T_DIVIDE,               // 60 - "/"
     T_POWER,                // 61 - "^"
     T_END_LINE,             // 62 - End of line (newline)
+    T_RANGE,                // 63 - ".." (range operator)
 } ATOMIC_SYMBOLS;
 
 
