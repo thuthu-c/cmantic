@@ -30,12 +30,12 @@ FLOAA_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 
 %%
 
-{INA_LITERAL} {
-    return A_INA_LITERAL;
+{INT_LITERAL} {
+    return A_INT_LITERAL;
 }
 
-{FLOAA_LITERAL} {
-    return A_FLOAA_LITERAL;
+{FLOAT_LITERAL} {
+    return A_FLOAT_LITERAL;
 }
 
 "if" {
