@@ -9,7 +9,7 @@
 class PredictiveParser : public CustomLexer
 {
   public:
-    PredictiveParser(std::istream *in_stream) : CustomLexer(in_stream), cur_token_id(P_PROGRAM)
+    PredictiveParser(std::istream *in_stream) : CustomLexer(in_stream), cur_token_id(A_PROGRAM)
     {
       initialize_table();
     }

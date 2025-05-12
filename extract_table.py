@@ -95,8 +95,22 @@ for sym, sid in sorted(symbol_to_id.items(), key=lambda x: x[1]):
 cpp_code += '};\n'
 
 # Save to file
-output_file = os.path.join(os.path.dirname(__file__), 'table.cpp')
+output_file = os.path.join(os.path.dirname(__file__), 'table_2.cpp')
 with open(output_file, 'w', encoding='utf-8') as file:
     file.write(cpp_code)
 
-print(f"Código C++ com IDs (terminais negativos, não-terminais positivos) foi salvo em: {output_file}")
+# print(f"Código C++ com IDs (terminais negativos, não-terminais positivos) foi salvo em: {output_file}")
+print("IDs de símbolos:", terminal_to_id)
+print("Ids de não-terminais:", non_terminal_to_id)
+
+# Gerar o arquivo enums.txt
+with open("enums.txt", "w", encoding="utf-8") as f:
+    for key, value in terminal_to_id.items():
+        line = f"A_{key.upper()} = {value}\n"
+        f.write(line)
+
+    f.write("\n")  # Separador entre os dois blocos
+
+    for key, value in non_terminal_to_id.items():
+        line = f"P_{key.upper()} = {value}\n"
+        f.write(line)

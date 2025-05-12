@@ -1,81 +1,80 @@
 #pragma once
 
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 
 typedef enum
 {
-    A_EOF = 0,                  // 0 - End of file
-    A_PROGRAM = -64,            // -64 - "program" keyword
-    A_PROCEDURE = -63,          // -63 - "procedure" keyword
-    A_BEGIN = -62,              // -62 - "begin" keyword
-    A_END = -61,                // -61 - "end" keyword
-    // BLOCO (Block statements)
-    A_IF = -60,                 // -60 - "if" keyword
-    A_THEN = -59,               // -59 - "then" keyword
-    A_ELSE = -58,               // -58 - "else" keyword
-    A_FI = -57,                 // -57 - "fi" keyword
-    A_WHILE = -56,              // -56 - "while" keyword
-    A_DO = -55,                 // -55 - "do" keyword
-    A_OD = -54,                 // -54 - "od" keyword
-    A_UNLESS = -53,             // -53 - "unless" keyword
-    A_CASE = -52,               // -52 - "case" keyword
-    A_OF = -51,                 // -51 - "of" keyword
-    A_ESAC = -50,               // -50 - "esac" keyword
-    A_OTHERWISE = -49,          // -49 - "otherwise" keyword
-    A_RETURN = -48,             // -48 - "return" keyword
-    // VÁRIAVEL-LIKE (Variable-like constructs)
-    A_VAR = -47,                // -47 - "var" keyword
-    A_IN = -46,                 // -46 - "in" keyword
-    A_NOT = -45,                // -45 - "not" keyword
-    A_NEW = -44,                // -44 - "new" keyword
-    A_REF = -43,                // -43 - "ref" keyword
-    A_DEREF = -42,              // -42 - "deref" keyword
-    A_NULL = -41,               // -41 - "null" keyword
-    A_STRUCT = -40,             // -40 - "struct" keyword
-    A_BOOL = -39,               // -39 - "bool" keyword
-    A_FLOAT = -38,              // -38 - "float" keyword
-    A_INT = -37,                // -37 - "int" keyword
-    A_STRING = -36,             // -36 - "string" keyword
-    // LITERAIS (Literals)
-    A_STRING_LITERAL = -35,     // -35 - String literal
-    A_INA_LITERAL = -34,        // -34 - Integer literal
-    A_FLOAA_LITERAL = -33,      // -33 - Float literal
-    A_TRUE = -32,               // -32 - "true" boolean literal
-    A_FALSE = -31,              // -31 - "false" boolean literal
-    A_NAME = -30,               // -30 - Identifier (name)
-    // COMENTÁRIOS (Comments)
-    A_SINGLE_COMMENT = -29,     // -29 - Single-line comment
-    A_MULTI_COMMENT = -28,      // -28 - Multi-line comment
-    // SIMBOLOS (Symbols)
-    A_SEMICOLON = -27,          // -27 - ";"
-    A_COLON = -26,              // -26 - ":"
-    A_COMMA = -25,              // -25 - ","
-    A_ASSIGN = -24,             // -24 - ":="
-    A_DOT = -23,                // -23 - "."
-    A_LEFA_BRACKET = -22,       // -22 - "["
-    A_RIGHA_BRACKET = -21,      // -21 - "]"
-    A_LEFA_PARENTHESIS = -20,   // -20 - "("
-    A_RIGHA_PARENTHESIS = -19,  // -19 - ")"
-    A_LEFA_BRACES = -18,        // -18 - "{"
-    A_RIGHA_BRACES = -17,       // -17 - "}"
-    A_OR_LOGIC = -16,           // -16 - "||" (logical OR)
-    A_AND_LOGIC = -15,          // -15 - "&&" (logical AND)
-    A_LESS_THAN = -14,          // -14 - "<"
-    A_LESS_THAN_EQUAL = -13,    // -13 - "<="
-    A_GREATER_THAN = -12,       // -12 - ">"
-    A_GREATER_THAN_EQUAL = -11, // -11 - ">="
-    A_EQUAL = -10,              // -10 - "=="
-    A_DIFFERENT = -9,           // -9 - "<>"
-    A_PLUS = -8,                // -8 - "+"
-    A_MINUS = -7,               // -7 - "-"
-    A_MULTIPLY = -6,            // -6 - "*"
-    A_DIVIDE = -5,              // -5 - "/"
-    A_POWER = -4,               // -4 - "^"
-    A_END_LINE = -3,            // -3 - End of line (newline)
-    A_RANGE = -2,               // -2 - ".." (range operator)
+    A_EOF = 0, // 0 - End of file
+    A_EPSILON = -1,
+    A_DOLLAR_SING = -2,
+    A_PROGRAM = -3,
+    A_NAME = -4,
+    A_BEGIN = -5,
+    A_END = -6,
+    A_SEMICOLON = -7, // ";"
+    A_VAR = -8,
+    A_COLON = -9,   //  ":"
+    A_ASSIGN = -10, //  ":="
+    A_PROCEDURE = -11,
+    A_LEFT_PARENTHESIS = -12,  //  "("
+    A_RIGHT_PARENTHESIS = -13, //  ")"
+    A_IN = -14,
+    A_STRUCT = -15,
+    A_LEFT_BRACES = -16,  //  "{"
+    A_RIGHT_BRACES = -17, //  "}"
+    A_COMMA = -18,        //  ","
+    A_APOSTROPHE = -19,
+    A_IF = -20,
+    A_THEN = -21,
+    A_FI = -22,
+    A_UNLESS = -23,
+    A_DO = -24,
+    A_OD = -25,
+    A_CASE = -26,
+    A_OF = -27,
+    A_ESAC = -28,
+    A_ELSE = -29,
+    A_INT_LITERAL = -30,
+    A_RANGE = -31,
+    A_OTHERWISE = -32,
+    A_WHILE = -33,
+    A_RETURN = -34,
+    A_OR_LOGIC = -35,  //  "||"
+    A_AND_LOGIC = -36, //  "&&"
+    A_NOT = -37,
+    A_POWER = -38, // "^"
+    A_NEW = -39,
+    A_REF = -40,
+    A_DEREF = -41,
+    A_DOT = -42, //  "."
+    A_EMPTY = -43,
+    A_LESS_THAN = -44,          //  "<"
+    A_LESS_THAN_EQUAL = -45,    //  "<="
+    A_GREATER_THAN = -46,       //  ">"
+    A_GREATER_THAN_EQUAL = -47, //  ">="
+    A_EQUAL = -48,              //  "="
+    A_DIFFERENT = -49,          // "<>"
+    A_PLUS = -50,               // "+"
+    A_MINUS = -51,              // "-"
+    A_MULTIPLY = -52,           // "*"
+    A_DIVIDE = -53,             // "/"
+    A_FLOAT_LITERAL = -54,
+    A_STRING_LITERAL = -55,
+    A_NULL = -56,
+    A_TRUE = -57,
+    A_FALSE = -58,
+    A_FLOAT = -59,
+    A_INT = -60,
+    A_STRING = -61,
+    A_BOOL = -62,
+    A_ID = -63,
+    A_SINGLE_COMMENT = -64,
+    A_MULTI_COMMENT = -65,
+    A_LEFT_BRACKET = -66,
+    A_RIGHT_BRACKET = -67,
+    A_END_LINE = -68
 } ATOMIC_SYMBOLS;
-
 
 static const std::unordered_map<int, std::string> ATOMIC_SYMBOLS_STRINGS = {
     {A_EOF, "A_EOF"},
@@ -109,8 +108,8 @@ static const std::unordered_map<int, std::string> ATOMIC_SYMBOLS_STRINGS = {
     {A_INT, "A_INT"},
     {A_STRING, "A_STRING"},
     {A_STRING_LITERAL, "A_STRING_LITERAL"},
-    {A_INA_LITERAL, "A_INA_LITERAL"},
-    {A_FLOAA_LITERAL, "A_FLOAA_LITERAL"},
+    {A_INT_LITERAL, "A_INA_LITERAL"},
+    {A_FLOAT_LITERAL, "A_FLOAA_LITERAL"},
     {A_TRUE, "A_TRUE"},
     {A_FALSE, "A_FALSE"},
     {A_NAME, "A_NAME"},
@@ -121,12 +120,12 @@ static const std::unordered_map<int, std::string> ATOMIC_SYMBOLS_STRINGS = {
     {A_COMMA, "A_COMMA"},
     {A_ASSIGN, "A_ASSIGN"},
     {A_DOT, "A_DOT"},
-    {A_LEFA_BRACKET, "A_LEFA_BRACKET"},
-    {A_RIGHA_BRACKET, "A_RIGHA_BRACKET"},
-    {A_LEFA_PARENTHESIS, "A_LEFA_PARENTHESIS"},
-    {A_RIGHA_PARENTHESIS, "A_RIGHA_PARENTHESIS"},
-    {A_LEFA_BRACES, "A_LEFA_BRACES"},
-    {A_RIGHA_BRACES, "A_RIGHA_BRACES"},
+    {A_LEFT_BRACKET, "A_LEFA_BRACKET"},
+    {A_RIGHT_BRACKET, "A_RIGHA_BRACKET"},
+    {A_LEFT_PARENTHESIS, "A_LEFA_PARENTHESIS"},
+    {A_RIGHT_PARENTHESIS, "A_RIGHA_PARENTHESIS"},
+    {A_LEFT_BRACES, "A_LEFA_BRACES"},
+    {A_RIGHT_BRACES, "A_RIGHA_BRACES"},
     {A_OR_LOGIC, "A_OR_LOGIC"},
     {A_AND_LOGIC, "A_AND_LOGIC"},
     {A_LESS_THAN, "A_LESS_THAN"},
@@ -141,74 +140,73 @@ static const std::unordered_map<int, std::string> ATOMIC_SYMBOLS_STRINGS = {
     {A_DIVIDE, "A_DIVIDE"},
     {A_POWER, "A_POWER"},
     {A_END_LINE, "A_END_LINE"},
-    {A_RANGE, "A_RANGE"}
-};
+    {A_RANGE, "A_RANGE"}};
 
 typedef enum
 {
-    P_PROGRAM = 1,           // 1 - "program"
-    P_DECLS,                 // 2 - "decls"
-    P_DECL,                  // 3 - "decl"
-    P_DECLS_,                // 4 - "decls_"
-    P_VAR_DECL,              // 5 - "var_decl"
-    P_PROC_DECL,             // 6 - "proc_decl"
-    P_REC_DECL,              // 7 - "rec_decl"
-    P_RS_VAR_DECL,           // 8 - "rs_var_decl"
-    P_TYPE,                  // 9 - "type"
-    P_VAR_INIT,              // 10 - "var_init"
-    P_EXP,                   // 11 - "exp"
-    P_PARAMS,                // 12 - "params"
-    P_PROC_REA_DECL,         // 13 - "proc_reA_decl"
-    P_PROC_BODY,             // 14 - "proc_body"
-    P_DECLS_OPT,             // 15 - "decls_opt"
-    P_STMA_LIST,             // 16 - "stmA_list"
-    P_REC_FIELDS,            // 17 - "rec_fields"
-    P_PARAMFIELD_DECL,       // 18 - "paramfield_decl"
-    P_REC_FIELDS_,           // 19 - "rec_fields_"
-    P_PARAMS_,               // 20 - "params_"
-    P_STMT,                  // 21 - "stmt"
-    P_STMA_LISA_,            // 22 - "stmA_lisA_"
-    P_ASSIGN_OR_CALL_STMT,   // 23 - "assign_or_call_stmt"
-    P_IF_STMT,               // 24 - "if_stmt"
-    P_WHILE_STMT,            // 25 - "while_stmt"
-    P_RETURN_STMT,           // 26 - "return_stmt"
-    P_REGISTER,              // 27 - "register"
-    P_ATRIBUTE,              // 28 - "atrubute"
-    P_DEREF_VAR,             // 29 - "deref_var"
-    P_EXPS,                  // 30 - "exps"
-    P_EXPS_,                 // 31 - "exps_"
-    P_ELSE_PART,             // 32 - "else_part"
-    P_CASES,                 // 33 - "cases"
-    P_CASE_DEFAULT,          // 34 - "case_default"
-    P_CASE,                  // 35 - "case"
-    P_CASE_,                 // 36 - "case_"
-    P_INTERVALS,             // 37 - "intervals"
-    P_INTERVAL,              // 38 - "interval"
-    P_INTERVALS_,            // 39 - "intervals_"
-    P_CASE_RANGE,            // 40 - "case_range"
-    P_AND_EXP,               // 41 - "and_exp"
-    P_EXP_,                  // 42 - "exp_"
-    P_NOA_EXP,               // 43 - "noA_exp"
-    P_AND_EXP_,              // 44 - "and_exp_"
-    P_REL_EXP,               // 45 - "rel_exp"
-    P_ADD_EXP,               // 46 - "add_exp"
-    P_REL_EXP_,              // 47 - "rel_exp_"
-    P_REL_OP,                // 48 - "rel_op"
-    P_MULA_EXP,              // 49 - "mulA_exp"
-    P_ADD_EXP_,              // 50 - "add_exp_"
-    P_ADD_OP,                // 51 - "add_op"
-    P_POW_EXP,               // 52 - "pow_exp"
-    P_MULA_EXP_,             // 53 - "mulA_exp_"
-    P_MULA_OP,               // 54 - "mulA_op"
-    P_VALUE,                 // 55 - "value"
-    P_POW_EXP_,              // 56 - "pow_exp_"
-    P_VAR_OR_CALL,           // 57 - "var_or_call"
-    P_LITERAL,               // 58 - "literal"
-    P_REF_VAR,               // 59 - "ref_var"
-    P_VAR,                   // 60 - "var"
-    P_DE_VAR,                // 61 - "de_var"
-    P_FUNC_CALL,             // 62 - "func_call"
-    P_BOOL_LITERAL,          // 63 - "bool_literal"
+    P_PROGRAM = 2,
+    P_DECLS = 3,
+    P_DECL = 4,
+    P_DECLS_ = 5,
+    P_VAR_DECL = 6,
+    P_PROC_DECL = 7,
+    P_REC_DECL = 8,
+    P_RS_VAR_DECL = 9,
+    P_TYPE = 10,
+    P_VAR_INIT = 11,
+    P_EXP = 12,
+    P_PARAMS = 13,
+    P_PROC_RET_DECL = 14,
+    P_PROC_BODY = 15,
+    P_DECLS_OPT = 16,
+    P_STMT_LIST = 17,
+    P_REC_FIELDS = 18,
+    P_PARAMFIELD_DECL = 19,
+    P_REC_FIELDS_ = 20,
+    P_PARAMS_ = 21,
+    P_STMT = 22,
+    P_STMT_LIST_ = 23,
+    P_ASSIGN_OR_CALL_STMT = 24,
+    P_IF_STMT = 25,
+    P_WHILE_STMT = 26,
+    P_RETURN_STMT = 27,
+    P_REGISTER = 28,
+    P_ATRIBUTE = 29,
+    P_DEREF_VAR = 30,
+    P_EXPS = 31,
+    P_EXPS_ = 32,
+    P_ELSE_PART = 33,
+    P_CASES = 34,
+    P_CASE_DEFAULT = 35,
+    P_CASE = 36,
+    P_CASE_ = 37,
+    P_INTERVALS = 38,
+    P_INTERVAL = 39,
+    P_INTERVALS_ = 40,
+    P_CASE_RANGE = 41,
+    P_AND_EXP = 42,
+    P_EXP_ = 43,
+    P_NOT_EXP = 44,
+    P_AND_EXP_ = 45,
+    P_REL_EXP = 46,
+    P_ADD_EXP = 47,
+    P_REL_EXP_ = 48,
+    P_REL_OP = 49,
+    P_MULT_EXP = 50,
+    P_ADD_EXP_ = 51,
+    P_ADD_OP = 52,
+    P_POW_EXP = 53,
+    P_MULT_EXP_ = 54,
+    P_MULT_OP = 55,
+    P_VALUE = 56,
+    P_POW_EXP_ = 57,
+    P_VAR_OR_CALL = 58,
+    P_LITERAL = 59,
+    P_REF_VAR = 60,
+    P_VAR = 61,
+    P_DE_VAR = 62,
+    P_FUNC_CALL = 63,
+    P_BOOL_LITERAL = 64
 } PRODUCTION_SYMBOLS;
 
 // std::map<int, std::string> symbol_map = {

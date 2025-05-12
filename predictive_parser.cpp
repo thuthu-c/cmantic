@@ -40,7 +40,7 @@ bool PredictiveParser::parse()
     int cur_production_id;
     bool not_explode;
     std::stack<int> symbol_stack;
-    symbol_stack.push(1);
+    symbol_stack.push(P_PROGRAM);
 
     while (cur_token_id != 0)
     {

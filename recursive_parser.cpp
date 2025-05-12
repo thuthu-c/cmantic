@@ -68,17 +68,17 @@ void RecursiveParser::Decl()
     case A_PROCEDURE:
         match(A_PROCEDURE);
         match(A_NAME);
-        match(A_LEFA_PARENTHESIS);
+        match(A_LEFT_PARENTHESIS);
         Params();
-        match(A_RIGHA_PARENTHESIS);
+        match(A_RIGHT_PARENTHESIS);
         ProcRetDecl();
         break;
     case A_STRUCT:
         match(A_STRUCT);
         match(A_NAME);
-        match(A_LEFA_BRACES);
+        match(A_LEFT_BRACES);
         RecFields();
-        match(A_RIGHA_BRACES);
+        match(A_RIGHT_BRACES);
         break;
     default:
         logger.logError("Expected VAR, PROCEDURE, or STRUCT");
@@ -220,16 +220,16 @@ void RecursiveParser::Stmt()
     {
     case A_DEREF:
         match(A_DEREF);
-        match(A_LEFA_PARENTHESIS);
+        match(A_LEFT_PARENTHESIS);
         DeVar();
-        match(A_RIGHA_PARENTHESIS);
+        match(A_RIGHT_PARENTHESIS);
         match(A_ASSIGN);
         Exp();
         break;
     // ASSIGN_OR_CALL_STMT
     case A_NAME:
         match(A_NAME);
-        if (lookaheadtoken == A_LEFA_PARENTHESIS)
+        if (lookaheadtoken == A_LEFT_PARENTHESIS)
         {
             FuncCall();
         }
@@ -285,10 +285,10 @@ void RecursiveParser::AssignOrCallStmt()
 
 void RecursiveParser::Exps()
 {
-    if (lookaheadtoken == A_NOT || lookaheadtoken == A_NAME || lookaheadtoken == A_FLOAA_LITERAL ||
-        lookaheadtoken == A_INA_LITERAL || lookaheadtoken == A_NULL || lookaheadtoken == A_STRING_LITERAL ||
+    if (lookaheadtoken == A_NOT || lookaheadtoken == A_NAME || lookaheadtoken == A_FLOAT_LITERAL ||
+        lookaheadtoken == A_INT_LITERAL || lookaheadtoken == A_NULL || lookaheadtoken == A_STRING_LITERAL ||
         lookaheadtoken == A_TRUE || lookaheadtoken == A_FALSE || lookaheadtoken == A_REF || lookaheadtoken == A_DEREF ||
-        lookaheadtoken == A_NEW || lookaheadtoken == A_LEFA_PARENTHESIS)
+        lookaheadtoken == A_NEW || lookaheadtoken == A_LEFT_PARENTHESIS)
     {
         Exp();
         Exps_();
@@ -352,11 +352,11 @@ void RecursiveParser::Intervals_()
 
 void RecursiveParser::Interval()
 {
-    match(A_INA_LITERAL);
+    match(A_INT_LITERAL);
     if (lookaheadtoken == A_RANGE)
     {
         match(A_RANGE);
-        match(A_INA_LITERAL);
+        match(A_INT_LITERAL);
     }
 }
 
@@ -479,11 +479,11 @@ void RecursiveParser::Value()
     switch (lookaheadtoken)
     {
     // Literals
-    case A_FLOAA_LITERAL:
-        match(A_FLOAA_LITERAL);
+    case A_FLOAT_LITERAL:
+        match(A_FLOAT_LITERAL);
         break;
-    case A_INA_LITERAL:
-        match(A_INA_LITERAL);
+    case A_INT_LITERAL:
+        match(A_INT_LITERAL);
         break;
     case A_NULL:
         match(A_NULL);
@@ -506,27 +506,27 @@ void RecursiveParser::Value()
     // Ref_var
     case A_REF:
         match(A_REF);
-        match(A_LEFA_PARENTHESIS);
+        match(A_LEFT_PARENTHESIS);
         Var();
-        match(A_RIGHA_PARENTHESIS);
+        match(A_RIGHT_PARENTHESIS);
         break;
 
     // Deref_var
     case A_DEREF:
         match(A_DEREF);
-        match(A_LEFA_PARENTHESIS);
+        match(A_LEFT_PARENTHESIS);
         DeVar();
-        match(A_RIGHA_PARENTHESIS);
+        match(A_RIGHT_PARENTHESIS);
         break;
 
     case A_NEW:
         match(A_NEW);
         match(A_NAME);
         break;
-    case A_LEFA_PARENTHESIS:
-        match(A_LEFA_PARENTHESIS);
+    case A_LEFT_PARENTHESIS:
+        match(A_LEFT_PARENTHESIS);
         Exp();
-        match(A_RIGHA_PARENTHESIS);
+        match(A_RIGHT_PARENTHESIS);
         break;
     default:
         logger.logError("Expected value");
@@ -545,9 +545,9 @@ void RecursiveParser::DeVar()
     if (lookaheadtoken == A_DEREF)
     {
         match(A_DEREF);
-        match(A_LEFA_PARENTHESIS);
+        match(A_LEFT_PARENTHESIS);
         DeVar();
-        match(A_RIGHA_PARENTHESIS);
+        match(A_RIGHT_PARENTHESIS);
     }
     else
     {
@@ -584,11 +584,11 @@ void RecursiveParser::Atribute()
 
 void RecursiveParser::FuncCall()
 {
-    if (lookaheadtoken == A_LEFA_PARENTHESIS)
+    if (lookaheadtoken == A_LEFT_PARENTHESIS)
     {
-        match(A_LEFA_PARENTHESIS);
+        match(A_LEFT_PARENTHESIS);
         Exps();
-        match(A_RIGHA_PARENTHESIS);
+        match(A_RIGHT_PARENTHESIS);
     }
 }
 
@@ -613,9 +613,9 @@ void RecursiveParser::Type()
         break;
     case A_REF:
         match(A_REF);
-        match(A_LEFA_PARENTHESIS);
+        match(A_LEFT_PARENTHESIS);
         Type();
-        match(A_RIGHA_PARENTHESIS);
+        match(A_RIGHT_PARENTHESIS);
         break;
     default:
         logger.logError("Expected type");
