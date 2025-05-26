@@ -2,7 +2,7 @@
 
 #include "program_map.hpp"
 #include "custom_lexer.hpp"
-#include "table.hpp"
+#include "predictive_table.hpp"
 #include <stack>
 #include <vector>
 

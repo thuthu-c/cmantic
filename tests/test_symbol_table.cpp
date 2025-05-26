@@ -1,5 +1,5 @@
 #include <iostream>
-#include "symboltab.h"
+#include "symbol_table.hpp"
 
 int main(){
     insert_scope();

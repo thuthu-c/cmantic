@@ -12,7 +12,7 @@ FLEX_TARGET(MyScanner dictionary.flex ${CMAKE_CURRENT_BINARY_DIR}/lexer.cpp
 
 add_executable(lexer
     ${FLEX_MyScanner_OUTPUTS}
-    symboltab.cpp
+    symbol_table.cpp
     main.cpp     
     recursive_parser.cpp
     predictive_parser.cpp
