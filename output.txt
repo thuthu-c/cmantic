@@ -1,0 +1,1 @@
+Código C++ com IDs (terminais negativos, não-terminais positivos) foi salvo em: /mnt/c/Users/User/Desktop/Universidade/BCC/Compiladores/cmantic/table2.cpp
