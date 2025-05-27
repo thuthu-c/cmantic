@@ -11,7 +11,7 @@
     #include <FlexLexer.h>
 
     #include "program_map.hpp"
-    #include "symboltab.hpp"
+    #include "symbol_table.hpp"
     #include <iostream>
 
 extern int line_number;

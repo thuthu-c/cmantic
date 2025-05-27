@@ -1,11 +1,11 @@
-#include "table.hpp"
+#include "predictive_table.hpp"
 #include <unordered_map>
 
 std::vector<std::vector<std::vector<int>>> table(63, std::vector<std::vector<int>>(62));
 
 void initialize_table()
 {
-    table[P_PROGRAM][-A_PROGRAM] = {A_PROGRAM, A_NAME, A_BEGIN, P_DECLS, A_END};
+    table[1][2] = {2, -3, -4, -5, 3, -6};
     table[2][5] = {3, -1};
     table[2][7] = {3, 4, 5};
     table[2][10] = {3, 4, 5};
