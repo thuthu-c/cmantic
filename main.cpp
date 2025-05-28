@@ -1,10 +1,12 @@
 #include <fstream>
 #include <iostream>
 
+#include "custom_lexer.hpp"
+#include "parser.tab.hh"
 #include "recursive_parser.hpp"
 #include "predictive_parser.hpp"
 
-#define SYNTAX_ANALYZER 0 // 0 -> PREDICTIVE | 1 -> RECURSIVE
+#define SYNTAX_ANALYZER 2 // 0 -> PREDICTIVE | 1 -> RECURSIVE | 2 -> ASCENDENT
 
 int line_number = 0;
 
@@ -28,6 +30,10 @@ int main(int argc, char** argv) {
     RecursiveParser lexer(&file);
     lexer.parse();
     // std::cout << token << std::endl;
+    #elif SYNTAX_ANALYZER == 2
+    CustomLexer lexer;
+    yy::parser parser(lexer);
+    return parser();
     #endif
 
     return 0;

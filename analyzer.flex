@@ -1,41 +1,40 @@
-%option c++
-%option noyywrap
-%option nounput
-%option noreject
-%option noyy_top_state
+%option c++ noyywrap
+
+%option yyclass="CustomLexer"
 
 
 %{
-    #undef yyFlexLexer
-    #define yyFlexLexer MyFlexLexer
-    #include <FlexLexer.h>
-
+    #include "parser.tab.hh"
+    #include "custom_lexer.hpp"
     #include "program_map.hpp"
     #include "symbol_table.hpp"
     #include <iostream>
 
-extern int line_number;
+    #undef  YY_DECL
+    #define YY_DECL int CustomLexer::yylex(yy::parser::semantic_type* yylval)
 
-void yyerror(MyFlexLexer* lexer, const char *message);
+    extern int line_number;
 
+    void yyerror(CustomLexer& lexer, const char *message);
 %}
 
 NAME [a-zA-Z][a-zA-Z0-9_]*
 SINGLE_COMMENT "//".*
 MULTI_COMMENT "(\*"([^*]|\*+[^)*])*\*+")"
-INA_LITERAL [0-9]+
+INT_LITERAL [0-9]+
 STRING_LITERAL \"([^\\\"\n]|\\.)*\"
-BOOL_LITERAL "true" | "false"
-FLOAA_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
+FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 
 %%
 
 {INT_LITERAL} {
-    return A_INT_LITERAL;
+    yylval->ival = std::stoi(yytext);
+    return INT_LITERAL;
 }
 
 {FLOAT_LITERAL} {
-    return A_FLOAT_LITERAL;
+    yylval->ival = std::stof(yytext);
+    return FLOAT_LITERAL;
 }
 
 "if" {
@@ -163,15 +162,15 @@ FLOAA_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 }
 
 ";" {
-    return A_SEMICOLON;
+    return ';';
 }
 
 ":" {
-    return A_COLON;
+    return ':';
 }
 
 "," {
-    return A_COMMA;
+    return ',';
 }
 
 ":=" {
@@ -183,31 +182,31 @@ FLOAA_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 }
 
 "." {
-    return A_DOT;
+    return '.';
 }
 
 "[" {
-    return A_LEFA_BRACKET;
+    return '[';
 }
 
 "]" {
-    return A_RIGHA_BRACKET;
+    return ']';
 }
 
 "(" {
-    return A_LEFA_PARENTHESIS;
+    return '(';
 }
 
 ")" {
-    return A_RIGHA_PARENTHESIS;
+    return ')';
 }
 
 "{" {
-    return A_LEFA_BRACES;
+    return '{';
 }
 
 "}" {
-    return A_RIGHA_BRACES;
+    return '}';
 }
 
 "||" {
@@ -219,7 +218,7 @@ FLOAA_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 }
 
 "<" {
-    return A_LESS_THAN;
+    return '<';
 }
 
 "<=" {
@@ -227,7 +226,7 @@ FLOAA_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 }
 
 ">" {
-    return A_GREATER_THAN;
+    return '>';
 }
 
 ">=" {
@@ -238,32 +237,37 @@ FLOAA_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
     return A_EQUAL;
 }
 
+"=" {
+    return '=';
+}
+
 "<>" {
     return A_DIFFERENT;
 }
 
 "+" {
-    return A_PLUS;
+    return '+';
 }
 
 "-" {
-    return A_MINUS;
+    return '-';
 }
 
 "*" {
-    return A_MULTIPLY;
+    return '*';
 }
 
 "/" {
-    return A_DIVIDE;
+    return '/';
 }
 
 "^" {
-    return A_POWER;
+    return '^';
 }
 
 {STRING_LITERAL} {
-    return A_STRING_LITERAL;
+    yylval->sval = std::string(yytext + 1, yytext + strlen(yytext) - 2); // Remove the quotes
+    return STRING_LITERAL;
 }
 
 {NAME} {
@@ -272,29 +276,29 @@ FLOAA_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 }
 
 {SINGLE_COMMENT} {
-    return A_SINGLE_COMMENT;
+    printf("Single comment: %s\n", yytext);
 }
 
 {MULTI_COMMENT} {
-    return A_MULTI_COMMENT;
+    printf("Multi comment: %s\n", yytext);
 }
 
 \n    { 
     line_number++;
-    return A_END_LINE; 
+    return A_LINE; 
     }
 
 [ \t\r]+  { /* Ignore whitespace */ }
 
 <<EOF>> {
-    return A_EOF;  // Retorna A_EOF quando o EOF for alcançado
+    return S_YYEOF;
 }
 
 .     { yyerror(this, "Invalid character"); }
 
 %%
 
-void yyerror(MyFlexLexer* lexer, const char *message)
+void yyerror(CustomLexer& lexer, const char *message)
 {
     std::cerr << "Error: \"" << message << "\" in line " << line_number
               << ". Token = " << lexer->YYText() << std::endl;
@@ -302,6 +306,6 @@ void yyerror(MyFlexLexer* lexer, const char *message)
 }
 
 
-int MyFlexLexer::yywrap() {
+int CustomLexer::yywrap() {
     return 1;
 }

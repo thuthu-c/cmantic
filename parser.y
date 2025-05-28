@@ -1,83 +1,51 @@
-%{
-#include <stdio.h>
-#include <stdlib.h>
+%require "3.2"
+%language "c++"
 
-extern int yylex();
-extern int yyparse();
-extern FILE* yyin;
+%code requires {
+    #include <string>
+    #include "custom_lexer.hpp"
+}
 
-void yyerror(const char* s);
-%}
+%parse-param {CustomLexer &lexer}
+
+%header
+
+%code {
+    #define yylex lexer.yylex
+}
 
 %union {
 	int ival;
 	float fval;
+	std::string sval;
 }
 
-%token<ival> INT
-%token<fval> FLOAT
+%token<ival> INT_LITERAL
+%token<fval> FLOAT_LITERAL
+%token<sval> STRING_LITERAL 
+%token A_NAME A_LINE
 
-%token MAIS MENOS MULT DIVI
-%token P_ESQ P_DIR CH_ESQ CH_DIR CO_ESQ CO_DIR EQ AS DIF LE ME M L PONTO_VIRG
-%token LINHA T_QUIT
+%token A_PROGRAM A_BEGIN A_END A_PROCEDURE A_VAR
+%token A_IF A_THEN A_ELSE A_FI A_WHILE A_DO A_OD A_RETURN A_UNLESS A_CASE A_OF A_ESAC A_OTHERWISE 
+%token A_TRUE A_FALSE A_FLOAT A_INT A_STRING A_BOOL A_NULL A_STRUCT
+%token A_IN A_NOT A_NEW A_REF A_DEREF
+%token ';' ':' ',' '[' ']' '{' '}' '(' ')' '<' '>'  '=' '+' '-' '*' '/' '^' '.'
+%token A_ASSIGN A_LESS_THAN_EQUAL A_GREATER_THAN_EQUAL A_DIFFERENT A_EQUAL A_OR_LOGIC A_AND_LOGIC A_RANGE
 
-%left MAIS MENOS
-%left MULT DIVI
+%left '+' '-'
+%left '*' '/'
+%right '^'
 
-%type<ival> espressao_int
-%type<fval> espressao_float
+/* %type<ival> espressao_int
+%type<fval> espressao_float */
 
 %start main
 
 %%
-
-main: 
-	   | main linha
-;
-
-linha: LINHA
-    | espressao_float LINHA { printf("\tResultado: %f\n", $1); }
-    | espressao_int LINHA { printf("\tResultado: %i\n", $1); } 
-    | T_QUIT LINHA { printf("Bye!\n"); exit(0); }
-;
-
-espressao_float: FLOAT                 		 	{ $$ = $1; }
-
-	  | espressao_int MAIS espressao_float	 { $$ = $1 + $3; }
-	  | espressao_int MENOS espressao_float	 { $$ = $1 - $3; }
-	  | espressao_int MULT espressao_float 	 { $$ = $1 * $3; }
-	  | espressao_int DIVI espressao_float	 { $$ = $1 / $3; }
-	  
-	  | espressao_float MAIS espressao_int	 { $$ = $1 + $3; }
-	  | espressao_float MENOS espressao_int	 { $$ = $1 - $3; }
-	  | espressao_float MULT espressao_int 	 { $$ = $1 * $3; }
-	  | espressao_float DIVI espressao_int	 { $$ = $1 / $3; }
-
-	  | espressao_float MAIS espressao_float	{ $$ = $1 + $3; }
-	  | espressao_float MENOS espressao_float	{ $$ = $1 - $3; }
-	  | espressao_float MULT espressao_float 	{ $$ = $1 * $3; }
-	  | espressao_float DIVI espressao_float	{ $$ = $1 / $3; }
-
-	  | P_ESQ espressao_float P_DIR		 	{ $$ = $2; }
-	  | CH_ESQ espressao_float CH_DIR		{ $$ = $2; }
-	  | CO_ESQ espressao_float CO_DIR		{ $$ = $2; }
-;
-
-espressao_int: INT							{ $$ = $1; }
-
-	  | MENOS espressao_int					{ $$ = - $2; }
-	  | MAIS espressao_int					{ $$ = $2; }
-	  | espressao_int MAIS espressao_int	{ $$ = $1 + $3; }
-	  | espressao_int MENOS espressao_int	{ $$ = $1 - $3; }
-	  | espressao_int MULT espressao_int	{ $$ = $1 * $3; }
-	  | espressao_int DIVI espressao_int	{if($3) { $$ = $1 / (float)$3; }
-											else {yyerror("Divisao por zero! Tah LOUCO?!");}
-											}
-	  | P_ESQ espressao_int P_DIR		{ $$ = $2; }
-	  | CH_ESQ espressao_int CH_DIR		{ $$ = $2; }
-	  | CO_ESQ espressao_int CO_DIR		{ $$ = $2; }
-;
-
+main:
+      A_PROGRAM A_END // Exemplo de regra para 'main'
+    | /* main pode ser vazio, se permitido */
+    ;
 %%
 
 int main() {
@@ -89,7 +57,7 @@ int main() {
 	return 0;
 }
 
-void yyerror(const char* s) {
-	fprintf(stderr, "Erro!: %s\n", s);
-	//exit(1);
+void yy::parser::error(const std::string &message)
+{
+    std::cerr << "Error: " << message << std::endl;
 }
