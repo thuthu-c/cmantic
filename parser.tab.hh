@@ -242,9 +242,9 @@ namespace yy {
     YYUNDEF = 257,                 // "invalid token"
     INT_LITERAL = 258,             // INT_LITERAL
     FLOAT_LITERAL = 259,           // FLOAT_LITERAL
-    STRING_LITERAL = 260,          // STRING_LITERAL
-    A_NAME = 261,                  // A_NAME
-    A_LINE = 262,                  // A_LINE
+    A_NAME = 260,                  // A_NAME
+    A_LINE = 261,                  // A_LINE
+    STRING_LITERAL = 262,          // STRING_LITERAL
     A_PROGRAM = 263,               // A_PROGRAM
     A_BEGIN = 264,                 // A_BEGIN
     A_END = 265,                   // A_END
@@ -276,14 +276,16 @@ namespace yy {
     A_NEW = 291,                   // A_NEW
     A_REF = 292,                   // A_REF
     A_DEREF = 293,                 // A_DEREF
-    A_ASSIGN = 294,                // A_ASSIGN
-    A_LESS_THAN_EQUAL = 295,       // A_LESS_THAN_EQUAL
-    A_GREATER_THAN_EQUAL = 296,    // A_GREATER_THAN_EQUAL
-    A_DIFFERENT = 297,             // A_DIFFERENT
-    A_EQUAL = 298,                 // A_EQUAL
-    A_OR_LOGIC = 299,              // A_OR_LOGIC
-    A_AND_LOGIC = 300,             // A_AND_LOGIC
-    A_RANGE = 301                  // A_RANGE
+    A_U_MINUS = 294,               // A_U_MINUS
+    A_U_PLUS = 295,                // A_U_PLUS
+    A_ASSIGN = 296,                // A_ASSIGN
+    A_LESS_THAN_EQUAL = 297,       // A_LESS_THAN_EQUAL
+    A_GREATER_THAN_EQUAL = 298,    // A_GREATER_THAN_EQUAL
+    A_DIFFERENT = 299,             // A_DIFFERENT
+    A_EQUAL = 300,                 // A_EQUAL
+    A_OR_LOGIC = 301,              // A_OR_LOGIC
+    A_AND_LOGIC = 302,             // A_AND_LOGIC
+    A_RANGE = 303                  // A_RANGE
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -300,16 +302,16 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 65, ///< Number of tokens.
+        YYNTOKENS = 67, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
         S_INT_LITERAL = 3,                       // INT_LITERAL
         S_FLOAT_LITERAL = 4,                     // FLOAT_LITERAL
-        S_STRING_LITERAL = 5,                    // STRING_LITERAL
-        S_A_NAME = 6,                            // A_NAME
-        S_A_LINE = 7,                            // A_LINE
+        S_A_NAME = 5,                            // A_NAME
+        S_A_LINE = 6,                            // A_LINE
+        S_STRING_LITERAL = 7,                    // STRING_LITERAL
         S_A_PROGRAM = 8,                         // A_PROGRAM
         S_A_BEGIN = 9,                           // A_BEGIN
         S_A_END = 10,                            // A_END
@@ -341,34 +343,76 @@ namespace yy {
         S_A_NEW = 36,                            // A_NEW
         S_A_REF = 37,                            // A_REF
         S_A_DEREF = 38,                          // A_DEREF
-        S_39_ = 39,                              // ';'
-        S_40_ = 40,                              // ':'
-        S_41_ = 41,                              // ','
-        S_42_ = 42,                              // '['
-        S_43_ = 43,                              // ']'
-        S_44_ = 44,                              // '{'
-        S_45_ = 45,                              // '}'
-        S_46_ = 46,                              // '('
-        S_47_ = 47,                              // ')'
-        S_48_ = 48,                              // '<'
-        S_49_ = 49,                              // '>'
-        S_50_ = 50,                              // '='
-        S_51_ = 51,                              // '+'
-        S_52_ = 52,                              // '-'
-        S_53_ = 53,                              // '*'
-        S_54_ = 54,                              // '/'
-        S_55_ = 55,                              // '^'
-        S_56_ = 56,                              // '.'
-        S_A_ASSIGN = 57,                         // A_ASSIGN
-        S_A_LESS_THAN_EQUAL = 58,                // A_LESS_THAN_EQUAL
-        S_A_GREATER_THAN_EQUAL = 59,             // A_GREATER_THAN_EQUAL
-        S_A_DIFFERENT = 60,                      // A_DIFFERENT
-        S_A_EQUAL = 61,                          // A_EQUAL
-        S_A_OR_LOGIC = 62,                       // A_OR_LOGIC
-        S_A_AND_LOGIC = 63,                      // A_AND_LOGIC
-        S_A_RANGE = 64,                          // A_RANGE
-        S_YYACCEPT = 65,                         // $accept
-        S_main = 66                              // main
+        S_A_U_MINUS = 39,                        // A_U_MINUS
+        S_A_U_PLUS = 40,                         // A_U_PLUS
+        S_41_ = 41,                              // ';'
+        S_42_ = 42,                              // ':'
+        S_43_ = 43,                              // ','
+        S_44_ = 44,                              // '['
+        S_45_ = 45,                              // ']'
+        S_46_ = 46,                              // '{'
+        S_47_ = 47,                              // '}'
+        S_48_ = 48,                              // '('
+        S_49_ = 49,                              // ')'
+        S_50_ = 50,                              // '<'
+        S_51_ = 51,                              // '>'
+        S_52_ = 52,                              // '='
+        S_53_ = 53,                              // '+'
+        S_54_ = 54,                              // '-'
+        S_55_ = 55,                              // '*'
+        S_56_ = 56,                              // '/'
+        S_57_ = 57,                              // '^'
+        S_58_ = 58,                              // '.'
+        S_A_ASSIGN = 59,                         // A_ASSIGN
+        S_A_LESS_THAN_EQUAL = 60,                // A_LESS_THAN_EQUAL
+        S_A_GREATER_THAN_EQUAL = 61,             // A_GREATER_THAN_EQUAL
+        S_A_DIFFERENT = 62,                      // A_DIFFERENT
+        S_A_EQUAL = 63,                          // A_EQUAL
+        S_A_OR_LOGIC = 64,                       // A_OR_LOGIC
+        S_A_AND_LOGIC = 65,                      // A_AND_LOGIC
+        S_A_RANGE = 66,                          // A_RANGE
+        S_YYACCEPT = 67,                         // $accept
+        S_main = 68,                             // main
+        S_program_prod = 69,                     // program_prod
+        S_optional_declaration_list = 70,        // optional_declaration_list
+        S_declaration_list = 71,                 // declaration_list
+        S_declaration = 72,                      // declaration
+        S_var_declaration = 73,                  // var_declaration
+        S_optional_assign_exp = 74,              // optional_assign_exp
+        S_type_spec = 75,                        // type_spec
+        S_proc_declaration = 76,                 // proc_declaration
+        S_optional_param_list = 77,              // optional_param_list
+        S_param_list = 78,                       // param_list
+        S_paramfield_decl = 79,                  // paramfield_decl
+        S_optional_return_type = 80,             // optional_return_type
+        S_optional_proc_decls_in_block = 81,     // optional_proc_decls_in_block
+        S_stmt_list = 82,                        // stmt_list
+        S_stmt_sequence = 83,                    // stmt_sequence
+        S_rec_declaration = 84,                  // rec_declaration
+        S_optional_rec_field_list = 85,          // optional_rec_field_list
+        S_rec_field_list = 86,                   // rec_field_list
+        S_exp = 87,                              // exp
+        S_ref_var = 88,                          // ref_var
+        S_deref_var = 89,                        // deref_var
+        S_var_access = 90,                       // var_access
+        S_literal = 91,                          // literal
+        S_bool_literal = 92,                     // bool_literal
+        S_stmt = 93,                             // stmt
+        S_assign_stmt = 94,                      // assign_stmt
+        S_if_stmt = 95,                          // if_stmt
+        S_optional_else_clause = 96,             // optional_else_clause
+        S_case_list = 97,                        // case_list
+        S_case_clause = 98,                      // case_clause
+        S_case_label_list = 99,                  // case_label_list
+        S_case_label_element = 100,              // case_label_element
+        S_optional_otherwise_clause = 101,       // optional_otherwise_clause
+        S_while_stmt = 102,                      // while_stmt
+        S_return_stmt = 103,                     // return_stmt
+        S_optional_exp_val = 104,                // optional_exp_val
+        S_call_stmt = 105,                       // call_stmt
+        S_call_stmt_as_exp = 106,                // call_stmt_as_exp
+        S_optional_arg_list = 107,               // optional_arg_list
+        S_arg_list = 108                         // arg_list
       };
     };
 
@@ -560,7 +604,7 @@ namespace yy {
 
 
     /// Stored state numbers (used for stacks).
-    typedef signed char state_type;
+    typedef unsigned char state_type;
 
     /// Compute post-reduction state.
     /// \param yystate   the current state
@@ -592,7 +636,7 @@ namespace yy {
     // Tables.
     // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
     // STATE-NUM.
-    static const signed char yypact_[];
+    static const short yypact_[];
 
     // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
     // Performed when YYTABLE does not specify something else to do.  Zero
@@ -603,14 +647,14 @@ namespace yy {
     static const signed char yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
-    static const signed char yydefgoto_[];
+    static const unsigned char yydefgoto_[];
 
     // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
     // positive, shift that token.  If negative, reduce the rule whose
     // number is the opposite.  If YYTABLE_NINF, syntax error.
-    static const signed char yytable_[];
+    static const short yytable_[];
 
-    static const signed char yycheck_[];
+    static const short yycheck_[];
 
     // YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
     // state STATE-NUM.
@@ -625,7 +669,7 @@ namespace yy {
 
 #if YYDEBUG
     // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-    static const signed char yyrline_[];
+    static const short yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r) const;
     /// Print the state stack on the debug stream.
@@ -852,9 +896,9 @@ namespace yy {
     /// Constants.
     enum
     {
-      yylast_ = 2,     ///< Last index in yytable_.
-      yynnts_ = 2,  ///< Number of nonterminal symbols.
-      yyfinal_ = 4 ///< Termination state number.
+      yylast_ = 335,     ///< Last index in yytable_.
+      yynnts_ = 42,  ///< Number of nonterminal symbols.
+      yyfinal_ = 5 ///< Termination state number.
     };
 
 
@@ -865,7 +909,7 @@ namespace yy {
 
 
 } // yy
-#line 869 "parser.tab.hh"
+#line 913 "parser.tab.hh"
 
 
 

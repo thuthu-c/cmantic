@@ -1,0 +1,39 @@
+parser.y: warning: 1 shift/reduce conflict [-Wconflicts-sr]
+parser.y: warning: shift/reduce conflict on token ';' [-Wcounterexamples]
+time limit exceeded: 6.000000
+  First example: A_PROGRAM A_NAME A_BEGIN A_PROCEDURE A_NAME '(' optional_param_list ')' optional_return_type A_BEGIN optional_proc_decls_in_block A_CASE exp A_OF case_label_list ':' stmt_sequence • ';' stmt ';' case_clause optional_otherwise_clause A_ESAC A_END A_END $end
+  Shift derivation
+    $accept
+    ↳ 0: main                                                                                                                                                                                                                                                                                                                                       $end
+         ↳ 1: program_prod
+              ↳ 3: A_PROGRAM A_NAME A_BEGIN optional_declaration_list                                                                                                                                                                                                                                                                         A_END
+                                            ↳ 5: declaration_list
+                                                 ↳ 6: declaration
+                                                      ↳ 9: proc_declaration
+                                                           ↳ 21: A_PROCEDURE A_NAME '(' optional_param_list ')' optional_return_type A_BEGIN optional_proc_decls_in_block stmt_list                                                                                                                                                     A_END
+                                                                                                                                                                          ↳ 32: stmt_sequence
+                                                                                                                                                                                ↳ 33: stmt
+                                                                                                                                                                                      ↳ 74: if_stmt
+                                                                                                                                                                                            ↳ 82: A_CASE exp A_OF case_list                                                                            optional_otherwise_clause A_ESAC
+                                                                                                                                                                                                                  ↳ 86: case_clause                                                    ';' case_clause
+                                                                                                                                                                                                                        ↳ 87: case_label_list ':' stmt_list
+                                                                                                                                                                                                                                                  ↳ 32: stmt_sequence
+                                                                                                                                                                                                                                                        ↳ 34: stmt_sequence • ';' stmt
+  Second example: A_PROGRAM A_NAME A_BEGIN A_PROCEDURE A_NAME '(' optional_param_list ')' optional_return_type A_BEGIN optional_proc_decls_in_block A_CASE exp A_OF case_label_list ':' stmt_sequence • ';' case_clause optional_otherwise_clause A_ESAC A_END A_END $end
+  Reduce derivation
+    $accept
+    ↳ 0: main                                                                                                                                                                                                                                                                                                                              $end
+         ↳ 1: program_prod
+              ↳ 3: A_PROGRAM A_NAME A_BEGIN optional_declaration_list                                                                                                                                                                                                                                                                A_END
+                                            ↳ 5: declaration_list
+                                                 ↳ 6: declaration
+                                                      ↳ 9: proc_declaration
+                                                           ↳ 21: A_PROCEDURE A_NAME '(' optional_param_list ')' optional_return_type A_BEGIN optional_proc_decls_in_block stmt_list                                                                                                                                            A_END
+                                                                                                                                                                          ↳ 32: stmt_sequence
+                                                                                                                                                                                ↳ 33: stmt
+                                                                                                                                                                                      ↳ 74: if_stmt
+                                                                                                                                                                                            ↳ 82: A_CASE exp A_OF case_list                                                                   optional_otherwise_clause A_ESAC
+                                                                                                                                                                                                                  ↳ 86: case_list                                             ';' case_clause
+                                                                                                                                                                                                                        ↳ 85: case_clause
+                                                                                                                                                                                                                              ↳ 87: case_label_list ':' stmt_list
+                                                                                                                                                                                                                                                        ↳ 32: stmt_sequence •

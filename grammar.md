@@ -1,5 +1,82 @@
 ## GRAMMAR
 
+### Pure
+
+PROGRAM -> program NAME begin [ DECL {";" DECL}] end
+DECL -> VAR_DECL 
+        | PROC_DECL 
+        | REC_DECL
+
+VAR_DECL -> VAR name ":" TYPE [ ":=" EXP]
+        | var NAME ":=" EXP
+PROC_DECL -> procedure NAME "(" [PARAMFIELD_DECL {"," PARAMFIELD_DECL}] ")" [":" TYPE] begin [[DECL {";" DECL}] in ] STMT_LIST end
+REC_DECL -> struct NAME "{" [ PARAMFIELD_DECL { ";" PARAMFIELD_DECL } ] "}"
+PARAMFIELD_DECL -> NAME ":" TYPE
+STMT_LIST -> [ STMT { ";" STMT} ]
+
+EXP -> EXP LOG_OP EXP
+        | not EXP
+        | EXP REL_OP EXP
+        | EXP ARITH_OP EXP
+        | LITERAL
+        | CALL_STMT
+        | new NAE
+        | VAR
+        | REF_VAR
+        | DEREF_VAR
+        | "(" EXP ")"
+
+REF_VAR → ref "(" VAR ")"
+DEREF_VAR -> deref "(" var ")"
+        | DEREF "(" DEREF_VAR ")"
+VAR -> NAME 
+        | EXP "." NAME
+LOG_OP -> "&&" 
+        | "||"
+
+REL_OP -> "<"
+        | "<="
+        | ">"
+        | ">="
+        | "="
+        | "<>"
+
+ARITH_OP -> "+"
+        | "-"
+        | "*"
+        | "/"
+        | "^"
+
+LITERAL -> FLOAT_LITERAL 
+        | INT_LITERAL 
+        | STRING_LITERAL 
+        | BOOL_LITERAL 
+        | null
+BOOL_LITERAL -> true 
+        | false
+STMT → ASSIGN_STMT
+        | IF_STMT
+        | WHILE_STMT
+        | RETURN_STMT
+        | CALL_STMT
+ASSIGN_STMT → VAR ”:=” EXP 
+        | DEREF_VAR ”:=” EXP
+
+IF_STMT → if EXP then STMT_LIST [ else STMT_LIST ] fi
+            | unless EXP do STMT_LIST [ else STMT_LIST ] od
+            | case EXP of CASE { ";" CASE } [ otherwise STMT_LIST ] esac
+CASE → INT_LITERAL [ "." "." INT_LITERAL ] { "," INT_LITERAL [ "." "." INT_LITERAL ] } ":" STMT_LIST
+
+WHILE_STMT -> while EXP do STMT_LIST od
+RETURN_STMT -> return [ EXP ]
+CALL_STMT -> NAME "(" [ EXP { "," EXP } ] ")"
+TYPE → float 
+        | int 
+        | string 
+        | bool 
+        | NAME 
+        | ref "(" TYPE ")"
+
 ### LEX FORMAT
 
 ```
@@ -10,7 +87,7 @@ DECL -> VAR_DECL
 VAR_DECL -> var NAME RS_VAR_DECL
 RS_VAR_DECL -> ":" TYPE [ := EXP] 
                 | := EXP
-PROC_DECL -> procedure NAME "(" [PARAMFIELD_DECL {",PARAMFIELD_DECL}] ")" [":" TYPE] begin [[DECL {";" DECL}] in ] STMT_LIST end
+PROC_DECL -> procedure NAME "(" [PARAMFIELD_DECL {"," PARAMFIELD_DECL}] ")" [":" TYPE] begin [[DECL {";" DECL}] in ] STMT_LIST end
 REC_DECL -> struct NAME "{" [ PARAMFIELD_DECL { ";" PARAMFIELD_DECL } ] "}"
 PARAMFIELD_DECL -> NAME ":" TYPE
 STMT_LIST -> [ STMT { ";" STMT} ]
@@ -69,8 +146,8 @@ STMT → ASSIGN_OR_CALL_STMT
         | IF_STMT
         | WHILE_STMT
         | RETURN_STMT
-<!-- ASSIGN_STMT → VAR ”:=” EXP 
-                | DEREF_VAR ”:=” EXP -->
+ASSIGN_STMT → VAR ”:=” EXP 
+        | DEREF_VAR ”:=” EXP
 ASSIGN_OR_CALL_STMT -> DEREF_VAR ”:=” EXP
                         | EXP "." NAME ”:=” EXP
                         | NAME RS_ASSIGN_OR_CALL
@@ -78,11 +155,11 @@ RS_ASSIGN_OR_CALL -> ”:=” EXP
                         | "(" [ EXP { "," EXP } ] ")"
 IF_STMT → if EXP then STMT_LIST [ else STMT_LIST ] fi
             | unless EXP do STMT_LIST [ else STMT_LIST ] od
-            | case EXP of CASE { ";" CASE } "}" [ otherwise STMT_LIST ] esac
+            | case EXP of CASE { ";" CASE } [ otherwise STMT_LIST ] esac
 CASE → INT_LITERAL [ "." "." INT_LITERAL ] { "," INT_LITERAL [ "." "." INT_LITERAL ] } ":" STMT_LIST
-WHILE_STMT → while EXP do STMT_LIST od
-RETURN_STMT → return [ EXP ]
-<!-- CALL_STMT → NAME "(" [ EXP { "," EXP } ] ")" -->
+WHILE_STMT -> while EXP do STMT_LIST od
+RETURN_STMT -> return [ EXP ]
+CALL_STMT -> NAME "(" [ EXP { "," EXP } ] ")"
 TYPE → float 
         | int 
         | string 
