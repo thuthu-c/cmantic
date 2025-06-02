@@ -302,7 +302,7 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 67, ///< Number of tokens.
+        YYNTOKENS = 68, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -371,48 +371,49 @@ namespace yy {
         S_A_OR_LOGIC = 64,                       // A_OR_LOGIC
         S_A_AND_LOGIC = 65,                      // A_AND_LOGIC
         S_A_RANGE = 66,                          // A_RANGE
-        S_YYACCEPT = 67,                         // $accept
-        S_main = 68,                             // main
-        S_program_prod = 69,                     // program_prod
-        S_optional_declaration_list = 70,        // optional_declaration_list
-        S_declaration_list = 71,                 // declaration_list
-        S_declaration = 72,                      // declaration
-        S_var_declaration = 73,                  // var_declaration
-        S_optional_assign_exp = 74,              // optional_assign_exp
-        S_type_spec = 75,                        // type_spec
-        S_proc_declaration = 76,                 // proc_declaration
-        S_optional_param_list = 77,              // optional_param_list
-        S_param_list = 78,                       // param_list
-        S_paramfield_decl = 79,                  // paramfield_decl
-        S_optional_return_type = 80,             // optional_return_type
-        S_optional_proc_decls_in_block = 81,     // optional_proc_decls_in_block
-        S_stmt_list = 82,                        // stmt_list
-        S_stmt_sequence = 83,                    // stmt_sequence
-        S_rec_declaration = 84,                  // rec_declaration
-        S_optional_rec_field_list = 85,          // optional_rec_field_list
-        S_rec_field_list = 86,                   // rec_field_list
-        S_exp = 87,                              // exp
-        S_ref_var = 88,                          // ref_var
-        S_deref_var = 89,                        // deref_var
-        S_var_access = 90,                       // var_access
-        S_literal = 91,                          // literal
-        S_bool_literal = 92,                     // bool_literal
-        S_stmt = 93,                             // stmt
-        S_assign_stmt = 94,                      // assign_stmt
-        S_if_stmt = 95,                          // if_stmt
-        S_optional_else_clause = 96,             // optional_else_clause
-        S_case_list = 97,                        // case_list
-        S_case_clause = 98,                      // case_clause
-        S_case_label_list = 99,                  // case_label_list
-        S_case_label_element = 100,              // case_label_element
-        S_optional_otherwise_clause = 101,       // optional_otherwise_clause
-        S_while_stmt = 102,                      // while_stmt
-        S_return_stmt = 103,                     // return_stmt
-        S_optional_exp_val = 104,                // optional_exp_val
-        S_call_stmt = 105,                       // call_stmt
-        S_call_stmt_as_exp = 106,                // call_stmt_as_exp
-        S_optional_arg_list = 107,               // optional_arg_list
-        S_arg_list = 108                         // arg_list
+        S_67_ = 67,                              // '|'
+        S_YYACCEPT = 68,                         // $accept
+        S_main = 69,                             // main
+        S_program_prod = 70,                     // program_prod
+        S_optional_declaration_list = 71,        // optional_declaration_list
+        S_declaration_list = 72,                 // declaration_list
+        S_declaration = 73,                      // declaration
+        S_var_declaration = 74,                  // var_declaration
+        S_optional_assign_exp = 75,              // optional_assign_exp
+        S_type_spec = 76,                        // type_spec
+        S_proc_declaration = 77,                 // proc_declaration
+        S_optional_param_list = 78,              // optional_param_list
+        S_param_list = 79,                       // param_list
+        S_paramfield_decl = 80,                  // paramfield_decl
+        S_optional_return_type = 81,             // optional_return_type
+        S_optional_proc_decls_in_block = 82,     // optional_proc_decls_in_block
+        S_stmt_list = 83,                        // stmt_list
+        S_stmt_sequence = 84,                    // stmt_sequence
+        S_rec_declaration = 85,                  // rec_declaration
+        S_optional_rec_field_list = 86,          // optional_rec_field_list
+        S_rec_field_list = 87,                   // rec_field_list
+        S_exp = 88,                              // exp
+        S_ref_var = 89,                          // ref_var
+        S_deref_var = 90,                        // deref_var
+        S_var_access = 91,                       // var_access
+        S_literal = 92,                          // literal
+        S_bool_literal = 93,                     // bool_literal
+        S_stmt = 94,                             // stmt
+        S_assign_stmt = 95,                      // assign_stmt
+        S_if_stmt = 96,                          // if_stmt
+        S_optional_else_clause = 97,             // optional_else_clause
+        S_case_list = 98,                        // case_list
+        S_case_clause = 99,                      // case_clause
+        S_case_label_list = 100,                 // case_label_list
+        S_case_label_element = 101,              // case_label_element
+        S_optional_otherwise_clause = 102,       // optional_otherwise_clause
+        S_while_stmt = 103,                      // while_stmt
+        S_return_stmt = 104,                     // return_stmt
+        S_optional_exp_val = 105,                // optional_exp_val
+        S_call_stmt = 106,                       // call_stmt
+        S_call_stmt_as_exp = 107,                // call_stmt_as_exp
+        S_optional_arg_list = 108,               // optional_arg_list
+        S_arg_list = 109                         // arg_list
       };
     };
 
@@ -644,7 +645,7 @@ namespace yy {
     static const signed char yydefact_[];
 
     // YYPGOTO[NTERM-NUM].
-    static const signed char yypgoto_[];
+    static const short yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
     static const unsigned char yydefgoto_[];
@@ -896,7 +897,7 @@ namespace yy {
     /// Constants.
     enum
     {
-      yylast_ = 335,     ///< Last index in yytable_.
+      yylast_ = 318,     ///< Last index in yytable_.
       yynnts_ = 42,  ///< Number of nonterminal symbols.
       yyfinal_ = 5 ///< Termination state number.
     };
@@ -909,7 +910,7 @@ namespace yy {
 
 
 } // yy
-#line 913 "parser.tab.hh"
+#line 914 "parser.tab.hh"
 
 
 

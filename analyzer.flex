@@ -213,6 +213,8 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
     return A_OR_LOGIC;
 }
 
+//todo: colocar o '|'
+
 "&&" {
     return A_AND_LOGIC;
 }

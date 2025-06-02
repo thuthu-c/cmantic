@@ -29,7 +29,7 @@
 %token A_IF A_THEN A_ELSE A_FI A_WHILE A_DO A_OD A_RETURN A_UNLESS A_CASE A_OF A_ESAC A_OTHERWISE 
 %token A_TRUE A_FALSE A_FLOAT A_INT A_STRING A_BOOL A_NULL A_STRUCT
 %token A_IN A_NOT A_NEW A_REF A_DEREF A_U_MINUS A_U_PLUS
-%token ';' ':' ',' '[' ']' '{' '}' '(' ')' '<' '>'  '=' '+' '-' '*' '/' '^' '.'
+%token ';' ':' ',' '[' ']' '{' '}' '(' ')' '<' '>'  '=' '+' '-' '*' '/' '^' '.' '|'
 %token A_ASSIGN A_LESS_THAN_EQUAL A_GREATER_THAN_EQUAL A_DIFFERENT A_EQUAL A_OR_LOGIC A_AND_LOGIC A_RANGE
 
 
@@ -127,7 +127,7 @@ stmt_list:
 
 stmt_sequence:
       stmt
-    | stmt_sequence ';' stmt // Corresponde a [ STMT { ";" STMT} ]
+    | stmt ';' stmt_sequence // Corresponde a [ STMT { ";" STMT} ]
     ;
 
 rec_declaration:
@@ -222,7 +222,7 @@ optional_else_clause:
 
 case_list:
       case_clause
-    | case_list ';' case_clause
+    | case_list '|' case_clause
     ;
 
 case_clause:
