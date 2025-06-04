@@ -2,7 +2,6 @@
 
 %option yyclass="CustomLexer"
 
-
 %{
     #include "parser.tab.hh"
     #include "custom_lexer.hpp"
@@ -29,12 +28,12 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 
 {INT_LITERAL} {
     yylval->ival = std::stoi(yytext);
-    return INT_LITERAL;
+    return A_INT_LITERAL;
 }
 
 {FLOAT_LITERAL} {
     yylval->ival = std::stof(yytext);
-    return FLOAT_LITERAL;
+    return A_FLOAT_LITERAL;
 }
 
 "if" {
@@ -118,6 +117,7 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 }
 
 "program" {
+    printf("Program keyword found\n");
     return A_PROGRAM;
 }
 
@@ -213,7 +213,9 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
     return A_OR_LOGIC;
 }
 
-//todo: colocar o '|'
+"|" {
+    return '|';
+}
 
 "&&" {
     return A_AND_LOGIC;
@@ -268,8 +270,8 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 }
 
 {STRING_LITERAL} {
-    yylval->sval = std::string(yytext + 1, yytext + strlen(yytext) - 2); // Remove the quotes
-    return STRING_LITERAL;
+    yylval->sval = std::string(yytext + 1, yytext + strlen(yytext) - 2).c_str();
+    return A_STRING_LITERAL;
 }
 
 {NAME} {
@@ -287,27 +289,22 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 
 \n    { 
     line_number++;
-    return A_LINE; 
     }
 
 [ \t\r]+  { /* Ignore whitespace */ }
 
-<<EOF>> {
-    return S_YYEOF;
-}
-
-.     { yyerror(this, "Invalid character"); }
+.     { yyerror(*this, "Invalid character"); }
 
 %%
 
 void yyerror(CustomLexer& lexer, const char *message)
 {
     std::cerr << "Error: \"" << message << "\" in line " << line_number
-              << ". Token = " << lexer->YYText() << std::endl;
+              << ". Token = " << lexer.YYText() << std::endl;
     exit(1);
 }
 
 
-int CustomLexer::yywrap() {
+/* int CustomLexer::yywrap() {
     return 1;
-}
+} */

@@ -3,6 +3,7 @@
 #if !defined(yyFlexLexerOnce)
 #include <FlexLexer.h>
 #endif
+#include "parser.tab.hh"
 
 class CustomLexer : public yyFlexLexer
 {

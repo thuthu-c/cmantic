@@ -48,7 +48,7 @@
 #line 4 "parser.y"
 
     #include <string>
-    #include "custom_lexer.hpp"
+    class CustomLexer;
 
 #line 54 "parser.tab.hh"
 
@@ -203,11 +203,11 @@ namespace yy {
     /// Symbol semantic values.
     union value_type
     {
-#line 17 "parser.y"
+#line 18 "parser.y"
 
 	int ival;
 	float fval;
-	std::string sval;
+	const char* sval;
 
 #line 213 "parser.tab.hh"
 
@@ -363,15 +363,15 @@ namespace yy {
         S_56_ = 56,                              // '/'
         S_57_ = 57,                              // '^'
         S_58_ = 58,                              // '.'
-        S_A_ASSIGN = 59,                         // A_ASSIGN
-        S_A_LESS_THAN_EQUAL = 60,                // A_LESS_THAN_EQUAL
-        S_A_GREATER_THAN_EQUAL = 61,             // A_GREATER_THAN_EQUAL
-        S_A_DIFFERENT = 62,                      // A_DIFFERENT
-        S_A_EQUAL = 63,                          // A_EQUAL
-        S_A_OR_LOGIC = 64,                       // A_OR_LOGIC
-        S_A_AND_LOGIC = 65,                      // A_AND_LOGIC
-        S_A_RANGE = 66,                          // A_RANGE
-        S_67_ = 67,                              // '|'
+        S_59_ = 59,                              // '|'
+        S_A_ASSIGN = 60,                         // A_ASSIGN
+        S_A_LESS_THAN_EQUAL = 61,                // A_LESS_THAN_EQUAL
+        S_A_GREATER_THAN_EQUAL = 62,             // A_GREATER_THAN_EQUAL
+        S_A_DIFFERENT = 63,                      // A_DIFFERENT
+        S_A_EQUAL = 64,                          // A_EQUAL
+        S_A_OR_LOGIC = 65,                       // A_OR_LOGIC
+        S_A_AND_LOGIC = 66,                      // A_AND_LOGIC
+        S_A_RANGE = 67,                          // A_RANGE
         S_YYACCEPT = 68,                         // $accept
         S_main = 69,                             // main
         S_program_prod = 70,                     // program_prod
@@ -645,7 +645,7 @@ namespace yy {
     static const signed char yydefact_[];
 
     // YYPGOTO[NTERM-NUM].
-    static const short yypgoto_[];
+    static const signed char yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
     static const unsigned char yydefgoto_[];
@@ -897,7 +897,7 @@ namespace yy {
     /// Constants.
     enum
     {
-      yylast_ = 318,     ///< Last index in yytable_.
+      yylast_ = 341,     ///< Last index in yytable_.
       yynnts_ = 42,  ///< Number of nonterminal symbols.
       yyfinal_ = 5 ///< Termination state number.
     };

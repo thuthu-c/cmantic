@@ -2,9 +2,9 @@
 #include <iostream>
 
 #include "custom_lexer.hpp"
-#include "parser.tab.hh"
-#include "recursive_parser.hpp"
-#include "predictive_parser.hpp"
+// #include "parser.tab.hh"
+// #include "recursive_parser.hpp"
+// #include "predictive_parser.hpp"
 
 #define SYNTAX_ANALYZER 2 // 0 -> PREDICTIVE | 1 -> RECURSIVE | 2 -> ASCENDENT
 
@@ -23,15 +23,15 @@ int main(int argc, char** argv) {
     }
 
     #if SYNTAX_ANALYZER == 0
-    PredictiveParser lexer(&file);
-    lexer.parse();
+    // PredictiveParser lexer(&file);
+    // lexer.parse();
 
     # elif SYNTAX_ANALYZER == 1
-    RecursiveParser lexer(&file);
-    lexer.parse();
+    // RecursiveParser lexer(&file);
+    // lexer.parse();
     // std::cout << token << std::endl;
     #elif SYNTAX_ANALYZER == 2
-    CustomLexer lexer;
+    CustomLexer lexer(&file);
     yy::parser parser(lexer);
     return parser();
     #endif

@@ -3,7 +3,7 @@
 
 %code requires {
     #include <string>
-    #include "custom_lexer.hpp"
+    class CustomLexer;
 }
 
 %parse-param {CustomLexer &lexer}
@@ -11,13 +11,14 @@
 %header
 
 %code {
+    #include "custom_lexer.hpp"
     #define yylex lexer.yylex
 }
 
 %union {
 	int ival;
 	float fval;
-	std::string sval;
+	const char* sval;
 }
 
 %token<ival> INT_LITERAL
@@ -277,15 +278,6 @@ arg_list:
     ;
 
 %% // Fim das Regras Gramaticais
-
-int main() {
-	yyin = stdin;
-	do {
-		yyparse();
-	} while(!feof(yyin));
-
-	return 0;
-}
 
 void yy::parser::error(const std::string &message)
 {
