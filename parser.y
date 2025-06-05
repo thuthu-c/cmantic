@@ -1,8 +1,17 @@
 %require "3.2"
 %language "c++"
 
+// %define parse.trace true
+
 %code requires {
     #include <string>
+    #include <vector>
+    #include <memory>
+    #include <iostream>
+
+    #include "symbol_table.hpp"
+    #include "type_utils.hpp"
+
     class CustomLexer;
 }
 
@@ -18,13 +27,14 @@
 %union {
 	int ival;
 	float fval;
-	const char* sval;
+	std::string* sval;
 }
 
-%token<ival> INT_LITERAL
-%token<fval> FLOAT_LITERAL
-%token<sval> A_NAME 
-%token A_LINE STRING_LITERAL
+%token<ival> A_INT_LITERAL
+%token<fval> A_FLOAT_LITERAL
+%token<sval> A_NAME A_STRING_LITERAL
+
+%token A_LINE
 
 %token A_PROGRAM A_BEGIN A_END A_PROCEDURE A_VAR
 %token A_IF A_THEN A_ELSE A_FI A_WHILE A_DO A_OD A_RETURN A_UNLESS A_CASE A_OF A_ESAC A_OTHERWISE 
@@ -44,6 +54,8 @@
 %right A_NOT A_U_MINUS A_U_PLUS
 %left '.'
 
+%destructor { delete $$; } <sval>
+
 %start main
 
 %%
@@ -54,7 +66,8 @@ main:
     ;
 
 program_prod:
-      A_PROGRAM A_NAME A_BEGIN optional_declaration_list A_END
+      A_PROGRAM A_NAME { std::cout << "Parsing program: " << *$2 << std::endl; delete $2; }
+      A_BEGIN optional_declaration_list A_END
     ;
 
 optional_declaration_list:
@@ -185,9 +198,9 @@ var_access:
 
 
 literal:
-      FLOAT_LITERAL
-    | INT_LITERAL
-    | STRING_LITERAL
+      A_FLOAT_LITERAL
+    | A_INT_LITERAL
+    | A_STRING_LITERAL
     | bool_literal
     | A_NULL
     ;
@@ -236,8 +249,8 @@ case_label_list:
     ;
 
 case_label_element:
-      INT_LITERAL
-    | INT_LITERAL A_RANGE INT_LITERAL
+      A_INT_LITERAL
+    | A_INT_LITERAL A_RANGE A_INT_LITERAL
     ;
 
 optional_otherwise_clause:

@@ -1,199 +1,183 @@
 #include "symbol_table.hpp"
 
-SymbolTable *curr_table = NULL;
-
-unsigned int hash(const std::string key) {
-    unsigned int hash = 5333;
-    for(char letter: key){
-        hash = ((hash << 5) + hash) + letter++; //  hash * 33 + letter
-    }
-    return hash;
+void SymbolTable::push_scope() {
+    auto new_scope = std::make_unique<Scope>(current_scope);
+    current_scope = new_scope.get();
+    all_scopes.push_back(std::move(new_scope));
 }
 
-void insert_symbol(const std::string name) {
-    unsigned int index = hash(name) % MAX_TABLE_SIZE;
-    Symbol *new_symbol = (Symbol *)malloc(sizeof(Symbol));
-    new_symbol->name = name;
-    new_symbol->type = UNDEFINED;
+void SymbolTable::pop_scope() {
+    if (current_scope->parent != nullptr) {
+        current_scope = current_scope->parent;
+    }
+}
+
+bool SymbolTable::insert_symbol(const std::string& name, Symbol symbol) {
+    return current_scope->symbols.try_emplace(name, std::move(symbol)).second;
+}
+
+Symbol* SymbolTable::lookup(const std::string& name) {
+    Scope* search_scope = current_scope;
+    while (search_scope != nullptr) {
+        auto it = search_scope->symbols.find(name);
+        if (it != search_scope->symbols.end()) {
+            return &it->second;
+        }
+        search_scope = search_scope->parent;
+    }
+    return nullptr;
+}
+
+Symbol* SymbolTable::lookup_current_scope_only(const std::string& name) {
+    auto it = current_scope->symbols.find(name);
+    if (it != current_scope->symbols.end()) {
+        return &it->second;
+    }
+    return nullptr;
+}
+
+Symbol* SymbolTable::lookup_root_scope_only(const std::string& name) {
+    if (all_scopes.empty()) {
+        return nullptr;
+    }
     
-    new_symbol->next = curr_table->symbols[index];
-    curr_table->symbols[index] = new_symbol;
+    Scope* root_scope = all_scopes.front().get();
+    auto it = root_scope->symbols.find(name);
+    if (it != root_scope->symbols.end()) {
+        return &it->second;
+    }
+    return nullptr;
 }
 
-// void insert_symbol(const char *name, SymbolType type, SymbolContent content) {
-//     unsigned int index = hash(name);
-//     Symbol *new_symbol = (Symbol *)malloc(sizeof(Symbol));
-//     new_symbol->name = strdup(name);
-//     new_symbol->type = type;
-//     new_symbol->content = content;
-//     new_symbol->next = curr_table->symbols[index];
-//     curr_table->symbols[index] = new_symbol;
-// }
-
-Symbol *lookup_symbol(const std::string name) {
-    SymbolTable *aux_table = curr_table;
-    while (aux_table) {
-        unsigned int index = hash(name) % MAX_TABLE_SIZE;
-        Symbol *symbol = aux_table->symbols[index];
-        while (symbol) {
-            if (symbol->name == name) {
-                return symbol;
-            }
-            symbol = symbol->next;
-        }
-        aux_table = aux_table->parent;
-    }
-    return NULL;
+void SymbolTable::print() const {
+    print_scope(current_scope);
 }
 
-void insert_scope() {
-    SymbolTable *aux_table = (SymbolTable *)malloc(sizeof(SymbolTable));
-
-    if (!aux_table) {
-        printf("Erro: problema na alocação de memória.\n");
-        exit(1);
+std::optional<VarType> SymbolTable::get_symbol_type(const std::string& name) {
+    Symbol* symbol = lookup(name);
+    if (!symbol) {
+        return std::nullopt;
     }
 
-    for (int i = 0; i < MAX_TABLE_SIZE; i++) {
-        aux_table->symbols[i] = NULL;
+    switch (symbol->category) {
+        case SymbolCategory::PROCEDURE: return std::get<Procedure>(symbol->content).return_type;
+        case SymbolCategory::VARIABLE:  return std::get<Variable>(symbol->content).type;
+        case SymbolCategory::RECORD:    return VarType{PrimitiveType::NOT_PRIMITIVE, symbol->name};
+        default:                        return VarType{PrimitiveType::UNDEFINED, std::nullopt};
     }
-    aux_table->parent = curr_table;
-    curr_table = aux_table;
 }
 
-void remove_scope() {
-    for (int i = 0; i < MAX_TABLE_SIZE; i++) {
-        Symbol *aux = curr_table->symbols[i];
-        while (aux) {
-            Symbol *temp = aux;
-            aux = aux->next;
-            free(temp);
+
+
+
+
+// =============================== UTILS ====================================
+
+std::string SymbolTable::symbolCategory_to_string(SymbolCategory category) const{
+    switch (category) {
+        case SymbolCategory::PROCEDURE: return "PROCEDURE";
+        case SymbolCategory::RECORD:    return "RECORD";
+        case SymbolCategory::VARIABLE:  return "VARIABLE";
+        default:                        return "UNDEFINED";
+    }
+}
+
+std::string SymbolTable::varType_to_string(const VarType& varType) const {
+    if (varType.p_type != PrimitiveType::NOT_PRIMITIVE) {
+        switch (varType.p_type) {
+            case PrimitiveType::BOOL:   return "BOOL";
+            case PrimitiveType::FLOAT:  return "FLOAT";
+            case PrimitiveType::INT:    return "INT";
+            case PrimitiveType::STRING: return "STRING";
+            case PrimitiveType::VOID:   return "VOID";
+            default:                    return "UNDEFINED";
         }
     }
-    SymbolTable *parent_table = curr_table->parent;
-    free(curr_table);
-    curr_table = parent_table;
+
+    return varType.record_name.value_or("UNDEFINED_RECORD");
 }
 
-void free_table() {
-    while (curr_table) {
-        remove_scope();
-    }
-}
-
-void print_table() {
-    SymbolTable *aux_table = curr_table;
-    while (aux_table) {
-        for (int i = 0; i < MAX_TABLE_SIZE; i++) {
-            Symbol *symbol = aux_table->symbols[i];
-            while (symbol) {
-                std::cout << "Symbol: " << symbol->name << " ";
-                symbol = symbol->next;
-            }
+std::string SymbolTable::procedure_to_string(const Procedure& proc) const {
+    std::string params;
+    for (size_t i = 0; i < proc.params.size(); ++i) {
+        params += proc.params[i].name + ": " + varType_to_string(proc.params[i].type);
+        if (i < proc.params.size() - 1) {
+            params += ", ";
         }
-        aux_table = aux_table->parent;
     }
-    std::cout << std::endl;
+    return "[ReturnType: " + varType_to_string(proc.return_type) + ", Parameters: {" + params + "}]";
 }
 
-std::string getSymbolTypeNames(Symbol * symbol){
-    return symbolTypeNames[symbol->type];
-}
-
-std::string getVarTypeName(VarType varType){
-    //TODO printar a "quantidade de referências" do tipo
-
-    if(varType.p_type != NOTPRIMITIVE){
-        return primitiveTypeNames[varType.p_type];
+std::string SymbolTable::record_to_string(const Record& rec) const {
+    std::string fields;
+    for (size_t i = 0; i < rec.fields.size(); ++i) {
+        fields += rec.fields[i].name + ": " + varType_to_string(rec.fields[i].type);
+        if (i < rec.fields.size() - 1) {
+            fields += ", ";
+        }
     }
-
-    return varType.record_name;
+    return "[Fields: {" + fields + "}]";
 }
 
-std::string getParameterListString(Procedure procedure){
-    //TODO
-    return "TODO";
+std::string SymbolTable::variable_to_string(const Variable& var) const {
+    return "[VarType: " + varType_to_string(var.type) + "]";
 }
 
-std::string getProcedureContent(Procedure procedure){
-    // o retorno deve ser algo como [ReturnType = bla, Parameters = [bla, bla, bla]]
-    return "[ReturnType = " + getVarTypeName(procedure.return_type) + 
-           ", Parameters = [" + getParameterListString(procedure) + "]";
-}
+std::string SymbolTable::symbol_to_string(const Symbol& symbol) const {
+        std::string output = "[Name: " + symbol.name;
+        output += ", Category: " + symbolCategory_to_string(symbol.category);
+        output += ", Content: ";
 
-std::string getFieldsListString(Record record){
-    //TODO
-    return "TODO";
-}
+        switch (symbol.category) {
+            case SymbolCategory::PROCEDURE:
+                output += procedure_to_string(std::get<Procedure>(symbol.content));
+                break;
+            case SymbolCategory::RECORD:
+                output += record_to_string(std::get<Record>(symbol.content));
+                break;
+            case SymbolCategory::VARIABLE:
+                output += variable_to_string(std::get<Variable>(symbol.content));
+                break;
+            default:
+                output += "UNDEFINED";
+                break;
+        }
 
-std::string getRecordContent(Record record){
-    // o retorno deve ser algo como [Fields = [bla: bla, bla: bla, bla: bla]]
-    return "[Fields = [" + getFieldsListString(record) + "]]";
-}
-
-std::string getVariableContent(Variable variable){
-    // o retorno deve ser algo como [VarType = bla]
-    return "[VarType = " + getVarTypeName(variable.type) + "]";
-}
-
-
-
-std::string getSymbolContent(Symbol * symbol){
-    if(!symbol->type){
-        return "null";
+        output += "]";
+        return output;
     }
 
-    switch (symbol->type){
-        case PROCEDURE:
-            return getProcedureContent(symbol->content._procedure);
-            break;
-        case RECORD:
-            return getRecordContent(symbol->content._record);
-            break;
-        case VARIABLE:
-            return getVariableContent(symbol->content._variable);
-            break;
-        default:
-            return "UNDEFINED";
-    }
-}
+void SymbolTable::print_scope(const Scope* scope) const {
+    if (!scope) return;
 
-void printSymbolTypeAndContent(Symbol * symbol){
-    std::cout << "[Name = " << symbol->name
-              << ", [SymbolType = " << getSymbolTypeNames(symbol) 
-              << ", SymbolContent = " << getSymbolContent(symbol) << "]]";
-    // a função deve printar algo como [Name = bla, Info= [SymbolType = bla, SymbolContent = bla]]
-}
-
-
-
-void print_scope(const SymbolTable *scope){
-    if(!scope){
-        std::cout << "No scope found!\n";
-        return;
-    }
-
-    if(scope->parent){
+    if (scope->parent) {
         print_scope(scope->parent);
         std::cout << "\u2191\n";
     }
 
-    std::cout << "-\n";
+    std::cout << "==================" << std::endl;
 
-    for (int i = 0; i < MAX_TABLE_SIZE; i++) {
-        Symbol *symbol = scope->symbols[i];
-        while (symbol) {
-            printSymbolTypeAndContent(symbol);
-            std::cout << " ->";
-            symbol = symbol->next;
+    if (scope->symbols.empty()) {
+        std::cout << "  (Scope is empty)\n";
+    } else {
+        for (const auto& [name, symbol] : scope->symbols) {
+            std::cout << "  \u25CF " << name << " \u2192 " << symbol_to_string(symbol) << "\n";
         }
-        std::cout << "\u2205";
-        std::cout << "\n";
     }
-
-    std::cout << "-\n";
 }
 
-void print_table_() {
-    print_scope(curr_table);
-}
+        // const Procedure* getSubProgram(const std::string& subprogname) {
+        //     Symbol* symbol = findSymbolInGlobalScope(subprogname);
+        //     if (symbol && symbol->category == SymbolCategory::PROCEDURE) {
+        //         // std::get_if retorna um ponteiro para o tipo se ele estiver ativo, ou nullptr.
+        //         return std::get_if<Procedure>(&symbol->content);
+        //     }
+        //     return nullptr;
+        // }
+        // const Record* getRecordType(const std::string& recordName) {
+        //     Symbol* symbol = findSymbolInGlobalScope(recordName);
+        //     if (symbol && symbol->category == SymbolCategory::RECORD) {
+        //         return std::get_if<Record>(&symbol->content);
+        //     }
+        //     return nullptr;
+        // }

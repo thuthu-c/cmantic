@@ -5,9 +5,11 @@
 %{
     #include "parser.tab.hh"
     #include "custom_lexer.hpp"
-    #include "program_map.hpp"
     #include "symbol_table.hpp"
+
     #include <iostream>
+    #include <string>
+    #include <cstring>
 
     #undef  YY_DECL
     #define YY_DECL int CustomLexer::yylex(yy::parser::semantic_type* yylval)
@@ -28,141 +30,144 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 
 {INT_LITERAL} {
     yylval->ival = std::stoi(yytext);
-    return A_INT_LITERAL;
+    return yy::parser::token::A_INT_LITERAL;
 }
 
 {FLOAT_LITERAL} {
     yylval->ival = std::stof(yytext);
-    return A_FLOAT_LITERAL;
+    return yy::parser::token::A_FLOAT_LITERAL;
 }
 
 "if" {
-    return A_IF;
+    return yy::parser::token::A_IF;
 }
 
 "then" {
-    return A_THEN;
+    return yy::parser::token::A_THEN;
 }
 
 "else" {
-    return A_ELSE;
+    return yy::parser::token::A_ELSE;
 }
 
 "fi" {
-    return A_FI;
+    return yy::parser::token::A_FI;
 }
 
 "while" {
-    return A_WHILE;
+    return yy::parser::token::A_WHILE;
 }
 
 "do" {
-    return A_DO;
+    return yy::parser::token::A_DO;
 }
 
 "od" {
-    return A_OD;
+    return yy::parser::token::A_OD;
 }
 
 "return" {
-    return A_RETURN;
+    return yy::parser::token::A_RETURN;
 }
 
 "unless" {
-    return A_UNLESS;
+    return yy::parser::token::A_UNLESS;
 }
 
 "case" {
-    return A_CASE;
+    return yy::parser::token::A_CASE;
 }
 
 "of" {
-    return A_OF;
+    return yy::parser::token::A_OF;
 }
 
 "esac" {
-    return A_ESAC;
+    return yy::parser::token::A_ESAC;
 }
 
 "otherwise" {
-    return A_OTHERWISE;
+    return yy::parser::token::A_OTHERWISE;
 }
 
 "true" {
-    return A_TRUE;
+    return yy::parser::token::A_TRUE;
 }
 
 "false" {
-    return A_FALSE;
+    return yy::parser::token::A_FALSE;
 }
 
 "float" {
-    return A_FLOAT;
+    return yy::parser::token::A_FLOAT;
 }
 
 "int" {
-    return A_INT;
+    return yy::parser::token::A_INT;
 }
 
 "string" {
-    return A_STRING;
+    return yy::parser::token::A_STRING;
 }
 
 "bool" {
-    return A_BOOL;
+    return yy::parser::token::A_BOOL;
 }
 
 "null" {
-    return A_NULL;
+    return yy::parser::token::A_NULL;
 }
 
 "program" {
-    printf("Program keyword found\n");
-    return A_PROGRAM;
+    return yy::parser::token::A_PROGRAM;
 }
 
 "begin" {
-    return A_BEGIN;
+    return yy::parser::token::A_BEGIN;
 }
 
 "end" {
-    return A_END;
+    return yy::parser::token::A_END;
 }
 
 "var" {
-    return A_VAR;
+    return yy::parser::token::A_VAR;
 }
 
 "procedure" {
-    return A_PROCEDURE;
+    return yy::parser::token::A_PROCEDURE;
 }
 
 "struct" {
-    return A_STRUCT;
+    return yy::parser::token::A_STRUCT;
 }
 
 "in" {
-    return A_IN;
+    return yy::parser::token::A_IN;
 }
 
 "not" {
-    return A_NOT;
+    return yy::parser::token::A_NOT;
 }
 
 "new" {
-    return A_NEW;
+    return yy::parser::token::A_NEW;
 }
 
 "ref" {
-    return A_REF;
+    return yy::parser::token::A_REF;
 }
 
 "deref" {
-    return A_DEREF;
+    return yy::parser::token::A_DEREF;
 }
 
 ";" {
     return ';';
+}
+
+":=" {
+    return yy::parser::token::A_ASSIGN;
 }
 
 ":" {
@@ -173,12 +178,8 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
     return ',';
 }
 
-":=" {
-    return A_ASSIGN;
-}
-
 ".." {
-    return A_RANGE;
+    return yy::parser::token::A_RANGE;
 }
 
 "." {
@@ -210,7 +211,7 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 }
 
 "||" {
-    return A_OR_LOGIC;
+    return yy::parser::token::A_OR_LOGIC;
 }
 
 "|" {
@@ -218,27 +219,27 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 }
 
 "&&" {
-    return A_AND_LOGIC;
+    return yy::parser::token::A_AND_LOGIC;
+}
+
+"<=" {
+    return yy::parser::token::A_LESS_THAN_EQUAL;
 }
 
 "<" {
     return '<';
 }
 
-"<=" {
-    return A_LESS_THAN_EQUAL;
+">=" {
+    return yy::parser::token::A_GREATER_THAN_EQUAL;
 }
 
 ">" {
     return '>';
 }
 
-">=" {
-    return A_GREATER_THAN_EQUAL;
-}
-
 "==" {
-    return A_EQUAL;
+    return yy::parser::token::A_EQUAL;
 }
 
 "=" {
@@ -246,7 +247,7 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 }
 
 "<>" {
-    return A_DIFFERENT;
+    return yy::parser::token::A_DIFFERENT;
 }
 
 "+" {
@@ -270,21 +271,21 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 }
 
 {STRING_LITERAL} {
-    yylval->sval = std::string(yytext + 1, yytext + strlen(yytext) - 2).c_str();
-    return A_STRING_LITERAL;
+    yylval->sval = new std::string(yytext + 1, strlen(yytext) - 2);
+    return yy::parser::token::A_STRING_LITERAL;
 }
 
 {NAME} {
-    insert_symbol(yytext);
-    return A_NAME;
+    yylval->sval = new std::string(yytext);
+    return yy::parser::token::A_NAME;
 }
 
 {SINGLE_COMMENT} {
-    printf("Single comment: %s\n", yytext);
+    std::cout << "Single comment: " << yytext << std::endl;
 }
 
 {MULTI_COMMENT} {
-    printf("Multi comment: %s\n", yytext);
+    std::cout << "Multi comment: " << yytext << std::endl;
 }
 
 \n    { 
