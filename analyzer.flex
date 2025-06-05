@@ -34,7 +34,7 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 }
 
 {FLOAT_LITERAL} {
-    yylval->ival = std::stof(yytext);
+    yylval->fval = std::stof(yytext);
     return yy::parser::token::A_FLOAT_LITERAL;
 }
 

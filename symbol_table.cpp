@@ -63,7 +63,7 @@ std::optional<VarType> SymbolTable::get_symbol_type(const std::string& name) {
         case SymbolCategory::PROCEDURE: return std::get<Procedure>(symbol->content).return_type;
         case SymbolCategory::VARIABLE:  return std::get<Variable>(symbol->content).type;
         case SymbolCategory::RECORD:    return VarType{PrimitiveType::NOT_PRIMITIVE, symbol->name};
-        default:                        return VarType{PrimitiveType::UNDEFINED, std::nullopt};
+        default:                        return VarType{PrimitiveType::UNDEFINED};
     }
 }
 

@@ -210,13 +210,16 @@ namespace yy {
     /// Symbol semantic values.
     union value_type
     {
-#line 27 "parser.y"
+#line 29 "parser.y"
 
 	int ival;
 	float fval;
 	std::string* sval;
 
-#line 220 "parser.tab.hh"
+  VarType* type_val;
+  std::vector<ParamField>* param_vec;
+
+#line 223 "parser.tab.hh"
 
     };
 #endif
@@ -918,7 +921,7 @@ namespace yy {
 
 
 } // yy
-#line 922 "parser.tab.hh"
+#line 925 "parser.tab.hh"
 
 
 

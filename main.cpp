@@ -33,6 +33,7 @@ int main(int argc, char** argv) {
     #elif SYNTAX_ANALYZER == 2
     CustomLexer lexer(&file);
     yy::parser parser(lexer);
+    // parser.set_debug_level(1);
     return parser();
     #endif
 
