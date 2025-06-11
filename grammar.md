@@ -20,14 +20,14 @@ EXP -> EXP LOG_OP EXP
         | EXP ARITH_OP EXP
         | LITERAL
         | CALL_STMT
-        | new NAE
+        | new NAME
         | VAR
         | REF_VAR
         | DEREF_VAR
         | "(" EXP ")"
 
 REF_VAR → ref "(" VAR ")"
-DEREF_VAR -> deref "(" var ")"
+DEREF_VAR -> deref "(" VAR ")"
         | DEREF "(" DEREF_VAR ")"
 VAR -> NAME 
         | EXP "." NAME
@@ -70,7 +70,7 @@ CASE → INT_LITERAL [ "." "." INT_LITERAL ] { "," INT_LITERAL [ "." "." INT_LIT
 WHILE_STMT -> while EXP do STMT_LIST od
 RETURN_STMT -> return [ EXP ]
 CALL_STMT -> NAME "(" [ EXP { "," EXP } ] ")"
-TYPE → float 
+TYPE -> float 
         | int 
         | string 
         | bool 
