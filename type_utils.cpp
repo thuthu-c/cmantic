@@ -46,7 +46,7 @@ VarType* check_arithmetic_op(VarType* left, VarType* right, const std::string& o
     bool right_is_num = right->p_type == PrimitiveType::INT || right->p_type == PrimitiveType::FLOAT;
 
     if (!left_is_num || !right_is_num) {
-        // yy::parser::error("Operandos para '" + op + "' devem ser numéricos. Foram: " + type_to_string(*left) + " e " + type_to_string(*right) + ".");
+        std::cerr << "Operandos para '" << op << "' devem ser numéricos. Foram: " << type_to_string(*left) << " e " << type_to_string(*right) << std::endl;
         delete left; delete right;
         return new VarType{PrimitiveType::UNDEFINED};
     }
@@ -58,19 +58,21 @@ VarType* check_arithmetic_op(VarType* left, VarType* right, const std::string& o
 
 VarType* check_logical_op(VarType* left, VarType* right, const std::string& op) {
     if (!left || !right || left->p_type != PrimitiveType::BOOL || right->p_type != PrimitiveType::BOOL) {
-        // yy::parser::error("Operandos para '" + op + "' devem ser booleanos. Foram: " + type_to_string(*left) + " e " + type_to_string(*right) + ".");
+        std::cerr << "Operandos para '" << op << "' devem ser booleanos. Foram: " << type_to_string(*left) << " e " << type_to_string(*right) << std::endl;
     }
     delete left; delete right;
     return new VarType{PrimitiveType::BOOL};
 }
 
+
 VarType* check_relational_op(VarType* left, VarType* right, const std::string& op) {
-    if (!left || !right) return new VarType{PrimitiveType::BOOL};
+    if (!left || !right) return new VarType{PrimitiveType::UNDEFINED};
     bool left_is_num = left->p_type == PrimitiveType::INT || left->p_type == PrimitiveType::FLOAT;
     bool right_is_num = right->p_type == PrimitiveType::INT || right->p_type == PrimitiveType::FLOAT;
     
-    if (!((left_is_num && right_is_num) || (*left == *right))) {
-        // yy::parser::error("Operandos para '" + op + "' são incompatíveis para comparação: " + type_to_string(*left) + " e " + type_to_string(*right) + ".");
+    if ((!left_is_num || !right_is_num) && !(*left == *right)) {
+        std::cerr << "Operandos para '" << op << "' são incompatíveis para comparação: " << type_to_string(*left) << " e " << type_to_string(*right) << std::endl;
+        return new VarType{PrimitiveType::UNDEFINED};
     }
     delete left; delete right;
     return new VarType{PrimitiveType::BOOL};

@@ -57,7 +57,7 @@
 // Menor para maior precedência
 %left  A_OR_LOGIC
 %left  A_AND_LOGIC
-%nonassoc '<' '>' A_LESS_THAN_EQUAL A_GREATER_THAN_EQUAL '=' A_DIFFERENT
+%nonassoc '<' '>' A_LESS_THAN_EQUAL A_GREATER_THAN_EQUAL A_EQUAL A_DIFFERENT
 %left '+' '-'
 %left '*' '/'
 %right '^'
@@ -304,7 +304,7 @@ exp:
     | exp A_LESS_THAN_EQUAL exp { $$ = check_relational_op($1, $3, "<="); }
     | exp '>' exp { $$ = check_relational_op($1, $3, ">"); }
     | exp A_GREATER_THAN_EQUAL exp { $$ = check_relational_op($1, $3, ">="); }
-    | exp '=' exp { $$ = check_relational_op($1, $3, "="); }
+    | exp A_EQUAL exp { $$ = check_relational_op($1, $3, "=="); }
     | exp A_DIFFERENT exp { $$ = check_relational_op($1, $3, "<>"); }
     | exp '+' exp { $$ = check_arithmetic_op($1, $3, "+"); }
     | exp '-' exp { $$ = check_arithmetic_op($1, $3, "-"); }
