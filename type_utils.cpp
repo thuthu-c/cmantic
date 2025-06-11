@@ -39,3 +39,39 @@ bool are_types_compatible(const VarType& declared_type, const VarType& assigned_
     
     return false;
 }
+
+VarType* check_arithmetic_op(VarType* left, VarType* right, const std::string& op) {
+    if (!left || !right) return new VarType{PrimitiveType::UNDEFINED};
+    bool left_is_num = left->p_type == PrimitiveType::INT || left->p_type == PrimitiveType::FLOAT;
+    bool right_is_num = right->p_type == PrimitiveType::INT || right->p_type == PrimitiveType::FLOAT;
+
+    if (!left_is_num || !right_is_num) {
+        // yy::parser::error("Operandos para '" + op + "' devem ser numéricos. Foram: " + type_to_string(*left) + " e " + type_to_string(*right) + ".");
+        delete left; delete right;
+        return new VarType{PrimitiveType::UNDEFINED};
+    }
+    
+    PrimitiveType result_type = (left->p_type == PrimitiveType::FLOAT || right->p_type == PrimitiveType::FLOAT) ? PrimitiveType::FLOAT : PrimitiveType::INT;
+    delete left; delete right;
+    return new VarType{result_type};
+}
+
+VarType* check_logical_op(VarType* left, VarType* right, const std::string& op) {
+    if (!left || !right || left->p_type != PrimitiveType::BOOL || right->p_type != PrimitiveType::BOOL) {
+        // yy::parser::error("Operandos para '" + op + "' devem ser booleanos. Foram: " + type_to_string(*left) + " e " + type_to_string(*right) + ".");
+    }
+    delete left; delete right;
+    return new VarType{PrimitiveType::BOOL};
+}
+
+VarType* check_relational_op(VarType* left, VarType* right, const std::string& op) {
+    if (!left || !right) return new VarType{PrimitiveType::BOOL};
+    bool left_is_num = left->p_type == PrimitiveType::INT || left->p_type == PrimitiveType::FLOAT;
+    bool right_is_num = right->p_type == PrimitiveType::INT || right->p_type == PrimitiveType::FLOAT;
+    
+    if (!((left_is_num && right_is_num) || (*left == *right))) {
+        // yy::parser::error("Operandos para '" + op + "' são incompatíveis para comparação: " + type_to_string(*left) + " e " + type_to_string(*right) + ".");
+    }
+    delete left; delete right;
+    return new VarType{PrimitiveType::BOOL};
+}

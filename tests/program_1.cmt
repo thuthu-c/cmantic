@@ -1,5 +1,5 @@
 program test1
 begin
-var test_var : float := 5;
-var test_var2 := 5
+var test_var : int := true;
+var test_var := 5.5
 end

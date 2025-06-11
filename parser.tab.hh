@@ -51,13 +51,14 @@
     #include <vector>
     #include <memory>
     #include <iostream>
+    #include <stack>
 
     #include "symbol_table.hpp"
     #include "type_utils.hpp"
 
     class CustomLexer;
 
-#line 61 "parser.tab.hh"
+#line 62 "parser.tab.hh"
 
 
 # include <cstdlib> // std::abort
@@ -192,7 +193,7 @@
 #endif
 
 namespace yy {
-#line 196 "parser.tab.hh"
+#line 197 "parser.tab.hh"
 
 
 
@@ -210,16 +211,17 @@ namespace yy {
     /// Symbol semantic values.
     union value_type
     {
-#line 29 "parser.y"
+#line 30 "parser.y"
 
-	int ival;
-	float fval;
-	std::string* sval;
+    int ival;
+    float fval;
+    std::string* sval;
 
   VarType* type_val;
   std::vector<ParamField>* param_vec;
+  std::vector<VarType*>* type_vec;
 
-#line 223 "parser.tab.hh"
+#line 225 "parser.tab.hh"
 
     };
 #endif
@@ -656,7 +658,7 @@ namespace yy {
     static const signed char yydefact_[];
 
     // YYPGOTO[NTERM-NUM].
-    static const signed char yypgoto_[];
+    static const short yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
     static const unsigned char yydefgoto_[];
@@ -908,7 +910,7 @@ namespace yy {
     /// Constants.
     enum
     {
-      yylast_ = 358,     ///< Last index in yytable_.
+      yylast_ = 337,     ///< Last index in yytable_.
       yynnts_ = 43,  ///< Number of nonterminal symbols.
       yyfinal_ = 5 ///< Termination state number.
     };
@@ -921,7 +923,7 @@ namespace yy {
 
 
 } // yy
-#line 925 "parser.tab.hh"
+#line 927 "parser.tab.hh"
 
 
 
