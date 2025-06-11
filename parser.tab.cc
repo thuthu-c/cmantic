@@ -42,7 +42,7 @@
 
 
 // Unqualified %code blocks.
-#line 22 "parser.y"
+#line 23 "parser.y"
 
     #include "custom_lexer.hpp"
     #define yylex lexer.yylex
@@ -326,75 +326,123 @@ namespace yy {
     switch (yysym.kind ())
     {
       case symbol_kind::S_A_NAME: // A_NAME
-#line 65 "parser.y"
+#line 68 "parser.y"
                     { delete (yysym.value.sval); }
 #line 332 "parser.tab.cc"
         break;
 
       case symbol_kind::S_A_STRING_LITERAL: // A_STRING_LITERAL
-#line 65 "parser.y"
+#line 68 "parser.y"
                     { delete (yysym.value.sval); }
 #line 338 "parser.tab.cc"
         break;
 
       case symbol_kind::S_optional_assign_exp: // optional_assign_exp
-#line 65 "parser.y"
+#line 68 "parser.y"
                     { delete (yysym.value.type_val); }
 #line 344 "parser.tab.cc"
         break;
 
       case symbol_kind::S_type_spec: // type_spec
-#line 65 "parser.y"
+#line 68 "parser.y"
                     { delete (yysym.value.type_val); }
 #line 350 "parser.tab.cc"
         break;
 
       case symbol_kind::S_optional_param_list: // optional_param_list
-#line 65 "parser.y"
+#line 68 "parser.y"
                     { delete (yysym.value.param_vec); }
 #line 356 "parser.tab.cc"
         break;
 
       case symbol_kind::S_param_list: // param_list
-#line 65 "parser.y"
+#line 68 "parser.y"
                     { delete (yysym.value.param_vec); }
 #line 362 "parser.tab.cc"
         break;
 
-      case symbol_kind::S_optional_rec_field_list: // optional_rec_field_list
-#line 65 "parser.y"
+      case symbol_kind::S_paramfield_decl: // paramfield_decl
+#line 68 "parser.y"
                     { delete (yysym.value.param_vec); }
 #line 368 "parser.tab.cc"
         break;
 
-      case symbol_kind::S_rec_field_list: // rec_field_list
-#line 65 "parser.y"
-                    { delete (yysym.value.param_vec); }
+      case symbol_kind::S_optional_return_type: // optional_return_type
+#line 68 "parser.y"
+                    { delete (yysym.value.type_val); }
 #line 374 "parser.tab.cc"
         break;
 
-      case symbol_kind::S_exp: // exp
-#line 65 "parser.y"
-                    { delete (yysym.value.type_val); }
+      case symbol_kind::S_optional_rec_field_list: // optional_rec_field_list
+#line 68 "parser.y"
+                    { delete (yysym.value.param_vec); }
 #line 380 "parser.tab.cc"
         break;
 
-      case symbol_kind::S_var_access: // var_access
-#line 65 "parser.y"
-                    { delete (yysym.value.type_val); }
+      case symbol_kind::S_rec_field_list: // rec_field_list
+#line 68 "parser.y"
+                    { delete (yysym.value.param_vec); }
 #line 386 "parser.tab.cc"
         break;
 
-      case symbol_kind::S_literal: // literal
-#line 65 "parser.y"
+      case symbol_kind::S_exp: // exp
+#line 68 "parser.y"
                     { delete (yysym.value.type_val); }
 #line 392 "parser.tab.cc"
         break;
 
-      case symbol_kind::S_bool_literal: // bool_literal
-#line 65 "parser.y"
+      case symbol_kind::S_ref_var: // ref_var
+#line 68 "parser.y"
                     { delete (yysym.value.type_val); }
 #line 398 "parser.tab.cc"
+        break;
+
+      case symbol_kind::S_deref_var: // deref_var
+#line 68 "parser.y"
+                    { delete (yysym.value.type_val); }
+#line 404 "parser.tab.cc"
+        break;
+
+      case symbol_kind::S_var_access: // var_access
+#line 68 "parser.y"
+                    { delete (yysym.value.type_val); }
+#line 410 "parser.tab.cc"
+        break;
+
+      case symbol_kind::S_literal: // literal
+#line 68 "parser.y"
+                    { delete (yysym.value.type_val); }
+#line 416 "parser.tab.cc"
+        break;
+
+      case symbol_kind::S_bool_literal: // bool_literal
+#line 68 "parser.y"
+                    { delete (yysym.value.type_val); }
+#line 422 "parser.tab.cc"
+        break;
+
+      case symbol_kind::S_optional_exp_val: // optional_exp_val
+#line 68 "parser.y"
+                    { delete (yysym.value.type_val); }
+#line 428 "parser.tab.cc"
+        break;
+
+      case symbol_kind::S_call_stmt_as_exp: // call_stmt_as_exp
+#line 68 "parser.y"
+                    { delete (yysym.value.type_val); }
+#line 434 "parser.tab.cc"
+        break;
+
+      case symbol_kind::S_optional_arg_list: // optional_arg_list
+#line 69 "parser.y"
+                    { if ((yysym.value.type_vec)) { for(auto p : *(yysym.value.type_vec)) delete p; delete (yysym.value.type_vec); } }
+#line 440 "parser.tab.cc"
+        break;
+
+      case symbol_kind::S_arg_list: // arg_list
+#line 69 "parser.y"
+                    { if ((yysym.value.type_vec)) { for(auto p : *(yysym.value.type_vec)) delete p; delete (yysym.value.type_vec); } }
+#line 446 "parser.tab.cc"
         break;
 
       default:
@@ -653,50 +701,50 @@ namespace yy {
           switch (yyn)
             {
   case 4: // $@1: %empty
-#line 77 "parser.y"
-                       { std::cout << "Parsing program: " << *(yystack_[0].value.sval) << std::endl; delete (yystack_[0].value.sval); }
-#line 659 "parser.tab.cc"
+#line 81 "parser.y"
+                     { std::cout << "Parsing program: " << *(yystack_[0].value.sval) << std::endl; delete (yystack_[0].value.sval); }
+#line 707 "parser.tab.cc"
     break;
 
   case 5: // program_prod: A_PROGRAM A_NAME $@1 A_BEGIN optional_declaration_list A_END
-#line 78 "parser.y"
-                                              { symbol_table.print(); }
-#line 665 "parser.tab.cc"
+#line 82 "parser.y"
+                                            { symbol_table.print(); }
+#line 713 "parser.tab.cc"
     break;
 
   case 13: // var_declaration: A_VAR A_NAME ':' type_spec optional_assign_exp
-#line 99 "parser.y"
-      {
-        if (symbol_table.lookup_current_scope_only(*(yystack_[3].value.sval))) {
-          error("Variavel '" + *(yystack_[3].value.sval) + "' ja declarada neste escopo.");
-        } else {
-          bool types_are_ok = true;
-          if ((yystack_[0].value.type_val)) {
-            if (!are_types_compatible(*(yystack_[1].value.type_val), *(yystack_[0].value.type_val))) {
-                std::string declared_type = type_to_string(*(yystack_[1].value.type_val));
-                std::string assigned_type = type_to_string(*(yystack_[0].value.type_val));
-                error("Incompatibilidade de tipos para a variável '" + *(yystack_[3].value.sval) +
-                      "'. Tipo declarado: " + declared_type +
-                      ", mas o tipo da expressão atribuída é:: " + assigned_type + ".");
-                types_are_ok = false;
-            }
-          }
-
-          if (types_are_ok) {
-            Variable var_content{*(yystack_[1].value.type_val)};
-            Symbol new_symbol{*(yystack_[3].value.sval), SymbolCategory::VARIABLE, var_content};
-            symbol_table.insert_symbol(*(yystack_[3].value.sval), new_symbol);
+#line 103 "parser.y"
+    {
+      if (symbol_table.lookup_current_scope_only(*(yystack_[3].value.sval))) {
+        error("Variavel '" + *(yystack_[3].value.sval) + "' ja declarada neste escopo.");
+      } else {
+        bool types_are_ok = true;
+        if ((yystack_[0].value.type_val)) {
+          if (!are_types_compatible(*(yystack_[1].value.type_val), *(yystack_[0].value.type_val))) {
+              std::string declared_type = type_to_string(*(yystack_[1].value.type_val));
+              std::string assigned_type = type_to_string(*(yystack_[0].value.type_val));
+              error("Incompatibilidade de tipos para a variável '" + *(yystack_[3].value.sval) +
+                    "'. Tipo declarado: " + declared_type +
+                    ", mas o tipo da expressão atribuída é:: " + assigned_type + ".");
+              types_are_ok = false;
           }
         }
-        delete (yystack_[3].value.sval);
-        delete (yystack_[1].value.type_val);
-        if ((yystack_[0].value.type_val)) delete (yystack_[0].value.type_val);
+
+        if (types_are_ok) {
+          Variable var_content{*(yystack_[1].value.type_val)};
+          Symbol new_symbol{*(yystack_[3].value.sval), SymbolCategory::VARIABLE, var_content};
+          symbol_table.insert_symbol(*(yystack_[3].value.sval), new_symbol);
+        }
       }
-#line 696 "parser.tab.cc"
+      delete (yystack_[3].value.sval);
+      delete (yystack_[1].value.type_val);
+      if ((yystack_[0].value.type_val)) delete (yystack_[0].value.type_val);
+    }
+#line 744 "parser.tab.cc"
     break;
 
   case 14: // var_declaration: A_VAR A_NAME A_ASSIGN exp
-#line 126 "parser.y"
+#line 130 "parser.y"
       {
         if (symbol_table.lookup_current_scope_only(*(yystack_[2].value.sval))) {
           error("Variavel '" + *(yystack_[2].value.sval) + "' ja declarada neste escopo.");
@@ -705,238 +753,667 @@ namespace yy {
           Variable var_content{*(yystack_[0].value.type_val)};
           Symbol new_symbol{*(yystack_[2].value.sval), SymbolCategory::VARIABLE, var_content};
           symbol_table.insert_symbol(*(yystack_[2].value.sval), new_symbol);
-          delete (yystack_[0].value.type_val);
         }
         delete (yystack_[2].value.sval);
+        delete (yystack_[0].value.type_val);
       }
-#line 713 "parser.tab.cc"
+#line 761 "parser.tab.cc"
     break;
 
   case 15: // optional_assign_exp: %empty
-#line 141 "parser.y"
-                  { (yylhs.value.type_val) = nullptr; }
-#line 719 "parser.tab.cc"
+#line 145 "parser.y"
+                { (yylhs.value.type_val) = nullptr; }
+#line 767 "parser.tab.cc"
     break;
 
   case 16: // optional_assign_exp: A_ASSIGN exp
-#line 142 "parser.y"
+#line 146 "parser.y"
                    { (yylhs.value.type_val) = (yystack_[0].value.type_val); }
-#line 725 "parser.tab.cc"
+#line 773 "parser.tab.cc"
     break;
 
   case 17: // type_spec: A_FLOAT
-#line 146 "parser.y"
-              { (yylhs.value.type_val) = new VarType{PrimitiveType::FLOAT}; }
-#line 731 "parser.tab.cc"
+#line 150 "parser.y"
+            { (yylhs.value.type_val) = new VarType{PrimitiveType::FLOAT}; }
+#line 779 "parser.tab.cc"
     break;
 
   case 18: // type_spec: A_INT
-#line 147 "parser.y"
+#line 151 "parser.y"
             { (yylhs.value.type_val) = new VarType{PrimitiveType::INT}; }
-#line 737 "parser.tab.cc"
+#line 785 "parser.tab.cc"
     break;
 
   case 19: // type_spec: A_STRING
-#line 148 "parser.y"
+#line 152 "parser.y"
                { (yylhs.value.type_val) = new VarType{PrimitiveType::STRING}; }
-#line 743 "parser.tab.cc"
+#line 791 "parser.tab.cc"
     break;
 
   case 20: // type_spec: A_BOOL
-#line 149 "parser.y"
+#line 153 "parser.y"
              { (yylhs.value.type_val) = new VarType{PrimitiveType::BOOL}; }
-#line 749 "parser.tab.cc"
+#line 797 "parser.tab.cc"
     break;
 
   case 21: // type_spec: A_NAME
-#line 151 "parser.y"
-      {
-        Symbol* s = symbol_table.lookup(*(yystack_[0].value.sval));
-        if (!s || s->category != SymbolCategory::RECORD) {
-          error("Tipo '" + *(yystack_[0].value.sval) + "' nao eh um tipo de registro valido.");
-          (yylhs.value.type_val) = new VarType{PrimitiveType::UNDEFINED};
-        } else {
-          (yylhs.value.type_val) = new VarType{PrimitiveType::NOT_PRIMITIVE, *(yystack_[0].value.sval)};
-        }
-        delete (yystack_[0].value.sval);
+#line 155 "parser.y"
+    {
+      Symbol* s = symbol_table.lookup(*(yystack_[0].value.sval));
+      if (!s || s->category != SymbolCategory::RECORD) {
+        error("Tipo '" + *(yystack_[0].value.sval) + "' nao eh um tipo de struct valido.");
+        (yylhs.value.type_val) = new VarType{PrimitiveType::UNDEFINED};
+      } else {
+        (yylhs.value.type_val) = new VarType{PrimitiveType::NOT_PRIMITIVE, *(yystack_[0].value.sval)};
       }
-#line 764 "parser.tab.cc"
+      delete (yystack_[0].value.sval);
+    }
+#line 812 "parser.tab.cc"
     break;
 
   case 22: // type_spec: A_REF '(' type_spec ')'
-#line 162 "parser.y"
+#line 166 "parser.y"
       {
-        std::unique_ptr<VarType> referenced_type = std::make_unique<VarType>(*(yystack_[1].value.type_val));
+        auto referenced_type = std::make_unique<VarType>(*(yystack_[1].value.type_val));
         (yylhs.value.type_val) = new VarType(PrimitiveType::REF, std::move(referenced_type));
         delete (yystack_[1].value.type_val);
       }
-#line 774 "parser.tab.cc"
-    break;
-
-  case 25: // optional_param_list: param_list
-#line 176 "parser.y"
-      { (yylhs.value.param_vec) = (yystack_[0].value.param_vec); }
-#line 780 "parser.tab.cc"
-    break;
-
-  case 27: // param_list: param_list ',' paramfield_decl
-#line 181 "parser.y"
-      { (yylhs.value.param_vec) = (yystack_[2].value.param_vec); }
-#line 786 "parser.tab.cc"
-    break;
-
-  case 39: // optional_rec_field_list: rec_field_list
-#line 214 "parser.y"
-      { (yylhs.value.param_vec) = (yystack_[0].value.param_vec); }
-#line 792 "parser.tab.cc"
-    break;
-
-  case 41: // rec_field_list: rec_field_list ';' paramfield_decl
-#line 219 "parser.y"
-      { (yylhs.value.param_vec) = (yystack_[2].value.param_vec); }
-#line 798 "parser.tab.cc"
-    break;
-
-  case 42: // exp: literal
-#line 223 "parser.y"
-               { (yylhs.value.type_val) = (yystack_[0].value.type_val); }
-#line 804 "parser.tab.cc"
-    break;
-
-  case 45: // exp: var_access
-#line 226 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[0].value.type_val); }
-#line 810 "parser.tab.cc"
-    break;
-
-  case 50: // exp: exp A_OR_LOGIC exp
-#line 231 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 816 "parser.tab.cc"
-    break;
-
-  case 51: // exp: exp A_AND_LOGIC exp
-#line 232 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
 #line 822 "parser.tab.cc"
     break;
 
-  case 52: // exp: exp '<' exp
-#line 233 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 828 "parser.tab.cc"
+  case 23: // proc_declaration: A_PROCEDURE A_NAME '(' optional_param_list ')' optional_return_type A_BEGIN optional_proc_decls_in_block stmt_list A_END
+#line 176 "parser.y"
+      {
+        std::vector<ParamField>* params = *(yystack_[6].value.param_vec);
+
+        if (symbol_table.lookup_current_scope_only(*(yystack_[8].value.sval))) {
+            error("Procedimento '" + *(yystack_[8].value.sval) + "' já declarado neste escopo.");
+        } else {
+            Procedure proc_content;
+            proc_content.params = *params;
+            proc_content.return_type = (yystack_[4].value.type_val) ? *(yystack_[4].value.type_val) : VarType{PrimitiveType::VOID};
+            Symbol proc_symbol{*(yystack_[8].value.sval), SymbolCategory::PROCEDURE, proc_content};
+            symbol_table.insert_symbol(*(yystack_[8].value.sval), proc_symbol);
+        }
+
+        delete (yystack_[8].value.sval);
+        delete params;
+        if ((yystack_[4].value.type_val)) delete (yystack_[4].value.type_val);
+      }
+#line 844 "parser.tab.cc"
     break;
 
-  case 53: // exp: exp A_LESS_THAN_EQUAL exp
-#line 234 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 834 "parser.tab.cc"
+  case 24: // optional_param_list: %empty
+#line 196 "parser.y"
+                 { (yylhs.value.param_vec) = new std::vector<ParamField>(); }
+#line 850 "parser.tab.cc"
     break;
 
-  case 54: // exp: exp '>' exp
-#line 235 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 840 "parser.tab.cc"
+  case 25: // optional_param_list: param_list
+#line 197 "parser.y"
+                 { (yylhs.value.param_vec) = (yystack_[0].value.param_vec); }
+#line 856 "parser.tab.cc"
     break;
 
-  case 55: // exp: exp A_GREATER_THAN_EQUAL exp
-#line 236 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 846 "parser.tab.cc"
+  case 26: // param_list: paramfield_decl
+#line 201 "parser.y"
+                    { (yylhs.value.param_vec) = (yystack_[0].value.param_vec); }
+#line 862 "parser.tab.cc"
     break;
 
-  case 56: // exp: exp '=' exp
-#line 237 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 852 "parser.tab.cc"
+  case 27: // param_list: param_list ',' paramfield_decl
+#line 202 "parser.y"
+                                     { (yystack_[2].value.param_vec)->insert((yystack_[2].value.param_vec)->end(), (yystack_[0].value.param_vec)->begin(), (yystack_[0].value.param_vec)->end()); delete (yystack_[0].value.param_vec); (yylhs.value.param_vec) = (yystack_[2].value.param_vec); }
+#line 868 "parser.tab.cc"
     break;
 
-  case 57: // exp: exp A_DIFFERENT exp
-#line 238 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 858 "parser.tab.cc"
+  case 28: // paramfield_decl: A_NAME ':' type_spec
+#line 206 "parser.y"
+                         { (yylhs.value.param_vec) = new std::vector<ParamField>{{*(yystack_[2].value.sval), *(yystack_[0].value.type_val)}}; delete (yystack_[2].value.sval); delete (yystack_[0].value.type_val); }
+#line 874 "parser.tab.cc"
     break;
 
-  case 58: // exp: exp '+' exp
-#line 239 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 864 "parser.tab.cc"
+  case 29: // optional_return_type: %empty
+#line 210 "parser.y"
+                { (yylhs.value.type_val) = nullptr; }
+#line 880 "parser.tab.cc"
     break;
 
-  case 59: // exp: exp '-' exp
-#line 240 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 870 "parser.tab.cc"
+  case 30: // optional_return_type: ':' type_spec
+#line 211 "parser.y"
+                    { (yylhs.value.type_val) = (yystack_[0].value.type_val); }
+#line 886 "parser.tab.cc"
     break;
 
-  case 60: // exp: exp '*' exp
-#line 241 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 876 "parser.tab.cc"
+  case 37: // rec_declaration: A_STRUCT A_NAME '{' optional_rec_field_list '}'
+#line 231 "parser.y"
+    {
+      if (symbol_table.lookup_current_scope_only(*(yystack_[3].value.sval))) {
+          error("Tipo de struct '" + *(yystack_[3].value.sval) + "' já definido neste escopo.");
+      } else {
+          Record rec_content{*(yystack_[1].value.param_vec)};
+          Symbol new_symbol{*(yystack_[3].value.sval), SymbolCategory::RECORD, rec_content};
+          symbol_table.insert_symbol(*(yystack_[3].value.sval), new_symbol);
+      }
+      delete (yystack_[3].value.sval);
+      delete (yystack_[1].value.param_vec);
+    }
+#line 902 "parser.tab.cc"
     break;
 
-  case 61: // exp: exp '/' exp
-#line 242 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 882 "parser.tab.cc"
+  case 38: // optional_rec_field_list: %empty
+#line 245 "parser.y"
+                { (yylhs.value.param_vec) = new std::vector<ParamField>(); }
+#line 908 "parser.tab.cc"
     break;
 
-  case 62: // exp: exp '^' exp
-#line 243 "parser.y"
-      { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 888 "parser.tab.cc"
+  case 39: // optional_rec_field_list: rec_field_list
+#line 246 "parser.y"
+                     { (yylhs.value.param_vec) = (yystack_[0].value.param_vec); }
+#line 914 "parser.tab.cc"
     break;
 
-  case 67: // var_access: exp '.' A_NAME
-#line 257 "parser.y"
-            { (yylhs.value.type_val) = (yystack_[2].value.type_val); }
-#line 894 "parser.tab.cc"
+  case 40: // rec_field_list: paramfield_decl
+#line 250 "parser.y"
+    { (yylhs.value.param_vec) = (yystack_[0].value.param_vec); }
+#line 920 "parser.tab.cc"
     break;
 
-  case 68: // literal: A_FLOAT_LITERAL
-#line 262 "parser.y"
-                       { (yylhs.value.type_val) = new VarType{PrimitiveType::FLOAT}; }
-#line 900 "parser.tab.cc"
+  case 41: // rec_field_list: rec_field_list ';' paramfield_decl
+#line 251 "parser.y"
+                                         { (yystack_[2].value.param_vec)->insert((yystack_[2].value.param_vec)->end(), (yystack_[0].value.param_vec)->begin(), (yystack_[0].value.param_vec)->end()); delete (yystack_[0].value.param_vec); (yylhs.value.param_vec) = (yystack_[2].value.param_vec); }
+#line 926 "parser.tab.cc"
     break;
 
-  case 69: // literal: A_INT_LITERAL
-#line 263 "parser.y"
-                       { (yylhs.value.type_val) = new VarType{PrimitiveType::INT}; }
-#line 906 "parser.tab.cc"
+  case 42: // exp: literal
+#line 255 "parser.y"
+             { (yylhs.value.type_val) = (yystack_[0].value.type_val); }
+#line 932 "parser.tab.cc"
     break;
 
-  case 70: // literal: A_STRING_LITERAL
-#line 264 "parser.y"
-                       { (yylhs.value.type_val) = new VarType{PrimitiveType::STRING}; }
-#line 912 "parser.tab.cc"
+  case 43: // exp: call_stmt_as_exp
+#line 256 "parser.y"
+                       { (yylhs.value.type_val) = (yystack_[0].value.type_val); }
+#line 938 "parser.tab.cc"
     break;
 
-  case 71: // literal: bool_literal
-#line 265 "parser.y"
-                     { (yylhs.value.type_val) = (yystack_[0].value.type_val); }
-#line 918 "parser.tab.cc"
+  case 44: // exp: A_NEW A_NAME
+#line 258 "parser.y"
+    {
+      Symbol* s = symbol_table.lookup(*(yystack_[0].value.sval));
+      if (!s || s->category != SymbolCategory::RECORD) {
+          error("Tipo '" + *(yystack_[0].value.sval) + "' não é um tipo de registro válido para 'new'.");
+          (yylhs.value.type_val) = new VarType{PrimitiveType::UNDEFINED};
+      } else {
+          (yylhs.value.type_val) = new VarType{PrimitiveType::NOT_PRIMITIVE, *(yystack_[0].value.sval)};
+      }
+      delete (yystack_[0].value.sval);
+    }
+#line 953 "parser.tab.cc"
     break;
 
-  case 72: // literal: A_NULL
-#line 266 "parser.y"
-                     { (yylhs.value.type_val) = new VarType{PrimitiveType::VOID}; }
-#line 924 "parser.tab.cc"
+  case 45: // exp: var_access
+#line 268 "parser.y"
+                 { (yylhs.value.type_val) = (yystack_[0].value.type_val); }
+#line 959 "parser.tab.cc"
     break;
 
-  case 73: // bool_literal: A_TRUE
+  case 46: // exp: ref_var
+#line 269 "parser.y"
+              { (yylhs.value.type_val) = (yystack_[0].value.type_val); }
+#line 965 "parser.tab.cc"
+    break;
+
+  case 47: // exp: deref_var
 #line 270 "parser.y"
-              { (yylhs.value.type_val) = new VarType{PrimitiveType::BOOL}; }
-#line 930 "parser.tab.cc"
+                { (yylhs.value.type_val) = (yystack_[0].value.type_val); }
+#line 971 "parser.tab.cc"
     break;
 
-  case 74: // bool_literal: A_FALSE
+  case 48: // exp: '(' exp ')'
 #line 271 "parser.y"
+                  { (yylhs.value.type_val) = (yystack_[1].value.type_val); }
+#line 977 "parser.tab.cc"
+    break;
+
+  case 49: // exp: A_NOT exp
+#line 273 "parser.y"
+    {
+        if ((yystack_[0].value.type_val)->p_type != PrimitiveType::BOOL) {
+            error("Operador 'not' requer um operando booleano, mas obteve " + type_to_string(*(yystack_[0].value.type_val)) + ".");
+        }
+        delete (yystack_[0].value.type_val);
+        (yylhs.value.type_val) = new VarType{PrimitiveType::BOOL};
+    }
+#line 989 "parser.tab.cc"
+    break;
+
+  case 50: // exp: '-' exp
+#line 281 "parser.y"
+    {
+      if (!(yystack_[0].value.type_val) || ((yystack_[0].value.type_val)->p_type != PrimitiveType::INT && (yystack_[0].value.type_val)->p_type != PrimitiveType::FLOAT)) {
+          error("Operador unário '-' requer operando numérico. Foi: " + type_to_string(*(yystack_[0].value.type_val)) + ".");
+          (yylhs.value.type_val) = new VarType{PrimitiveType::UNDEFINED};
+          delete (yystack_[0].value.type_val);
+      } else {
+          (yylhs.value.type_val) = (yystack_[0].value.type_val);
+      }
+    }
+#line 1003 "parser.tab.cc"
+    break;
+
+  case 51: // exp: '+' exp
+#line 291 "parser.y"
+    {
+      if (!(yystack_[0].value.type_val) || ((yystack_[0].value.type_val)->p_type != PrimitiveType::INT && (yystack_[0].value.type_val)->p_type != PrimitiveType::FLOAT)) {
+          error("Operador unário '+' requer operando numérico. Foi: " + type_to_string(*(yystack_[0].value.type_val)) + ".");
+          (yylhs.value.type_val) = new VarType{PrimitiveType::UNDEFINED};
+          delete (yystack_[0].value.type_val);
+      } else {
+          (yylhs.value.type_val) = (yystack_[0].value.type_val);
+      }
+    }
+#line 1017 "parser.tab.cc"
+    break;
+
+  case 52: // exp: exp A_OR_LOGIC exp
+#line 300 "parser.y"
+                         { (yylhs.value.type_val) = check_logical_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), "||"); }
+#line 1023 "parser.tab.cc"
+    break;
+
+  case 53: // exp: exp A_AND_LOGIC exp
+#line 301 "parser.y"
+                          { (yylhs.value.type_val) = check_logical_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), "&&"); }
+#line 1029 "parser.tab.cc"
+    break;
+
+  case 54: // exp: exp '<' exp
+#line 302 "parser.y"
+                  { (yylhs.value.type_val) = check_relational_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), "<"); }
+#line 1035 "parser.tab.cc"
+    break;
+
+  case 55: // exp: exp A_LESS_THAN_EQUAL exp
+#line 303 "parser.y"
+                                { (yylhs.value.type_val) = check_relational_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), "<="); }
+#line 1041 "parser.tab.cc"
+    break;
+
+  case 56: // exp: exp '>' exp
+#line 304 "parser.y"
+                  { (yylhs.value.type_val) = check_relational_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), ">"); }
+#line 1047 "parser.tab.cc"
+    break;
+
+  case 57: // exp: exp A_GREATER_THAN_EQUAL exp
+#line 305 "parser.y"
+                                   { (yylhs.value.type_val) = check_relational_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), ">="); }
+#line 1053 "parser.tab.cc"
+    break;
+
+  case 58: // exp: exp '=' exp
+#line 306 "parser.y"
+                  { (yylhs.value.type_val) = check_relational_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), "="); }
+#line 1059 "parser.tab.cc"
+    break;
+
+  case 59: // exp: exp A_DIFFERENT exp
+#line 307 "parser.y"
+                          { (yylhs.value.type_val) = check_relational_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), "<>"); }
+#line 1065 "parser.tab.cc"
+    break;
+
+  case 60: // exp: exp '+' exp
+#line 308 "parser.y"
+                  { (yylhs.value.type_val) = check_arithmetic_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), "+"); }
+#line 1071 "parser.tab.cc"
+    break;
+
+  case 61: // exp: exp '-' exp
+#line 309 "parser.y"
+                  { (yylhs.value.type_val) = check_arithmetic_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), "-"); }
+#line 1077 "parser.tab.cc"
+    break;
+
+  case 62: // exp: exp '*' exp
+#line 310 "parser.y"
+                  { (yylhs.value.type_val) = check_arithmetic_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), "*"); }
+#line 1083 "parser.tab.cc"
+    break;
+
+  case 63: // exp: exp '/' exp
+#line 311 "parser.y"
+                  { (yylhs.value.type_val) = check_arithmetic_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), "/"); }
+#line 1089 "parser.tab.cc"
+    break;
+
+  case 64: // exp: exp '^' exp
+#line 312 "parser.y"
+                  { (yylhs.value.type_val) = check_arithmetic_op((yystack_[2].value.type_val), (yystack_[0].value.type_val), "^"); }
+#line 1095 "parser.tab.cc"
+    break;
+
+  case 65: // ref_var: A_REF '(' var_access ')'
+#line 317 "parser.y"
+    {
+      auto referenced_type = std::make_unique<VarType>(*(yystack_[1].value.type_val));
+      (yylhs.value.type_val) = new VarType(PrimitiveType::REF, std::move(referenced_type));
+      delete (yystack_[1].value.type_val);
+    }
+#line 1105 "parser.tab.cc"
+    break;
+
+  case 66: // deref_var: A_DEREF '(' var_access ')'
+#line 326 "parser.y"
+    {
+      if ((yystack_[1].value.type_val)->p_type != PrimitiveType::REF || !(yystack_[1].value.type_val)->referenced_type) {
+          error("Não é possível desreferenciar um tipo não-referência: " + type_to_string(*(yystack_[1].value.type_val)) + ".");
+          (yylhs.value.type_val) = new VarType{PrimitiveType::UNDEFINED};
+      } else {
+          (yylhs.value.type_val) = new VarType{*(yystack_[1].value.type_val)->referenced_type};
+      }
+      delete (yystack_[1].value.type_val);
+    }
+#line 1119 "parser.tab.cc"
+    break;
+
+  case 67: // deref_var: A_DEREF '(' deref_var ')'
+#line 336 "parser.y"
+    {
+      if ((yystack_[1].value.type_val)->p_type != PrimitiveType::REF || !(yystack_[1].value.type_val)->referenced_type) {
+          error("Não é possível desreferenciar um tipo não-referência aninhado: " + type_to_string(*(yystack_[1].value.type_val)) + ".");
+          (yylhs.value.type_val) = new VarType{PrimitiveType::UNDEFINED};
+      } else {
+          (yylhs.value.type_val) = new VarType{*(yystack_[1].value.type_val)->referenced_type};
+      }
+      delete (yystack_[1].value.type_val);
+    }
+#line 1133 "parser.tab.cc"
+    break;
+
+  case 68: // var_access: A_NAME
+#line 349 "parser.y"
+    {
+      Symbol* s = symbol_table.lookup(*(yystack_[0].value.sval));
+      if (!s) {
+          error("Variável '" + *(yystack_[0].value.sval) + "' não declarada.");
+          (yylhs.value.type_val) = new VarType{PrimitiveType::UNDEFINED};
+      } else if (s->category != SymbolCategory::VARIABLE) {
+          error("Símbolo '" + *(yystack_[0].value.sval) + "' não é uma variável.");
+          (yylhs.value.type_val) = new VarType{PrimitiveType::UNDEFINED};
+      } else {
+          (yylhs.value.type_val) = new VarType{std::get<Variable>(s->content).type};
+      }
+      delete (yystack_[0].value.sval);
+    }
+#line 1151 "parser.tab.cc"
+    break;
+
+  case 69: // var_access: exp '.' A_NAME
+#line 363 "parser.y"
+    {
+      (yylhs.value.type_val) = new VarType{PrimitiveType::UNDEFINED};
+      if ((yystack_[2].value.type_val)->p_type == PrimitiveType::NOT_PRIMITIVE && (yystack_[2].value.type_val)->record_name.has_value()) {
+          Symbol* rec_symbol = symbol_table.lookup((yystack_[2].value.type_val)->record_name.value());
+          if (rec_symbol && rec_symbol->category == SymbolCategory::RECORD) {
+              const Record& rec = std::get<Record>(rec_symbol->content);
+              bool found_field = false;
+              for (const auto& field : rec.fields) {
+                  if (field.name == *(yystack_[0].value.sval)) {
+                      delete (yylhs.value.type_val); // Descarta o UNDEFINED
+                      (yylhs.value.type_val) = new VarType{field.type};
+                      found_field = true;
+                      break;
+                  }
+              }
+              if (!found_field) {
+                  error("Registro '" + (yystack_[2].value.type_val)->record_name.value() + "' não possui o campo '" + *(yystack_[0].value.sval) + "'.");
+              }
+          } else {
+              error("Tipo de registro '" + (yystack_[2].value.type_val)->record_name.value() + "' não encontrado.");
+          }
+      } else {
+          error("Acesso de membro '.' requer um tipo de registro à esquerda, mas obteve " + type_to_string(*(yystack_[2].value.type_val)) + ".");
+      }
+      delete (yystack_[2].value.type_val);
+      delete (yystack_[0].value.sval);
+    }
+#line 1183 "parser.tab.cc"
+    break;
+
+  case 70: // literal: A_FLOAT_LITERAL
+#line 394 "parser.y"
+                     { (yylhs.value.type_val) = new VarType{PrimitiveType::FLOAT}; }
+#line 1189 "parser.tab.cc"
+    break;
+
+  case 71: // literal: A_INT_LITERAL
+#line 395 "parser.y"
+                       { (yylhs.value.type_val) = new VarType{PrimitiveType::INT}; }
+#line 1195 "parser.tab.cc"
+    break;
+
+  case 72: // literal: A_STRING_LITERAL
+#line 396 "parser.y"
+                       { (yylhs.value.type_val) = new VarType{PrimitiveType::STRING}; }
+#line 1201 "parser.tab.cc"
+    break;
+
+  case 73: // literal: bool_literal
+#line 397 "parser.y"
+                     { (yylhs.value.type_val) = (yystack_[0].value.type_val); }
+#line 1207 "parser.tab.cc"
+    break;
+
+  case 74: // literal: A_NULL
+#line 398 "parser.y"
+                     { (yylhs.value.type_val) = new VarType{PrimitiveType::VOID}; }
+#line 1213 "parser.tab.cc"
+    break;
+
+  case 75: // bool_literal: A_TRUE
+#line 402 "parser.y"
+            { (yylhs.value.type_val) = new VarType{PrimitiveType::BOOL}; }
+#line 1219 "parser.tab.cc"
+    break;
+
+  case 76: // bool_literal: A_FALSE
+#line 403 "parser.y"
               { (yylhs.value.type_val) = new VarType{PrimitiveType::BOOL}; }
-#line 936 "parser.tab.cc"
+#line 1225 "parser.tab.cc"
+    break;
+
+  case 82: // assign_stmt: var_access A_ASSIGN exp
+#line 416 "parser.y"
+    {
+      if (!are_types_compatible(*(yystack_[2].value.type_val), *(yystack_[0].value.type_val))) {
+          error("Incompatibilidade de tipos na atribuição. Esperado " + type_to_string(*(yystack_[2].value.type_val)) + " mas obteve " + type_to_string(*(yystack_[0].value.type_val)) + ".");
+      }
+      delete (yystack_[2].value.type_val);
+      delete (yystack_[0].value.type_val);
+    }
+#line 1237 "parser.tab.cc"
+    break;
+
+  case 83: // assign_stmt: deref_var A_ASSIGN exp
+#line 424 "parser.y"
+    {
+      if (!are_types_compatible(*(yystack_[2].value.type_val), *(yystack_[0].value.type_val))) {
+          error("Incompatibilidade de tipos na atribuição por desreferência. Esperado " + type_to_string(*(yystack_[2].value.type_val)) + " mas obteve " + type_to_string(*(yystack_[0].value.type_val)) + ".");
+      }
+      delete (yystack_[2].value.type_val);
+      delete (yystack_[0].value.type_val);
+    }
+#line 1249 "parser.tab.cc"
+    break;
+
+  case 84: // if_stmt: A_IF exp A_THEN stmt_list optional_else_clause A_FI
+#line 435 "parser.y"
+    {
+      if ((yystack_[4].value.type_val)->p_type != PrimitiveType::BOOL) {
+          error("Condição do 'if' deve ser booleana, mas foi " + type_to_string(*(yystack_[4].value.type_val)) + ".");
+      }
+      delete (yystack_[4].value.type_val);
+    }
+#line 1260 "parser.tab.cc"
+    break;
+
+  case 85: // if_stmt: A_UNLESS exp A_DO stmt_list optional_else_clause A_OD
+#line 442 "parser.y"
+    {
+      if ((yystack_[4].value.type_val)->p_type != PrimitiveType::BOOL) {
+          error("Condição do 'unless' deve ser booleana, mas foi " + type_to_string(*(yystack_[4].value.type_val)) + ".");
+      }
+      delete (yystack_[4].value.type_val);
+    }
+#line 1271 "parser.tab.cc"
+    break;
+
+  case 86: // if_stmt: A_CASE exp A_OF case_list optional_otherwise_clause A_ESAC
+#line 449 "parser.y"
+    {
+      if ((yystack_[4].value.type_val)->p_type != PrimitiveType::INT) {
+            error("Expressão do 'case' deve ser do tipo inteiro, mas foi " + type_to_string(*(yystack_[4].value.type_val)) + ".");
+      }
+      delete (yystack_[4].value.type_val);
+    }
+#line 1282 "parser.tab.cc"
+    break;
+
+  case 98: // while_stmt: A_WHILE exp A_DO stmt_list A_OD
+#line 488 "parser.y"
+    {
+      if ((yystack_[3].value.type_val)->p_type != PrimitiveType::BOOL) {
+          error("Condição do 'while' deve ser booleana, mas foi " + type_to_string(*(yystack_[3].value.type_val)) + ".");
+      }
+      delete (yystack_[3].value.type_val);
+    }
+#line 1293 "parser.tab.cc"
+    break;
+
+  case 99: // return_stmt: A_RETURN optional_exp_val
+#line 498 "parser.y"
+    {
+        VarType expected_return_type;
+        if (func_return_type_stack.empty()) {
+            error("'return' utilizado fora de um procedimento/função.");
+            expected_return_type = VarType{PrimitiveType::UNDEFINED};
+        } else {
+            expected_return_type = func_return_type_stack.back();
+        }
+
+        VarType actual_return_type = (yystack_[0].value.type_val) ? *(yystack_[0].value.type_val) : VarType{PrimitiveType::VOID};
+
+        if (!are_types_compatible(expected_return_type, actual_return_type)) {
+            error("Tipo de retorno incompatível. Procedimento espera " + type_to_string(expected_return_type) + ", mas 'return' provê " + type_to_string(actual_return_type) + ".");
+        }
+        if ((yystack_[0].value.type_val)) delete (yystack_[0].value.type_val);
+    }
+#line 1314 "parser.tab.cc"
+    break;
+
+  case 100: // optional_exp_val: %empty
+#line 517 "parser.y"
+                { (yylhs.value.type_val) = nullptr; }
+#line 1320 "parser.tab.cc"
+    break;
+
+  case 101: // optional_exp_val: exp
+#line 518 "parser.y"
+          { (yylhs.value.type_val) = (yystack_[0].value.type_val); }
+#line 1326 "parser.tab.cc"
+    break;
+
+  case 102: // call_stmt: A_NAME '(' optional_arg_list ')'
+#line 523 "parser.y"
+    {
+      Symbol* s = symbol_table.lookup(*(yystack_[3].value.sval));
+      if (!s) {
+          error("Procedimento ou função '" + *(yystack_[3].value.sval) + "' não foi declarado(a).");
+      } else if (s->category != SymbolCategory::PROCEDURE) {
+          error("Símbolo '" + *(yystack_[3].value.sval) + "' não é um procedimento/função, não pode ser chamado.");
+      } else {
+          const Procedure& proc = std::get<Procedure>(s->content);
+          const auto& params = proc.params;
+          const auto& args = *(yystack_[1].value.type_vec); // std::vector<VarType*>
+
+          if (params.size() != args.size()) {
+              error("Número incorreto de argumentos para '" + *(yystack_[3].value.sval) + "'. Esperado: " + std::to_string(params.size()) + ", Fornecido: " + std::to_string(args.size()) + ".");
+          } else {
+              for (size_t i = 0; i < params.size(); ++i) {
+                  if (!are_types_compatible(params[i].type, *args[i])) {
+                      error("Incompatibilidade de tipo para o argumento " + std::to_string(i+1) + " na chamada de '" + *(yystack_[3].value.sval) + "'. Esperado: " + type_to_string(params[i].type) + ", Fornecido: " + type_to_string(*args[i]) + ".");
+                  }
+              }
+          }
+      }
+      delete (yystack_[3].value.sval);
+    }
+#line 1354 "parser.tab.cc"
+    break;
+
+  case 103: // call_stmt_as_exp: A_NAME '(' optional_arg_list ')'
+#line 550 "parser.y"
+    {
+      (yylhs.value.type_val) = new VarType{PrimitiveType::UNDEFINED};
+      Symbol* s = symbol_table.lookup(*(yystack_[3].value.sval));
+      if (!s) {
+          error("Função '" + *(yystack_[3].value.sval) + "' não foi declarada.");
+      } else if (s->category != SymbolCategory::PROCEDURE) {
+          error("Símbolo '" + *(yystack_[3].value.sval) + "' não é uma função.");
+      } else {
+          const Procedure& proc = std::get<Procedure>(s->content);
+          if (proc.return_type.p_type == PrimitiveType::VOID) {
+              error("Procedimento '" + *(yystack_[3].value.sval) + "' não retorna um valor e não pode ser usado em uma expressão.");
+          } else {
+                delete (yylhs.value.type_val);
+                (yylhs.value.type_val) = new VarType{proc.return_type};
+          }
+
+          const auto& params = proc.params;
+          const auto& args = *(yystack_[1].value.type_vec);
+          if (params.size() != args.size()) {
+              error("Número incorreto de argumentos para '" + *(yystack_[3].value.sval) + "'. Esperado: " + std::to_string(params.size()) + ", Fornecido: " + std::to_string(args.size()) + ".");
+          } else {
+                for (size_t i = 0; i < params.size(); ++i) {
+                  if (!are_types_compatible(params[i].type, *args[i])) {
+                    error("Incompatibilidade de tipo para o argumento " + std::to_string(i+1) + " na chamada de '" + *(yystack_[3].value.sval) + "'. Esperado: " + type_to_string(params[i].type) + ", Fornecido: " + type_to_string(*args[i]) + ".");
+                  }
+              }
+          }
+      }
+      delete (yystack_[3].value.sval);
+    }
+#line 1389 "parser.tab.cc"
+    break;
+
+  case 104: // optional_arg_list: %empty
+#line 584 "parser.y"
+                { (yylhs.value.type_vec) = new std::vector<VarType*>(); }
+#line 1395 "parser.tab.cc"
+    break;
+
+  case 105: // optional_arg_list: arg_list
+#line 585 "parser.y"
+               { (yylhs.value.type_vec) = (yystack_[0].value.type_vec); }
+#line 1401 "parser.tab.cc"
+    break;
+
+  case 106: // arg_list: exp
+#line 589 "parser.y"
+        { (yylhs.value.type_vec) = new std::vector<VarType*>{(yystack_[0].value.type_val)}; }
+#line 1407 "parser.tab.cc"
+    break;
+
+  case 107: // arg_list: arg_list ',' exp
+#line 590 "parser.y"
+                       { (yystack_[2].value.type_vec)->push_back((yystack_[0].value.type_val)); (yylhs.value.type_vec) = (yystack_[2].value.type_vec); }
+#line 1413 "parser.tab.cc"
     break;
 
 
-#line 940 "parser.tab.cc"
+#line 1417 "parser.tab.cc"
 
             default:
               break;
@@ -1127,31 +1604,31 @@ namespace yy {
 
   const signed char parser::yypact_ninf_ = -60;
 
-  const signed char parser::yytable_ninf_ = -101;
+  const signed char parser::yytable_ninf_ = -103;
 
   const short
   parser::yypact_[] =
   {
-      -7,     7,    17,   -60,   -60,   -60,     9,     8,    19,    21,
-      22,    12,     3,   -60,   -60,   -60,   -60,    -5,   -37,    -1,
-     -60,     8,    41,     1,   213,    41,   -60,     5,    13,    23,
-     -60,   -60,   -60,   -60,   -60,   -60,    15,    -4,   -60,   -60,
-      31,   -60,   -60,   -60,   -60,   213,    60,    32,    39,   213,
-     247,   -60,   -60,   -60,   -60,   -60,   -60,   -60,    42,    27,
-       1,    46,    41,     1,   213,   -60,   213,    11,   -60,   213,
-     213,   230,   213,   213,   213,   213,   213,   213,   213,   213,
-      85,   213,   213,   213,   213,   213,   -60,    41,   -60,     1,
-      82,   -60,    43,   247,   247,    44,    51,   247,    52,    53,
-      54,   -60,   281,   281,   281,    11,    11,   -49,   -49,   -49,
-     -60,   281,   281,   281,   264,   295,   -60,   -60,     2,   -60,
-     -60,   213,   -60,   -60,   -60,    61,   188,   247,   -60,    56,
-     213,   213,   213,   213,   213,    95,   -60,    66,    68,    70,
-     -60,   -60,   -60,   -60,   -60,   213,    20,   107,   247,   -60,
-     124,   212,   -60,   213,   213,   188,    63,   188,   188,   188,
-     117,   247,   247,   -60,   108,   119,   116,   119,    71,   -22,
-     -60,   -27,   -60,   188,   121,   -60,   122,   137,   188,   117,
-     120,   188,   117,   -60,   -60,   -60,   -60,   -60,   -60,   -60,
-     -60,   -60
+       1,     9,    11,   -60,   -60,   -60,    10,    12,    15,    26,
+      28,    33,     5,   -60,   -60,   -60,   -60,    -1,   -38,     2,
+     -60,    12,    44,    68,   149,    44,   -60,    18,    17,     8,
+     -60,   -60,   -60,   -60,   -60,   -60,    19,    23,   -60,   -60,
+      21,   -60,   -60,   -60,   -60,   149,    65,    47,    58,   149,
+     149,   149,   226,   -60,   -60,   -60,   -60,   -60,   -60,   -60,
+      25,    43,    68,    66,    44,    68,   149,   -60,   149,    49,
+     -60,   149,   149,   209,    49,    49,   149,   149,   149,   149,
+     149,   149,   149,   149,   104,   149,   149,   149,   149,   149,
+     -60,    44,   -60,    68,   106,   -60,    67,   226,   226,    73,
+      81,   226,    82,    83,    87,   -60,   260,   260,   260,    36,
+      36,   -29,   -29,   -29,   -60,   260,   260,   260,   243,   274,
+     -60,   -60,     6,   -60,   -60,   149,   -60,   -60,   -60,   105,
+     124,   226,   -60,    90,   149,   149,   149,   149,   149,   132,
+     -60,    97,    98,   123,   -60,   -60,   -60,   -60,   -60,   149,
+      24,   155,   226,   -60,   172,   191,   -60,   149,   149,   124,
+     116,   124,   124,   124,   163,   226,   226,   -60,    -9,   152,
+     150,   152,   103,   -22,   -60,    -8,   -60,   124,   158,   -60,
+     160,   177,   124,   163,   159,   124,   163,   -60,   -60,   -60,
+     -60,   -60,   -60,   -60,   -60,   -60
   };
 
   const signed char
@@ -1160,125 +1637,121 @@ namespace yy {
        3,     0,     0,     2,     4,     1,     0,     6,     0,     0,
        0,     0,     7,     8,    10,    11,    12,     0,     0,     0,
        5,     0,    24,     0,     0,    38,     9,     0,     0,    25,
-      26,    21,    17,    18,    19,    20,     0,    15,    69,    68,
-      66,    70,    73,    74,    72,     0,     0,     0,     0,     0,
-      14,    46,    47,    45,    42,    71,    43,    40,     0,    39,
-       0,    29,     0,     0,     0,    13,   102,    49,    44,     0,
+      26,    21,    17,    18,    19,    20,     0,    15,    71,    70,
+      68,    72,    75,    76,    74,     0,     0,     0,     0,     0,
+       0,     0,    14,    46,    47,    45,    42,    73,    43,    40,
+       0,    39,     0,    29,     0,     0,     0,    13,   104,    49,
+      44,     0,     0,     0,    51,    50,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    37,     0,    28,     0,
-       0,    27,     0,    16,   104,     0,   103,     0,    45,    47,
-      45,    48,    52,    54,    56,    58,    59,    60,    61,    62,
-      67,    53,    55,    57,    50,    51,    41,    30,    31,    22,
-     101,     0,    63,    65,    64,     0,    33,   105,    32,    66,
-       0,     0,    98,     0,     0,     0,    34,    47,    45,    35,
-      75,    76,    77,    78,    79,   102,     0,     0,    99,    97,
-       0,     0,    23,     0,     0,     0,     0,    33,    33,    33,
-       0,    81,    80,    36,   101,    85,     0,    85,    92,    94,
-      87,     0,    90,    33,     0,    96,     0,     0,    33,     0,
-       0,    33,     0,    86,    82,    83,    93,    95,    88,    84,
-      89,    91
+      37,     0,    28,     0,     0,    27,     0,    16,   106,     0,
+     105,     0,    45,    47,    45,    48,    54,    56,    58,    60,
+      61,    62,    63,    64,    69,    55,    57,    59,    52,    53,
+      41,    30,    31,    22,   103,     0,    65,    67,    66,     0,
+      33,   107,    32,    68,     0,     0,   100,     0,     0,     0,
+      34,    47,    45,    35,    77,    78,    79,    80,    81,   104,
+       0,     0,   101,    99,     0,     0,    23,     0,     0,     0,
+       0,    33,    33,    33,     0,    83,    82,    36,   103,    87,
+       0,    87,    94,    96,    89,     0,    92,    33,     0,    98,
+       0,     0,    33,     0,     0,    33,     0,    88,    84,    85,
+      95,    97,    90,    86,    91,    93
   };
 
-  const signed char
+  const short
   parser::yypgoto_[] =
   {
-     -60,   -60,   -60,   -60,    25,   -60,   125,   -60,   -60,   -56,
-     -60,   -60,   -60,   -23,   -60,   -60,    74,   -10,   -60,   -60,
+     -60,   -60,   -60,   -60,    60,   -60,   167,   -60,   -60,   -57,
+     -60,   -60,   -60,   -23,   -60,   -60,   -14,    30,   -60,   -60,
      -60,   -24,   -60,   -42,   -59,   -60,   -60,   -60,   -60,   -60,
-     -20,   -60,   -31,   -60,   -32,   -60,   -60,   -60,   -60,   -60,
-     -60,     6,   -60
+      20,   -60,    13,   -60,     7,   -60,   -60,   -60,   -60,   -60,
+     -60,    45,   -60
   };
 
   const unsigned char
   parser::yydefgoto_[] =
   {
-       0,     2,     3,     6,    11,    12,    13,    14,    65,    37,
-      15,    28,    29,    30,    90,   126,   135,   136,    16,    58,
-      59,    97,    51,    52,    53,    54,    55,   139,   140,   141,
-     174,   169,   170,   171,   172,   180,   142,   143,   149,   144,
-      56,    95,    96
+       0,     2,     3,     6,    11,    12,    13,    14,    67,    37,
+      15,    28,    29,    30,    94,   130,   139,   140,    16,    60,
+      61,   101,    53,    54,    55,    56,    57,   143,   144,   145,
+     178,   173,   174,   175,   176,   184,   146,   147,   153,   148,
+      58,    99,   100
   };
 
   const short
   parser::yytable_[] =
   {
-      50,     1,    57,   178,    88,    23,    31,    92,    79,    80,
-      98,   100,     4,     8,     9,   181,   182,     5,     7,     8,
-       9,    67,    20,    24,    17,    71,    18,    19,    99,    32,
-      33,    34,    35,   117,   157,    10,    -6,   179,    36,    91,
-      93,    10,    94,    22,    21,    25,    27,    60,   102,   103,
-     104,   105,   106,   107,   108,   109,    64,   111,   112,   113,
-     114,   115,    61,    63,   116,    68,    62,   138,    87,    80,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    66,
-      69,    81,    82,    83,   137,    84,    85,    70,    89,    86,
-     110,   118,   119,   120,   121,   128,   138,   127,   138,   138,
-     138,   122,   123,   124,   145,   152,   146,   147,   148,   150,
-     151,   155,   164,   137,   138,   137,   137,   137,  -100,   138,
-     168,    94,   138,  -100,  -100,   158,   153,  -100,   154,   161,
-     162,   137,  -100,  -100,   173,   175,   137,   184,   177,   137,
-     186,   185,   159,   125,   189,   163,    26,   176,   188,  -100,
-     191,   156,     0,     0,     0,     0,     0,    72,    73,    74,
-      75,    76,    77,    78,    79,    80,     0,  -100,    81,    82,
-      83,     0,    84,    85,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,     0,     0,    81,    82,    83,     0,    84,
-      85,    38,    39,   129,    41,     0,     0,     0,     0,     0,
-       0,   130,     0,     0,     0,   131,     0,     0,   132,   133,
-     134,     0,     0,     0,    42,    43,    38,    39,    40,    41,
-      44,     0,     0,    45,    46,    47,    48,     0,     0,     0,
-       0,   165,   166,   167,     0,   160,    49,     0,     0,    42,
-      43,     0,     0,     0,     0,    44,     0,   183,    45,    46,
-      47,    48,   187,     0,     0,   190,     0,     0,     0,     0,
-       0,    49,    72,    73,    74,    75,    76,    77,    78,    79,
-      80,     0,     0,    81,    82,    83,     0,    84,    85,   101,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,     0,
-       0,    81,    82,    83,     0,    84,    85,    72,    73,    74,
-      75,    76,    77,    78,    79,    80,     0,     0,    81,    82,
-      83,     0,    84,    85,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,     0,     0,    81,    82,    83,     0,     0,
-      85,  -101,  -101,  -101,    75,    76,    77,    78,    79,    80,
-       0,     0,  -101,  -101,  -101,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,     0,     0,    81,    82,    83
+      52,  -102,    59,   182,    23,    92,  -102,  -102,    96,     1,
+    -102,     5,   102,   104,     4,  -102,  -102,     8,     9,     7,
+      17,    69,    24,     8,     9,    73,    74,    75,    83,    84,
+     103,    18,  -102,    19,   185,   186,   121,   183,   161,    10,
+      -6,    95,    97,    20,    98,    10,    21,    22,    25,    27,
+    -102,    64,   106,   107,   108,   109,   110,   111,   112,   113,
+      62,   115,   116,   117,   118,   119,    63,    65,   120,    68,
+      70,   142,    90,    31,    76,    77,    78,    79,    80,    81,
+      82,    83,    84,    66,    91,    85,    86,    87,   141,    88,
+      89,    81,    82,    83,    84,    71,    32,    33,    34,    35,
+     142,   131,   142,   142,   142,    36,    72,    84,    93,   114,
+     150,   151,   152,   154,   155,   122,   123,   141,   142,   141,
+     141,   141,   124,   142,   125,    98,   142,    38,    39,   133,
+      41,   126,   127,   165,   166,   141,   128,   134,   149,   132,
+     141,   135,   156,   141,   136,   137,   138,   169,   170,   171,
+      42,    43,    38,    39,    40,    41,    44,   157,   158,    45,
+      46,    47,    48,   187,   159,   168,   172,   177,   191,   179,
+     181,   194,    49,   162,   188,    42,    43,    50,    51,   189,
+     190,    44,   129,   193,    45,    46,    47,    48,    26,   167,
+     163,   180,     0,   195,   160,     0,   192,    49,     0,     0,
+       0,     0,    50,    51,     0,    76,    77,    78,    79,    80,
+      81,    82,    83,    84,   164,     0,    85,    86,    87,     0,
+      88,    89,    76,    77,    78,    79,    80,    81,    82,    83,
+      84,     0,     0,    85,    86,    87,     0,    88,    89,     0,
+       0,    76,    77,    78,    79,    80,    81,    82,    83,    84,
+       0,     0,    85,    86,    87,     0,    88,    89,   105,    76,
+      77,    78,    79,    80,    81,    82,    83,    84,     0,     0,
+      85,    86,    87,     0,    88,    89,    76,    77,    78,    79,
+      80,    81,    82,    83,    84,     0,     0,    85,    86,    87,
+       0,    88,    89,    76,    77,    78,    79,    80,    81,    82,
+      83,    84,     0,     0,    85,    86,    87,     0,     0,    89,
+    -103,  -103,  -103,    79,    80,    81,    82,    83,    84,     0,
+       0,  -103,  -103,  -103,    76,    77,    78,    79,    80,    81,
+      82,    83,    84,     0,     0,    85,    86,    87
   };
 
   const short
   parser::yycheck_[] =
   {
-      24,     8,    25,    25,    60,    42,     5,    63,    57,    58,
-      69,    70,     5,    11,    12,    42,    43,     0,     9,    11,
-      12,    45,    10,    60,     5,    49,     5,     5,    70,    28,
-      29,    30,    31,    89,    14,    33,    34,    59,    37,    62,
-      64,    33,    66,    48,    41,    46,     5,    42,    72,    73,
-      74,    75,    76,    77,    78,    79,    60,    81,    82,    83,
-      84,    85,    49,    48,    87,     5,    43,   126,    41,    58,
-      50,    51,    52,    53,    54,    55,    56,    57,    58,    48,
-      48,    61,    62,    63,   126,    65,    66,    48,    42,    47,
-       5,     9,    49,    49,    43,    34,   155,   121,   157,   158,
-     159,    49,    49,    49,    48,    10,   130,   131,   132,   133,
-     134,    41,    49,   155,   173,   157,   158,   159,    10,   178,
-       3,   145,   181,    15,    16,    18,    60,    19,    60,   153,
-     154,   173,    24,    25,    15,    19,   178,    16,    67,   181,
-       3,    19,    18,   118,    24,   155,    21,   167,   179,    41,
-     182,   145,    -1,    -1,    -1,    -1,    -1,    50,    51,    52,
-      53,    54,    55,    56,    57,    58,    -1,    59,    61,    62,
-      63,    -1,    65,    66,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    -1,    -1,    61,    62,    63,    -1,    65,
-      66,     3,     4,     5,     6,    -1,    -1,    -1,    -1,    -1,
-      -1,    13,    -1,    -1,    -1,    17,    -1,    -1,    20,    21,
-      22,    -1,    -1,    -1,    26,    27,     3,     4,     5,     6,
-      32,    -1,    -1,    35,    36,    37,    38,    -1,    -1,    -1,
-      -1,   157,   158,   159,    -1,    23,    48,    -1,    -1,    26,
-      27,    -1,    -1,    -1,    -1,    32,    -1,   173,    35,    36,
-      37,    38,   178,    -1,    -1,   181,    -1,    -1,    -1,    -1,
-      -1,    48,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    -1,    -1,    61,    62,    63,    -1,    65,    66,    49,
+      24,    10,    25,    25,    42,    62,    15,    16,    65,     8,
+      19,     0,    71,    72,     5,    24,    25,    11,    12,     9,
+       5,    45,    60,    11,    12,    49,    50,    51,    57,    58,
+      72,     5,    41,     5,    42,    43,    93,    59,    14,    33,
+      34,    64,    66,    10,    68,    33,    41,    48,    46,     5,
+      59,    43,    76,    77,    78,    79,    80,    81,    82,    83,
+      42,    85,    86,    87,    88,    89,    49,    48,    91,    48,
+       5,   130,    47,     5,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    60,    41,    61,    62,    63,   130,    65,
+      66,    55,    56,    57,    58,    48,    28,    29,    30,    31,
+     159,   125,   161,   162,   163,    37,    48,    58,    42,     5,
+     134,   135,   136,   137,   138,     9,    49,   159,   177,   161,
+     162,   163,    49,   182,    43,   149,   185,     3,     4,     5,
+       6,    49,    49,   157,   158,   177,    49,    13,    48,    34,
+     182,    17,    10,   185,    20,    21,    22,   161,   162,   163,
+      26,    27,     3,     4,     5,     6,    32,    60,    60,    35,
+      36,    37,    38,   177,    41,    49,     3,    15,   182,    19,
+      67,   185,    48,    18,    16,    26,    27,    53,    54,    19,
+       3,    32,   122,    24,    35,    36,    37,    38,    21,   159,
+      18,   171,    -1,   186,   149,    -1,   183,    48,    -1,    -1,
+      -1,    -1,    53,    54,    -1,    50,    51,    52,    53,    54,
+      55,    56,    57,    58,    23,    -1,    61,    62,    63,    -1,
+      65,    66,    50,    51,    52,    53,    54,    55,    56,    57,
+      58,    -1,    -1,    61,    62,    63,    -1,    65,    66,    -1,
+      -1,    50,    51,    52,    53,    54,    55,    56,    57,    58,
+      -1,    -1,    61,    62,    63,    -1,    65,    66,    49,    50,
+      51,    52,    53,    54,    55,    56,    57,    58,    -1,    -1,
+      61,    62,    63,    -1,    65,    66,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    -1,    -1,    61,    62,    63,
+      -1,    65,    66,    50,    51,    52,    53,    54,    55,    56,
+      57,    58,    -1,    -1,    61,    62,    63,    -1,    -1,    66,
       50,    51,    52,    53,    54,    55,    56,    57,    58,    -1,
-      -1,    61,    62,    63,    -1,    65,    66,    50,    51,    52,
-      53,    54,    55,    56,    57,    58,    -1,    -1,    61,    62,
-      63,    -1,    65,    66,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    -1,    -1,    61,    62,    63,    -1,    -1,
-      66,    50,    51,    52,    53,    54,    55,    56,    57,    58,
-      -1,    -1,    61,    62,    63,    50,    51,    52,    53,    54,
-      55,    56,    57,    58,    -1,    -1,    61,    62,    63
+      -1,    61,    62,    63,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    -1,    -1,    61,    62,    63
   };
 
   const signed char
@@ -1289,21 +1762,21 @@ namespace yy {
       10,    41,    48,    42,    60,    46,    74,     5,    79,    80,
       81,     5,    28,    29,    30,    31,    37,    77,     3,     4,
        5,     6,    26,    27,    32,    35,    36,    37,    38,    48,
-      89,    90,    91,    92,    93,    94,   108,    81,    87,    88,
-      42,    49,    43,    48,    60,    76,    48,    89,     5,    48,
-      48,    89,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    61,    62,    63,    65,    66,    47,    41,    77,    42,
-      82,    81,    77,    89,    89,   109,   110,    89,    92,    91,
-      92,    49,    89,    89,    89,    89,    89,    89,    89,    89,
-       5,    89,    89,    89,    89,    89,    81,    77,     9,    49,
-      49,    43,    49,    49,    49,    72,    83,    89,    34,     5,
-      13,    17,    20,    21,    22,    84,    85,    91,    92,    95,
-      96,    97,   104,   105,   107,    48,    89,    89,    89,   106,
-      89,    89,    10,    60,    60,    41,   109,    14,    18,    18,
-      23,    89,    89,    85,    49,    84,    84,    84,     3,    99,
-     100,   101,   102,    15,    98,    19,    98,    67,    25,    59,
-     103,    42,    43,    84,    16,    19,     3,    84,   100,    24,
-      84,   102
+      53,    54,    89,    90,    91,    92,    93,    94,   108,    81,
+      87,    88,    42,    49,    43,    48,    60,    76,    48,    89,
+       5,    48,    48,    89,    89,    89,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    61,    62,    63,    65,    66,
+      47,    41,    77,    42,    82,    81,    77,    89,    89,   109,
+     110,    89,    92,    91,    92,    49,    89,    89,    89,    89,
+      89,    89,    89,    89,     5,    89,    89,    89,    89,    89,
+      81,    77,     9,    49,    49,    43,    49,    49,    49,    72,
+      83,    89,    34,     5,    13,    17,    20,    21,    22,    84,
+      85,    91,    92,    95,    96,    97,   104,   105,   107,    48,
+      89,    89,    89,   106,    89,    89,    10,    60,    60,    41,
+     109,    14,    18,    18,    23,    89,    89,    85,    49,    84,
+      84,    84,     3,    99,   100,   101,   102,    15,    98,    19,
+      98,    67,    25,    59,   103,    42,    43,    84,    16,    19,
+       3,    84,   100,    24,    84,   102
   };
 
   const signed char
@@ -1315,11 +1788,11 @@ namespace yy {
       82,    83,    83,    84,    84,    85,    85,    86,    87,    87,
       88,    88,    89,    89,    89,    89,    89,    89,    89,    89,
       89,    89,    89,    89,    89,    89,    89,    89,    89,    89,
-      89,    89,    89,    90,    91,    91,    92,    92,    93,    93,
-      93,    93,    93,    94,    94,    95,    95,    95,    95,    95,
-      96,    96,    97,    97,    97,    98,    98,    99,    99,   100,
-     101,   101,   102,   102,   103,   103,   104,   105,   106,   106,
-     107,   108,   109,   109,   110,   110
+      89,    89,    89,    89,    89,    90,    91,    91,    92,    92,
+      93,    93,    93,    93,    93,    94,    94,    95,    95,    95,
+      95,    95,    96,    96,    97,    97,    97,    98,    98,    99,
+      99,   100,   101,   101,   102,   102,   103,   103,   104,   105,
+     106,   106,   107,   108,   109,   109,   110,   110
   };
 
   const signed char
@@ -1330,12 +1803,12 @@ namespace yy {
        1,     1,     4,    10,     0,     1,     1,     3,     3,     0,
        2,     0,     2,     0,     1,     1,     3,     5,     0,     1,
        1,     3,     1,     1,     2,     1,     1,     1,     3,     2,
-       3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
-       3,     3,     3,     4,     4,     4,     1,     3,     1,     1,
+       2,     2,     3,     3,     3,     3,     3,     3,     3,     3,
+       3,     3,     3,     3,     3,     4,     4,     4,     1,     3,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       3,     3,     6,     6,     6,     0,     2,     1,     3,     3,
-       1,     3,     1,     3,     0,     2,     5,     2,     0,     1,
-       4,     4,     0,     1,     1,     3
+       1,     1,     3,     3,     6,     6,     6,     0,     2,     1,
+       3,     3,     1,     3,     1,     3,     0,     2,     5,     2,
+       0,     1,     4,     4,     0,     1,     1,     3
   };
 
 
@@ -1376,17 +1849,17 @@ namespace yy {
   const short
   parser::yyrline_[] =
   {
-       0,    72,    72,    73,    77,    77,    81,    83,    87,    88,
-      92,    93,    94,    98,   125,   141,   142,   146,   147,   148,
-     149,   150,   161,   170,   174,   176,   180,   181,   185,   188,
-     190,   193,   195,   198,   200,   204,   205,   209,   212,   214,
-     218,   219,   223,   224,   225,   226,   227,   228,   229,   230,
-     231,   232,   233,   234,   235,   236,   237,   238,   239,   240,
-     241,   242,   243,   247,   251,   252,   256,   257,   262,   263,
-     264,   265,   266,   270,   271,   275,   276,   277,   278,   279,
-     283,   284,   288,   289,   290,   293,   295,   299,   300,   304,
-     308,   309,   313,   314,   317,   319,   323,   327,   330,   332,
-     336,   340,   344,   346,   350,   351
+       0,    76,    76,    77,    81,    81,    85,    87,    91,    92,
+      96,    97,    98,   102,   129,   145,   146,   150,   151,   152,
+     153,   154,   165,   174,   196,   197,   201,   202,   206,   210,
+     211,   214,   216,   219,   221,   225,   226,   230,   245,   246,
+     250,   251,   255,   256,   257,   268,   269,   270,   271,   272,
+     280,   290,   300,   301,   302,   303,   304,   305,   306,   307,
+     308,   309,   310,   311,   312,   316,   325,   335,   348,   362,
+     394,   395,   396,   397,   398,   402,   403,   407,   408,   409,
+     410,   411,   415,   423,   434,   441,   448,   457,   459,   463,
+     464,   468,   472,   473,   477,   478,   481,   483,   487,   497,
+     517,   518,   522,   549,   584,   585,   589,   590
   };
 
   void
@@ -1469,9 +1942,9 @@ namespace yy {
   }
 
 } // yy
-#line 1473 "parser.tab.cc"
+#line 1946 "parser.tab.cc"
 
-#line 354 "parser.y"
+#line 593 "parser.y"
  // Fim das Regras Gramaticais
 
 void yy::parser::error(const std::string &message)

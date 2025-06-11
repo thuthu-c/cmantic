@@ -146,5 +146,8 @@ struct Symbol {
 
 std::string type_to_string(const VarType& type);
 bool are_types_compatible(const VarType& declared_type, const VarType& assigned_type);
+VarType* check_arithmetic_op(VarType* left, VarType* right, const std::string& op);
+VarType* check_logical_op(VarType* left, VarType* right, const std::string& op);
+VarType* check_relational_op(VarType* left, VarType* right, const std::string& op);
 
 #endif
