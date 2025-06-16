@@ -1,0 +1,17 @@
+program test2
+begin
+var a := 5;
+var b := 4;
+var c :int := a + b;
+
+var s : string := "oi to ligando pra dizer";
+
+var f : float := 3.5;
+var ff := 5.9;
+
+var schrondiger : bool := true;
+var cat := false
+
+var champ := null;
+
+end
