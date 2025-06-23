@@ -1,0 +1,22 @@
+program registers
+begin
+
+var a : int;
+var b : int;
+
+var rel := a < b;
+var arith := a + b;
+var par := b * (arith);
+
+var c : bool;
+var d : bool;
+
+var log := c || d;
+// var not_exp := not log
+
+var lit := 5;
+var lit_var := lit;
+var ref_lit := ref(lit);
+var deref_ref_lit := deref(ref_lit)
+
+end

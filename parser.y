@@ -178,6 +178,7 @@ proc_declaration:
         if (symbol_table.lookup_current_scope_only(*$2)) {
             error("Procedimento '" + *$2 + "' já declarado neste escopo.");
         } else {
+            std::cout << "Declarando procedimento: " << *$2 << std::endl;
             Procedure proc_content;
             proc_content.params = *params;
             proc_content.return_type = $6 ? *$6 : VarType{PrimitiveType::VOID};

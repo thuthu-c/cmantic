@@ -1,0 +1,7 @@
+program proceduress
+begin
+
+var a : int;
+a := false
+
+end

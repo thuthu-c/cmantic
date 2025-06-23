@@ -1,0 +1,11 @@
+program registers
+begin
+
+var c : bool;
+var d : bool;
+
+if c || d then
+    var e : bool
+fi;
+
+end

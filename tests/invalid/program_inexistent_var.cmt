@@ -1,0 +1,8 @@
+program proceduress
+begin
+
+var a : int;
+
+var arith := a + b
+
+end

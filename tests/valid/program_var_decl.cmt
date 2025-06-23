@@ -3,14 +3,14 @@ begin
 // Atribuição
 var a := 5;
 var ref_a := ref(a);
-var b := false
+var b := false;
 var s := "oi teste";
 var f := 3.5;
 var champ := null;
 
 // Atribuição com tipos
 var aa :int := 5;
-var bb :bool := false
+var bb :bool := false;
 var ss :string := "oi teste";
 var ff :float := 3.5;
 

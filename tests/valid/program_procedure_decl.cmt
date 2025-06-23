@@ -9,18 +9,4 @@ begin
     return resultado
 end
 
-procedure divisao (a : int, b : int) : int 
-begin
-    var resultado : int;
-    resultado := a / b; 
-    
-    return resultado
-end
-
-var x : int := 10; 
-var y : int := 10;
-
-var res : int := soma(x, y);
-
-var div : int := divisao(res, 2)
 end

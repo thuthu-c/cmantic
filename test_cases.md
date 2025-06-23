@@ -3,38 +3,39 @@
 ## Válidos
 
 - Declaração de variáveis:
-    - Atribuição
-    - Atribuição com tipos
-    - Reatribuição
+    - Atribuição :white_check_mark:
+    - Atribuição com tipos :white_check_mark:
+    - Reatribuição :x:
 
 
 - Declaração de procedimentos:
-    - Declaração
-    - Declaração de variáveis no escopo
+    - Declaração :x:
+    - Declaração de variáveis no escopo :x:
 
 - Declaração de registros:
-    - Declaração
-    - Atribuição
+    - Declaração :white_check_mark:
+    - Atribuição :x:
 
 - Expressões:
-    - Expressões lógicas
-    - Expressões relacionais
-    - Expressões aritmétricas
+    - Expressões lógicas :white_check_mark:
+    - Expressões relacionais :white_check_mark:
+    - Expressões aritmétricas :white_check_mark:
+    - Demais expressões :white_check_mark:
 
-- Blocos:
-    - If
-    - While
-    - Unless
-    - Case
+- Blocos: (Todos dependentes dos procedimentos)
+    - If :x:
+    - While :x:
+    - Unless :x:
+    - Case :x:
 
 ## Inválidos
 
 - Declaração de variáveis:
-    - Tipo inexistente
-    - Mudança de tipo
+    - Declaração duplicada :white_check_mark:
+    - Mudança de tipo :x: (Dependentes dos procedimentos)
 
 - Declaração de procedimentos:
-    - Acesso de variáveis fora do escopo
+    - Acesso de variáveis fora do escopo :x:
 
 - Expressões:
-    - Acesso a variável inexistente
+    - Acesso a variável inexistente :white_check_mark::x:
