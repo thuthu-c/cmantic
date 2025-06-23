@@ -3,10 +3,11 @@
 ## Válidos
 
 - Declaração de variáveis:
-    - Atribuição :white_check_mark:
-    - Atribuição com tipos :white_check_mark:
-    - Reatribuição :x:
-
+    - Declaração :white_check_mark:
+    - Declaração com tipos :white_check_mark:
+    - Declaração com atribuição :white_check_mark:
+    - Atribuição :x: (Dependente dos procedimentos)
+    - Reatribuição :x: (Dependente dos procedimentos)
 
 - Declaração de procedimentos:
     - Declaração :x:
@@ -32,7 +33,7 @@
 
 - Declaração de variáveis:
     - Declaração duplicada :white_check_mark:
-    - Mudança de tipo :x: (Dependentes dos procedimentos)
+    - Mudança de tipo :x: (Dependente dos procedimentos)
 
 - Declaração de procedimentos:
     - Acesso de variáveis fora do escopo :x:

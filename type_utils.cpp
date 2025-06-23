@@ -47,7 +47,6 @@ VarType* check_arithmetic_op(VarType* left, VarType* right, const std::string& o
 
     if (!left_is_num || !right_is_num) {
         std::cerr << "Operandos para '" << op << "' devem ser numéricos. Foram: " << type_to_string(*left) << " e " << type_to_string(*right) << std::endl;
-        error();
         delete left; delete right;
         return new VarType{PrimitiveType::UNDEFINED};
     }
