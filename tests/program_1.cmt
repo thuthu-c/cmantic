@@ -1,5 +1,4 @@
 program test1
 begin
-var test_var : int := true;
-var test_var := 5.5
+var test_var : int := 5;
 end

@@ -173,7 +173,7 @@ proc_declaration:
       A_PROCEDURE A_NAME '(' optional_param_list ')' optional_return_type
       A_BEGIN optional_proc_decls_in_block stmt_list A_END
       {
-        std::vector<ParamField>* params = *$4;
+        std::vector<ParamField>* params = $4;
 
         if (symbol_table.lookup_current_scope_only(*$2)) {
             error("Procedimento '" + *$2 + "' já declarado neste escopo.");
@@ -394,7 +394,7 @@ var_access:
 literal:
     A_FLOAT_LITERAL  { $$ = new VarType{PrimitiveType::FLOAT}; }
     | A_INT_LITERAL    { $$ = new VarType{PrimitiveType::INT}; }
-    | A_STRING_LITERAL { $$ = new VarType{PrimitiveType::STRING}; }
+    | A_STRING_LITERAL { $$ = new VarType{PrimitiveType::STRING}; delete $1; }
     | bool_literal   { $$ = $1; }
     | A_NULL         { $$ = new VarType{PrimitiveType::VOID}; }
     ;
@@ -423,7 +423,7 @@ assign_stmt:
     }
     | deref_var A_ASSIGN exp
     {
-      if (!are_types_compatible(*$1->, *$3)) {
+      if (!are_types_compatible(*$1, *$3)) {
           error("Incompatibilidade de tipos na atribuição por desreferência. Esperado " + type_to_string(*$1) + " mas obteve " + type_to_string(*$3) + ".");
       }
       delete $1;
