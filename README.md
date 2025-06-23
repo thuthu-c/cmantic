@@ -1,17 +1,7 @@
 # cmantic
-repo para o projeto de compiladores
+Repositório para o projeto de compiladores onde foi implementado um analisador léxico e sintático, além de uma tabela de símbolos e algumas funções utilitárias para manipulação de tipos.
 
-# Executando
-
-O código é compilado via CMakeLists.txt, dessa forma faça o seguinte (testado em linux via WSL):
-```
-mkdir build && cd build
-cmake ..
-make
-./lexer ../test_file
-```
-
-# Executando o parser - temp
+# Executando o parser
 
 ```
 bison -d parser.y 

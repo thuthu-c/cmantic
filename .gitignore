@@ -4,3 +4,4 @@ lex.*
 .vscode/
 test
 build
+parser.tab.*

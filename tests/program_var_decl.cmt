@@ -1,17 +1,24 @@
-program test2
+program test_var_decl
 begin
-var a := 5;
-var b := 4;
-var c :int := a + b;
-
-var s : string := "oi to ligando pra dizer";
-
-var f : float := 3.5;
-var ff := 5.9;
-
-var schrondiger : bool := true;
-var cat := false
-
+// Atribuição
+var a1 := 5;
+var ref_a1 := ref(a1);
+var b1 := false
+var s1 := "oi teste";
+var f1 := 3.5;
 var champ := null;
+
+// Atribuição com tipos
+var a2 :int := 5;
+var b2 :bool := false
+var s2 :string := "oi teste";
+var f2 :float := 3.5;
+
+
+// Reatribuição
+var a1 := 6;
+var b1 := true;
+var s1 := "tchau teste";
+var f1 := 4.5;
 
 end
