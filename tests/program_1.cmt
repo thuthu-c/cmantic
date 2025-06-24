@@ -1,4 +1,0 @@
-program test1
-begin
-var test_var : int := 5;
-end

@@ -1,6 +1,5 @@
 program test_var_decl
 begin
-// Atribuição
 var a := 5;
 var ref_a := ref(a);
 var b := false;
@@ -8,16 +7,17 @@ var s := "oi teste";
 var f := 3.5;
 var champ := null;
 
-// Atribuição com tipos
 var aa :int := 5;
 var bb :bool := false;
 var ss :string := "oi teste";
 var ff :float := 3.5;
 
-// Reatribuição
-var a := 6;
-var b := true;
-var s := "tchau teste";
-var f := 4.5;
+procedure reatribuicao () : int 
+begin
+    var c : int := 5
+    in
+    c := 6;
+    return c
+end
 
 end

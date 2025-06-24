@@ -1,0 +1,17 @@
+program proceduress
+begin
+    procedure mult (a : int, b : int) : int 
+    begin
+        resultado := a + b; 
+        return resultado
+    end
+
+    var resultado : int;
+
+    procedure soma (a : int, b : int) : int 
+    begin
+        resultado := a + b; 
+        return resultado
+    end
+
+end

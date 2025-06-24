@@ -6,7 +6,7 @@
 
 # --- Configuração ---
 # Nome do seu executável gerado pelo make/cmake
-EXECUTABLE="./parser"
+EXECUTABLE="./cmantic"
 # Diretórios dos casos de teste
 VALID_DIR="tests/valid"
 INVALID_DIR="tests/invalid"
@@ -36,35 +36,36 @@ echo "Estes programas devem ser analisados sem erros."
 echo "------------------------------------------"
 echo ""
 
-echo -e "${YELLOW}>> Testando: Declaração de variáveis (atribuição, com tipo e reatribuição)...${NC}"
+echo -e "${YELLOW}>> Testando: Declaração de variáveis (com/sem tipo, atribuição e reatribuição)${NC}"
 $EXECUTABLE "$VALID_DIR/program_var_decl.cmt"
 echo "------------------------------------------"
 echo ""
 
-echo -e "${YELLOW}>> Testando: Declaração de procedimentos (com variáveis de escopo)...${NC}"
+echo -e "${YELLOW}>> Testando: Declaração de procedimentos (com variáveis de escopo)${NC}"
 $EXECUTABLE "$VALID_DIR/program_procedure_decl.cmt"
 echo "------------------------------------------"
 echo ""
 
-echo -e "${YELLOW}>> Testando: Declaração e atribuição de registros (structs)...${NC}"
+echo -e "${YELLOW}>> Testando: Declaração e atribuição de registros (structs)${NC}"
 $EXECUTABLE "$VALID_DIR/program_register_decl.cmt"
 echo "------------------------------------------"
 echo ""
 
-echo -e "${YELLOW}>> Testando: Expressões (lógicas, relacionais, aritméticas)...${NC}"
+echo -e "${YELLOW}>> Testando: Expressões (lógicas, relacionais, aritméticas)${NC}"
 $EXECUTABLE "$VALID_DIR/program_expressions.cmt"
 echo "------------------------------------------"
 echo ""
 
-echo -e "${YELLOW}>> Testando: Blocos de código (if, while, unless)...${NC}"
+echo -e "${YELLOW}>> Testando: Blocos de código (if, while, unless, case)${NC}"
 $EXECUTABLE "$VALID_DIR/program_code_blocks.cmt"
 echo "------------------------------------------"
 echo ""
 
-echo -e "${YELLOW}>> Testando: Bloco de código (case)...${NC}"
-$EXECUTABLE "$VALID_DIR/program_switch_case.cmt"
+echo -e "${YELLOW}>> Testando: Programa de exemplo: Swap${NC}"
+$EXECUTABLE "$VALID_DIR/program_swap.cmt"
 echo "------------------------------------------"
 echo ""
+
 
 
 # --- Testes Inválidos ---
@@ -73,17 +74,22 @@ echo "Estes programas devem gerar erros durante a análise."
 echo "--------------------------------------------"
 echo ""
 
-echo -e "${YELLOW}>> Testando: Declaração de variável com mudança de tipo (inválido)...${NC}"
+echo -e "${YELLOW}>> Testando: Declaração de variável duplicada (inválido)${NC}"
+$EXECUTABLE "$INVALID_DIR/program_duplicate_var.cmt"
+echo "--------------------------------------------"
+echo ""
+
+echo -e "${YELLOW}>> Testando: Declaração de variável com mudança de tipo (inválido)${NC}"
 $EXECUTABLE "$INVALID_DIR/program_type_change.cmt"
 echo "--------------------------------------------"
 echo ""
 
-echo -e "${YELLOW}>> Testando: Acesso a variável fora de escopo (inválido)...${NC}"
+echo -e "${YELLOW}>> Testando: Acesso a variável fora de escopo (inválido)${NC}"
 $EXECUTABLE "$INVALID_DIR/program_out_of_scope.cmt"
 echo "--------------------------------------------"
 echo ""
 
-echo -e "${YELLOW}>> Testando: Acesso a variável inexistente (inválido)...${NC}"
+echo -e "${YELLOW}>> Testando: Acesso a variável inexistente (inválido)${NC}"
 $EXECUTABLE "$INVALID_DIR/program_inexistent_var.cmt"
 echo "--------------------------------------------"
 echo ""

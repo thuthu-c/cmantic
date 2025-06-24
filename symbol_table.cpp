@@ -13,7 +13,7 @@ void SymbolTable::pop_scope() {
 }
 
 bool SymbolTable::insert_symbol(const std::string& name, Symbol symbol) {
-    std::cout << "Inserting symbol: " << name << std::endl;
+    // std::cout << "Inserting symbol: " << name << std::endl;
     return current_scope->symbols.try_emplace(name, std::move(symbol)).second;
 }
 

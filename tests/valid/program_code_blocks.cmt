@@ -1,17 +1,45 @@
 program registers
 begin
 
-    procedure testando_if (c : bool, d : bool) : bool
+    procedure teste_if (c : bool, d : bool) : bool
     begin
         if c || d then
+            return c && d
+        else
             return c && d
         fi;
         return
     end;
 
+    procedure teste_unless (c : bool, d : bool) : bool
+    begin
+        unless c || d do
+            return c && d
+        od;
+        return
+    end;
+
+    procedure teste_case (a : int) : int
+    begin
+        case a of
+        1:
+            return a
+        esac;
+        return
+    end;
+
+    procedure teste_while (c : bool, d : bool) : bool
+    begin
+        while c || d do
+            return c && d
+        od;
+        return
+    end;
+    
+
     procedure testando_proc ( ) : bool
     begin
-        return testando_if(true, false)
+        return teste_if(true, false)
     end
 
 end

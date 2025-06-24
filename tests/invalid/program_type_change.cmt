@@ -1,7 +1,11 @@
-program proceduress
+program type_change
 begin
 
-var a : int;
-a := false
+procedure soma (a : int, b : int) : int 
+    begin
+        a := false;
+        resultado := a + b; 
+        return resultado
+    end
 
 end

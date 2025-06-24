@@ -79,8 +79,11 @@ main:
     ;
 
 program_prod:
-    A_PROGRAM A_NAME { std::cout << "Parsing program: " << *$2 << std::endl; delete $2; }
-    A_BEGIN optional_declaration_list A_END { symbol_table.print(); }
+    A_PROGRAM A_NAME { std::cout << "Analisando programa: " << *$2 << std::endl; delete $2; }
+    A_BEGIN optional_declaration_list A_END { 
+        std::cout << "Programa finalizado com sucesso." << std::endl;
+        // symbol_table.print(); 
+        }
     ;
 
 optional_declaration_list:
@@ -177,7 +180,7 @@ proc_declaration:
         if (symbol_table.lookup_current_scope_only(*$2)) {
             error("Procedimento '" + *$2 + "' já declarado neste escopo.");
         } else {
-            std::cout << "Declarando procedimento: " << *$2 << std::endl;
+            // std::cout << "Declarando procedimento: " << *$2 << std::endl;
             Procedure proc_content;
             proc_content.params = *$4;
             proc_content.return_type = $6 ? *$6 : VarType{PrimitiveType::VOID};
@@ -208,13 +211,13 @@ proc_declaration:
       }
       A_BEGIN optional_proc_decls_in_block stmt_list A_END
       {
-        std::cout << "Fim de procedimento" << std::endl;
+        // std::cout << "Fim de procedimento" << std::endl;
 
         if (!procedure_return_types.empty()) {
             procedure_return_types.pop();
         }
 
-        symbol_table.print();
+        // symbol_table.print();
         symbol_table.pop_scope();
     }
     ;
@@ -304,7 +307,6 @@ exp:
         } else {
             $$ = $2;
         }
-        delete $2;
     }
     | '-' exp %prec A_U_MINUS
     {
@@ -314,7 +316,6 @@ exp:
         } else {
             $$ = $2;
         }
-        delete $2;
     }
     | '+' exp %prec A_U_PLUS
     {
@@ -324,7 +325,6 @@ exp:
         } else {
             $$ = $2;
         }
-        delete $2;
     }
     | exp A_OR_LOGIC exp { $$ = check_logical_op($1, $3, "||"); }
     | exp A_AND_LOGIC exp { $$ = check_logical_op($1, $3, "&&"); }
@@ -543,7 +543,7 @@ return_stmt:
             
             looking_for_return_smtm = false;
         } else {
-            error("Comando 'return' encontrado fora de um procedimento.");
+            // error("Comando 'return' encontrado fora de um procedimento.");
         }
 
         if ($2) delete $2;
@@ -633,4 +633,5 @@ arg_list:
 void yy::parser::error(const std::string &message)
 {
     std::cerr << "Error: " << message << std::endl;
+    std::exit(1);
 }

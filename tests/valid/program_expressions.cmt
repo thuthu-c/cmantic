@@ -1,4 +1,4 @@
-program registers
+program expressions
 begin
 
 var a : int;
@@ -7,12 +7,14 @@ var b : int;
 var rel := a < b;
 var arith := a + b;
 var par := b * (arith);
+var u_minus := -a;
+var u_plus := +b;
 
 var c : bool;
 var d : bool;
 
 var log := c || d;
-// var not_exp := not log
+var not_exp := not log;
 
 var lit := 5;
 var lit_var := lit;

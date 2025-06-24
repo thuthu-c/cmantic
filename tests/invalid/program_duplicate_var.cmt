@@ -1,0 +1,5 @@
+program test1
+begin
+var a : int := 5;
+var a : int := 6
+end
