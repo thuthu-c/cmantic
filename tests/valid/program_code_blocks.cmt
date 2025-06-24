@@ -1,11 +1,17 @@
 program registers
 begin
 
-var c : bool;
-var d : bool;
+    procedure testando_if (c : bool, d : bool) : bool
+    begin
+        if c || d then
+            return c && d
+        fi;
+        return
+    end;
 
-if c || d then
-    var e : bool
-fi;
+    procedure testando_proc ( ) : bool
+    begin
+        return testando_if(true, false)
+    end
 
 end

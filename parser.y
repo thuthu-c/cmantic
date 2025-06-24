@@ -25,6 +25,8 @@
     #define yylex lexer.yylex
 
     SymbolTable symbol_table;
+    std::stack<VarType> procedure_return_types;
+    bool looking_for_return_smtm = false;
 }
 
 %union {
@@ -171,25 +173,50 @@ type_spec:
 
 proc_declaration:
       A_PROCEDURE A_NAME '(' optional_param_list ')' optional_return_type
-      A_BEGIN optional_proc_decls_in_block stmt_list A_END
       {
-        std::vector<ParamField>* params = $4;
-
         if (symbol_table.lookup_current_scope_only(*$2)) {
             error("Procedimento '" + *$2 + "' já declarado neste escopo.");
         } else {
             std::cout << "Declarando procedimento: " << *$2 << std::endl;
             Procedure proc_content;
-            proc_content.params = *params;
+            proc_content.params = *$4;
             proc_content.return_type = $6 ? *$6 : VarType{PrimitiveType::VOID};
+            procedure_return_types.push(proc_content.return_type);
             Symbol proc_symbol{*$2, SymbolCategory::PROCEDURE, proc_content};
             symbol_table.insert_symbol(*$2, proc_symbol);
+
+            symbol_table.push_scope();
+
+            if ($4) {
+                for (const auto& param : *$4) {
+                    if (symbol_table.lookup_current_scope_only(param.name)) {
+                        error("Parâmetro com nome duplicado: '" + param.name + "'.");
+                    } else {
+                        Variable var_content{param.type};
+                        Symbol param_as_var{param.name, SymbolCategory::VARIABLE, var_content};
+                        symbol_table.insert_symbol(param.name, param_as_var);
+                    }
+                }
+            }
+
+            looking_for_return_smtm = true;
         }
 
         delete $2;
-        delete params;
+        delete $4;
         if ($6) delete $6;
       }
+      A_BEGIN optional_proc_decls_in_block stmt_list A_END
+      {
+        std::cout << "Fim de procedimento" << std::endl;
+
+        if (!procedure_return_types.empty()) {
+            procedure_return_types.pop();
+        }
+
+        symbol_table.print();
+        symbol_table.pop_scope();
+    }
     ;
 
 optional_param_list:
@@ -498,6 +525,27 @@ while_stmt:
 return_stmt:
     A_RETURN optional_exp_val
     {
+        if (looking_for_return_smtm && !procedure_return_types.empty()) {
+            VarType returned_type;
+            if ($2) {
+                returned_type = *$2;
+            } else {
+                returned_type.p_type = PrimitiveType::VOID;
+            }
+
+            VarType expected_type = procedure_return_types.top();
+            
+            if (expected_type != returned_type) {
+                error("Tipo de retorno incompatível. Esperava '" + 
+                    type_to_string(expected_type) + "' mas o comando retorna '" + 
+                    type_to_string(returned_type) + "'.");
+            }
+            
+            looking_for_return_smtm = false;
+        } else {
+            error("Comando 'return' encontrado fora de um procedimento.");
+        }
+
         if ($2) delete $2;
     }
     ;

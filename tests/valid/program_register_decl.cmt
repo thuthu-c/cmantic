@@ -1,9 +1,9 @@
 program registers
 begin
 
-struct test {
-    a: int
-}
+    struct test {
+        a: int
+    };
 
-var test_struct : test
+    var test_struct : test
 end

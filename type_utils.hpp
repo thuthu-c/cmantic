@@ -105,6 +105,10 @@ struct VarType {
                 return true;
         }
     }
+
+    bool operator!=(const VarType& other) const {
+        return !(*this == other);
+    }
 };
 
 /**
