@@ -19,6 +19,7 @@ var not_exp := not log;
 var lit := 5;
 var lit_var := lit;
 var ref_lit := ref(lit);
+var ref_lit2 := ref(ref_lit);
 var deref_ref_lit := deref(ref_lit)
 
 end

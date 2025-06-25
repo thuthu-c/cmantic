@@ -84,18 +84,22 @@ std::string SymbolTable::symbolCategory_to_string(SymbolCategory category) const
 }
 
 std::string SymbolTable::varType_to_string(const VarType& varType) const {
-    if (varType.p_type != PrimitiveType::NOT_PRIMITIVE) {
-        switch (varType.p_type) {
-            case PrimitiveType::BOOL:   return "BOOL";
-            case PrimitiveType::FLOAT:  return "FLOAT";
-            case PrimitiveType::INT:    return "INT";
-            case PrimitiveType::STRING: return "STRING";
-            case PrimitiveType::VOID:   return "VOID";
-            default:                    return "UNDEFINED";
-        }
+    switch (varType.p_type) {
+        case PrimitiveType::BOOL:   return "BOOL";
+        case PrimitiveType::FLOAT:  return "FLOAT";
+        case PrimitiveType::INT:    return "INT";
+        case PrimitiveType::STRING: return "STRING";
+        case PrimitiveType::VOID:   return "VOID";
+        case PrimitiveType::REF:
+            if (varType.referenced_type) {
+                return "REF(" + varType_to_string(*varType.referenced_type) + ")";
+            } else {
+                return "REF(UNDEFINED)";
+            }
+        case PrimitiveType::NOT_PRIMITIVE:
+            return "RECORD(" + varType.record_name.value_or("UNDEFINED_RECORD") + ")";
+        default: return "UNDEFINED";
     }
-
-    return varType.record_name.value_or("UNDEFINED_RECORD");
 }
 
 std::string SymbolTable::procedure_to_string(const Procedure& proc) const {

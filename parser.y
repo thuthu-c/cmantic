@@ -83,7 +83,7 @@ program_prod:
     A_BEGIN optional_declaration_list A_END { 
         std::cout << "Programa finalizado com sucesso." << std::endl;
         // symbol_table.print(); 
-        }
+    }
     ;
 
 optional_declaration_list:
@@ -217,7 +217,7 @@ proc_declaration:
             procedure_return_types.pop();
         }
 
-        // symbol_table.print();
+        //symbol_table.print();
         symbol_table.pop_scope();
     }
     ;
@@ -509,7 +509,7 @@ case_label_element:
 
 optional_otherwise_clause:
     /* empty */
-    | A_OTHERWISE stmt_list
+    | A_OTHERWISE ':' stmt_list
     ;
 
 while_stmt:
