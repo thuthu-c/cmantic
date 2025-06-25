@@ -1,19 +1,14 @@
 program registers
 begin
-    procedure idade_de_um_gay () : string
+    procedure testing_case (idade : int) : string
     begin
-        var idade : int
-    in
-        idade := 2;
-
         case idade of
-            0..12: return "Projeto de Poc" |
-            13..17: return "Adolescente Ninguem Me Entende" |
-            18..22: return "Twink Universitário" |
-            23..26: return "Twunk Pós-Graduado" |
-            27..32: return "Pai de Pet com Início de Calvície" |
-            33..40: return "Fase do Skin Care"
-            otherwise: return "Aposentado pelo INSS"
+            0..12: return "Criança" |
+            13..17: return "Adolescente" |
+            18..24: return "Jovem Adulto" |
+            25..39: return "Adulto" |
+            40..59: return "Adulto de Meia Idade"
+            otherwise: return "Idoso"
         esac
     end
 end

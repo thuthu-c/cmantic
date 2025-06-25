@@ -13,5 +13,12 @@ class CustomLexer : public yyFlexLexer
     {
     }
 
-    int yylex(yy::parser::semantic_type* yylval);
+    int yylex(yy::parser::semantic_type* yylval, yy::parser::location_type* yylloc);
+
+    int getLine() const { return m_line; }
+    int getColumn() const { return m_col; }
+
+  private:
+    int m_line = 1;
+    int m_col = 1;
 };

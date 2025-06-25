@@ -1,6 +1,8 @@
 %require "3.2"
 %language "c++"
 
+%locations
+
 // %define parse.trace true
 
 %code requires {
@@ -106,16 +108,16 @@ var_declaration:
     A_VAR A_NAME ':' type_spec optional_assign_exp
     {
       if (symbol_table.lookup_current_scope_only(*$2)) {
-        error("Variavel '" + *$2 + "' ja declarada neste escopo.");
+        error(@2, "Variavel '" + *$2 + "' ja declarada neste escopo.");
       } else {
         bool types_are_ok = true;
         if ($5) {
           if (!are_types_compatible(*$4, *$5)) {
               std::string declared_type = type_to_string(*$4);
               std::string assigned_type = type_to_string(*$5);
-              error("Incompatibilidade de tipos para a variável '" + *$2 +
+              error(@2, "Incompatibilidade de tipos para a variável '" + *$2 +
                     "'. Tipo declarado: " + declared_type +
-                    ", mas o tipo da expressão atribuída é:: " + assigned_type + ".");
+                    ", mas o tipo da expressão atribuída é: " + assigned_type + ".");
               types_are_ok = false;
           }
         }
@@ -133,7 +135,7 @@ var_declaration:
     | A_VAR A_NAME A_ASSIGN exp
       {
         if (symbol_table.lookup_current_scope_only(*$2)) {
-          error("Variavel '" + *$2 + "' ja declarada neste escopo.");
+          error(@2, "Variavel '" + *$2 + "' ja declarada neste escopo.");
           delete $4;
         } else {
           Variable var_content{*$4};
@@ -159,7 +161,7 @@ type_spec:
     {
       Symbol* s = symbol_table.lookup(*$1);
       if (!s || s->category != SymbolCategory::RECORD) {
-        error("Tipo '" + *$1 + "' nao eh um tipo de struct valido.");
+        error(@1, "Tipo '" + *$1 + "' nao eh um tipo de struct valido.");
         $$ = new VarType{PrimitiveType::UNDEFINED};
       } else {
         $$ = new VarType{PrimitiveType::NOT_PRIMITIVE, *$1};
@@ -178,7 +180,7 @@ proc_declaration:
       A_PROCEDURE A_NAME '(' optional_param_list ')' optional_return_type
       {
         if (symbol_table.lookup_current_scope_only(*$2)) {
-            error("Procedimento '" + *$2 + "' já declarado neste escopo.");
+            error(@2, "Procedimento '" + *$2 + "' já declarado neste escopo.");
         } else {
             // std::cout << "Declarando procedimento: " << *$2 << std::endl;
             Procedure proc_content;
@@ -193,7 +195,7 @@ proc_declaration:
             if ($4) {
                 for (const auto& param : *$4) {
                     if (symbol_table.lookup_current_scope_only(param.name)) {
-                        error("Parâmetro com nome duplicado: '" + param.name + "'.");
+                        error(@4, "Parâmetro com nome duplicado: '" + param.name + "'.");
                     } else {
                         Variable var_content{param.type};
                         Symbol param_as_var{param.name, SymbolCategory::VARIABLE, var_content};
@@ -260,7 +262,7 @@ rec_declaration:
     A_STRUCT A_NAME '{' optional_rec_field_list '}'
     {
       if (symbol_table.lookup_current_scope_only(*$2)) {
-          error("Tipo de struct '" + *$2 + "' já definido neste escopo.");
+          error(@1, "Tipo de struct '" + *$2 + "' já definido neste escopo.");
       } else {
           Record rec_content{*$4};
           Symbol new_symbol{*$2, SymbolCategory::RECORD, rec_content};
@@ -288,7 +290,7 @@ exp:
     {
       Symbol* s = symbol_table.lookup(*$2);
       if (!s || s->category != SymbolCategory::RECORD) {
-          error("Tipo '" + *$2 + "' não é um tipo de registro válido para 'new'.");
+          error(@1, "Tipo '" + *$2 + "' não é um tipo de registro válido para 'new'.");
           $$ = new VarType{PrimitiveType::UNDEFINED};
       } else {
           $$ = new VarType{PrimitiveType::NOT_PRIMITIVE, *$2};
@@ -302,7 +304,7 @@ exp:
     | A_NOT exp
     {
         if ($2->p_type != PrimitiveType::BOOL) {
-            error("Operador 'not' requer um operando booleano, mas obteve " + type_to_string(*$2) + ".");
+            error(@2, "Operador 'not' requer um operando booleano, mas obteve " + type_to_string(*$2) + ".");
             $$ = new VarType{PrimitiveType::UNDEFINED};
         } else {
             $$ = $2;
@@ -311,7 +313,7 @@ exp:
     | '-' exp %prec A_U_MINUS
     {
         if (!$2 || ($2->p_type != PrimitiveType::INT && $2->p_type != PrimitiveType::FLOAT)) {
-            error("Operador unário '-' requer operando numérico. Foi: " + type_to_string(*$2) + ".");
+            error(@2, "Operador unário '-' requer operando numérico. Foi: " + type_to_string(*$2) + ".");
             $$ = new VarType{PrimitiveType::UNDEFINED};
         } else {
             $$ = $2;
@@ -320,7 +322,7 @@ exp:
     | '+' exp %prec A_U_PLUS
     {
         if (!$2 || ($2->p_type != PrimitiveType::INT && $2->p_type != PrimitiveType::FLOAT)) {
-            error("Operador unário '+' requer operando numérico. Foi: " + type_to_string(*$2) + ".");
+            error(@2, "Operador unário '+' requer operando numérico. Foi: " + type_to_string(*$2) + ".");
             $$ = new VarType{PrimitiveType::UNDEFINED};
         } else {
             $$ = $2;
@@ -354,7 +356,7 @@ deref_var:
     A_DEREF '(' var_access ')'
     {
       if ($3->p_type != PrimitiveType::REF || !$3->referenced_type) {
-          error("Não é possível desreferenciar um tipo não-referência: " + type_to_string(*$3) + ".");
+          error(@3, "Não é possível desreferenciar um tipo não-referência: " + type_to_string(*$3) + ".");
           $$ = new VarType{PrimitiveType::UNDEFINED};
       } else {
           $$ = new VarType{*$3->referenced_type};
@@ -364,7 +366,7 @@ deref_var:
     | A_DEREF '(' deref_var ')'
     {
       if ($3->p_type != PrimitiveType::REF || !$3->referenced_type) {
-          error("Não é possível desreferenciar um tipo não-referência: " + type_to_string(*$3) + ".");
+          error(@3, "Não é possível desreferenciar um tipo não-referência: " + type_to_string(*$3) + ".");
           $$ = new VarType{PrimitiveType::UNDEFINED};
       } else {
           $$ = new VarType{*$3->referenced_type};
@@ -378,10 +380,10 @@ var_access:
     {
       Symbol* s = symbol_table.lookup(*$1);
       if (!s) {
-          error("Variável '" + *$1 + "' não declarada.");
+          error(@1, "Variável '" + *$1 + "' não declarada.");
           $$ = new VarType{PrimitiveType::UNDEFINED};
       } else if (s->category != SymbolCategory::VARIABLE) {
-          error("Símbolo '" + *$1 + "' não é uma variável.");
+          error(@1, "Símbolo '" + *$1 + "' não é uma variável.");
           $$ = new VarType{PrimitiveType::UNDEFINED};
       } else {
           $$ = new VarType{std::get<Variable>(s->content).type};
@@ -405,13 +407,13 @@ var_access:
                   }
               }
               if (!found_field) {
-                  error("Struct '" + $1->record_name.value() + "' não possui o campo '" + *$3 + "'.");
+                  error(@3, "Struct '" + $1->record_name.value() + "' não possui o campo '" + *$3 + "'.");
               }
           } else {
-              error("Tipo de struct '" + $1->record_name.value() + "' não encontrado.");
+              error(@1, "Tipo de struct '" + $1->record_name.value() + "' não encontrado.");
           }
       } else {
-          error("Acesso de membro '.' requer um tipo de struct à esquerda, mas obteve " + type_to_string(*$1) + ".");
+          error(@1, "Acesso de membro '.' requer um tipo de struct à esquerda, mas obteve " + type_to_string(*$1) + ".");
       }
       delete $1;
       delete $3;
@@ -444,7 +446,7 @@ assign_stmt:
     var_access A_ASSIGN exp
     {
       if (!are_types_compatible(*$1, *$3)) {
-          error("Incompatibilidade de tipos na atribuição. Esperado " + type_to_string(*$1) + " mas obteve " + type_to_string(*$3) + ".");
+          error(@1, "Incompatibilidade de tipos na atribuição. Esperado " + type_to_string(*$1) + " mas obteve " + type_to_string(*$3) + ".");
       }
       delete $1;
       delete $3;
@@ -452,7 +454,7 @@ assign_stmt:
     | deref_var A_ASSIGN exp
     {
       if (!are_types_compatible(*$1, *$3)) {
-          error("Incompatibilidade de tipos na atribuição por desreferência. Esperado " + type_to_string(*$1) + " mas obteve " + type_to_string(*$3) + ".");
+          error(@1, "Incompatibilidade de tipos na atribuição por desreferência. Esperado " + type_to_string(*$1) + " mas obteve " + type_to_string(*$3) + ".");
       }
       delete $1;
       delete $3;
@@ -463,21 +465,21 @@ if_stmt:
     A_IF exp A_THEN stmt_list optional_else_clause A_FI
     {
       if ($2->p_type != PrimitiveType::BOOL) {
-          error("Condição do 'if' deve ser booleana, mas foi " + type_to_string(*$2) + ".");
+          error(@2, "Condição do 'if' deve ser booleana, mas foi " + type_to_string(*$2) + ".");
       }
       delete $2;
     }
     | A_UNLESS exp A_DO stmt_list optional_else_clause A_OD
     {
       if ($2->p_type != PrimitiveType::BOOL) {
-          error("Condição do 'unless' deve ser booleana, mas foi " + type_to_string(*$2) + ".");
+          error(@2, "Condição do 'unless' deve ser booleana, mas foi " + type_to_string(*$2) + ".");
       }
       delete $2;
     }
     | A_CASE exp A_OF case_list optional_otherwise_clause A_ESAC
     {
       if ($2->p_type != PrimitiveType::INT) {
-            error("Expressão do 'case' deve ser do tipo inteiro, mas foi " + type_to_string(*$2) + ".");
+            error(@2, "Expressão do 'case' deve ser do tipo inteiro, mas foi " + type_to_string(*$2) + ".");
       }
       delete $2;
     }
@@ -516,7 +518,7 @@ while_stmt:
     A_WHILE exp A_DO stmt_list A_OD
     {
       if ($2->p_type != PrimitiveType::BOOL) {
-          error("Condição do 'while' deve ser booleana, mas foi " + type_to_string(*$2) + ".");
+          error(@2, "Condição do 'while' deve ser booleana, mas foi " + type_to_string(*$2) + ".");
       }
       delete $2;
     }
@@ -536,7 +538,7 @@ return_stmt:
             VarType expected_type = procedure_return_types.top();
             
             if (expected_type != returned_type) {
-                error("Tipo de retorno incompatível. Esperava '" + 
+                error(@2, "Tipo de retorno incompatível. Esperava '" + 
                     type_to_string(expected_type) + "' mas o comando retorna '" + 
                     type_to_string(returned_type) + "'.");
             }
@@ -560,20 +562,20 @@ call_stmt: // Usado como um comando (STMT)
     {
       Symbol* s = symbol_table.lookup(*$1);
       if (!s) {
-          error("Procedimento '" + *$1 + "' não foi declarado.");
+          error(@1, "Procedimento '" + *$1 + "' não foi declarado.");
       } else if (s->category != SymbolCategory::PROCEDURE) {
-          error("Símbolo '" + *$1 + "' não é um procedimento, não pode ser chamado.");
+          error(@1, "Símbolo '" + *$1 + "' não é um procedimento, não pode ser chamado.");
       } else {
           const Procedure& proc = std::get<Procedure>(s->content);
           const auto& params = proc.params;
           const auto& args = *$3;
 
           if (params.size() != args.size()) {
-              error("Número incorreto de argumentos para '" + *$1 + "'. Esperado: " + std::to_string(params.size()) + ", Fornecido: " + std::to_string(args.size()) + ".");
+              error(@3, "Número incorreto de argumentos para '" + *$1 + "'. Esperado: " + std::to_string(params.size()) + ", Fornecido: " + std::to_string(args.size()) + ".");
           } else {
               for (size_t i = 0; i < params.size(); ++i) {
                   if (!are_types_compatible(params[i].type, *args[i])) {
-                      error("Incompatibilidade de tipo para o argumento " + std::to_string(i+1) + " na chamada de '" + *$1 + "'. Esperado: " + type_to_string(params[i].type) + ", Fornecido: " + type_to_string(*args[i]) + ".");
+                      error(@3, "Incompatibilidade de tipo para o argumento " + std::to_string(i+1) + " na chamada de '" + *$1 + "'. Esperado: " + type_to_string(params[i].type) + ", Fornecido: " + type_to_string(*args[i]) + ".");
                   }
               }
           }
@@ -589,13 +591,13 @@ call_stmt_as_exp: // Usado como uma expressão (EXP)
       $$ = new VarType{PrimitiveType::UNDEFINED};
       Symbol* s = symbol_table.lookup(*$1);
       if (!s) {
-          error("Função '" + *$1 + "' não foi declarada.");
+          error(@1, "Função '" + *$1 + "' não foi declarada.");
       } else if (s->category != SymbolCategory::PROCEDURE) {
-          error("Símbolo '" + *$1 + "' não é uma função.");
+          error(@1, "Símbolo '" + *$1 + "' não é uma função.");
       } else {
           const Procedure& proc = std::get<Procedure>(s->content);
           if (proc.return_type.p_type == PrimitiveType::VOID) {
-              error("Procedimento '" + *$1 + "' não retorna um valor e não pode ser usado em uma expressão.");
+              error(@1, "Procedimento '" + *$1 + "' não retorna um valor e não pode ser usado em uma expressão.");
           } else {
                 delete $$;
                 $$ = new VarType{proc.return_type};
@@ -604,11 +606,11 @@ call_stmt_as_exp: // Usado como uma expressão (EXP)
           const auto& params = proc.params;
           const auto& args = *$3;
           if (params.size() != args.size()) {
-              error("Número incorreto de argumentos para '" + *$1 + "'. Esperado: " + std::to_string(params.size()) + ", Fornecido: " + std::to_string(args.size()) + ".");
+              error(@3, "Número incorreto de argumentos para '" + *$1 + "'. Esperado: " + std::to_string(params.size()) + ", Fornecido: " + std::to_string(args.size()) + ".");
           } else {
                 for (size_t i = 0; i < params.size(); ++i) {
                   if (!are_types_compatible(params[i].type, *args[i])) {
-                    error("Incompatibilidade de tipo para o argumento " + std::to_string(i+1) + " na chamada de '" + *$1 + "'. Esperado: " + type_to_string(params[i].type) + ", Fornecido: " + type_to_string(*args[i]) + ".");
+                    error(@3, "Incompatibilidade de tipo para o argumento " + std::to_string(i+1) + " na chamada de '" + *$1 + "'. Esperado: " + type_to_string(params[i].type) + ", Fornecido: " + type_to_string(*args[i]) + ".");
                   }
               }
           }
@@ -630,8 +632,11 @@ arg_list:
 
 %% // Fim das Regras Gramaticais
 
-void yy::parser::error(const std::string &message)
+void yy::parser::error(const location_type& loc, const std::string &message)
 {
-    std::cerr << "Error: " << message << std::endl;
+    std::cerr << "Erro na Linha " << loc.begin.line 
+              << ", Coluna " << loc.begin.column << ": "
+              << message << std::endl;
+
     std::exit(1);
 }
