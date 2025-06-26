@@ -24,6 +24,8 @@ O projeto implementa as etapas iniciais de um compilador:
 - **Tabela de Símbolos:** Gerenciamento de variáveis, procedimentos e registros.
 - **Verificação de Tipos:** Checagem de tipos em expressões e declarações.
 
+O relatório completo deste trabalho pode ser encontrado neste [arquivo](PDFs/Relatório%20de%20Compiladores%20Unidade%202.pdf)
+
 ## Estrutura do Projeto
 
 ```
@@ -33,15 +35,13 @@ O projeto implementa as etapas iniciais de um compilador:
 ├── symbol_table.cpp/hpp   # Implementação da tabela de símbolos
 ├── type_utils.cpp/hpp     # Utilitários para manipulação de tipos
 ├── custom_lexer.hpp       # Classe base para analisadores léxicos
-├── project_1/             # Implementações alternativas (ex: parser recursivo)
-├── tests/                 # Casos de teste (válidos e inválidos)
 ├── run_tests.sh           # Script para rodar todos os testes
-├── build/                 # Diretório de build (gerado pelo CMake)
-├── bison_test/            # Exemplos e testes de Bison/Flex
-├── PDFs/                  # Materiais de apoio e especificação
+├── run.sh                 # Script para compilar o programa
 ├── grammar.md             # Gramática da linguagem
 ├── attributes.md          # Atributos sintáticos e semânticos
 ├── tokens.md              # Lista de tokens terminais
+├── tests/                 # Casos de teste (válidos e inválidos)
+├── PDFs/                  # Pasta com os arquivos PDFs de base e relatórios
 └── README.md              # Este arquivo
 ```
 
@@ -51,7 +51,6 @@ O projeto implementa as etapas iniciais de um compilador:
 
 - [Flex](https://github.com/westes/flex)
 - [Bison](https://www.gnu.org/software/bison/)
-- [CMake](https://cmake.org/)
 - Compilador C++ (recomendado: g++)
 
 ### Compilando via linha de comando
@@ -59,31 +58,23 @@ O projeto implementa as etapas iniciais de um compilador:
 ```sh
 bison -d parser.y 
 flex analyzer.flex
-g++ -o parser main.cpp parser.tab.cc lex.yy.cc symbol_table.cpp type_utils.cpp -lfl
+g++ -o cmantic main.cpp parser.tab.cc lex.yy.cc symbol_table.cpp type_utils.cpp -lfl
 ```
 
-### Compilando via CMake
+Alternativamente, pode-se usar o script ./run.sh que fará as 3 compilações automaticamente.
 
-```sh
-cd project_1
-mkdir -p build
-cd build
-cmake ..
-make
-```
-
-O executável será gerado como `parser` (ou `syntax_analyzer` via CMake).
+O executável será gerado como `cmantic`.
 
 ### Executando
 
 ```sh
-./parser <arquivo_de_teste>
+./cmantic <arquivo_de_teste>
 ```
 
 Exemplo:
 
 ```sh
-./parser tests/valid/program_var_decl.cmt
+./cmantic tests/valid/program_var_decl.cmt
 ```
 
 ## Testes
@@ -105,8 +96,8 @@ O script executa casos de teste válidos e inválidos, exibindo mensagens colori
 - [`parser.y`](parser.y): Gramática e regras semânticas do parser.
 - [`symbol_table.hpp`](symbol_table.hpp): Estruturas e funções para tabela de símbolos.
 - [`type_utils.hpp`](type_utils.hpp): Funções auxiliares para tipos.
-- [`project_1/recursive_parser.hpp`](project_1/recursive_parser.hpp): Parser recursivo descendente (alternativo).
 - [`run_tests.sh`](run_tests.sh): Script de automação de testes.
+- [`run.sh`](run.sh): Script de automação de compilação.
 - [`grammar.md`](grammar.md): Gramática formal da linguagem.
 - [`attributes.md`](attributes.md): Descrição dos atributos sintáticos e semânticos.
 - [`tokens.md`](tokens.md): Lista de tokens reconhecidos pelo léxico.
@@ -123,7 +114,7 @@ DECL -> VAR_DECL | PROC_DECL | REC_DECL
 ...
 ```
 
-## Atributos Sintáticos
+## Atributos
 
 Os atributos utilizados nas produções estão descritos em [`attributes.md`](attributes.md), incluindo informações sobre escopo, tipos e validação semântica.
 
