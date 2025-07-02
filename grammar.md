@@ -64,7 +64,7 @@ ASSIGN_STMT → VAR ”:=” EXP
 
 IF_STMT → if EXP then STMT_LIST [ else STMT_LIST ] fi
             | unless EXP do STMT_LIST [ else STMT_LIST ] od
-            | case EXP of CASE { ";" CASE } [ otherwise STMT_LIST ] esac
+            | case EXP of CASE { "|" CASE } [ otherwise STMT_LIST ] esac
 CASE → INT_LITERAL [ "." "." INT_LITERAL ] { "," INT_LITERAL [ "." "." INT_LITERAL ] } ":" STMT_LIST
 
 WHILE_STMT -> while EXP do STMT_LIST od
