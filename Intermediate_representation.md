@@ -1,5 +1,7 @@
 # Esquema de geração de código intermediario
 
+## Tradução das produções
+
 PROGRAM → program NAME begin [ DECL {";" DECL}] end
 
 DECL → VAR_DECL 
@@ -89,3 +91,90 @@ TYPE → string
 TYPE → bool 
 TYPE → NAME 
 TYPE → ref "(" TYPE ")"
+
+## Compreensão 
+
+Determinadas produções deverão ser implementados de forma a gerar determinados textos, um programa de exemplo por exemplo pode ser dado como:
+
+**Cmantic:**:
+```
+procedure main (int argc, string[] argv)
+begin
+    var a int := 10 + 10;
+    if 21 > a then
+        print("a")
+    else
+        print("b")
+    fi;
+end
+```
+
+Deverá ser traduzido para:
+
+```c
+void main (int argc, char* argv[]) {
+    int a = 10 + 10;
+    bool b = 21 > a;
+    if (b) goto end1;
+    goto end2;
+
+    end1: 
+        print("a");
+        return;
+    end2:   
+        print("b");
+        return;
+}
+```
+
+Dessa forma é necessário ter um controle nas labels e gotos de forma a conseguir manter o fluxo correto do programa. 
+
+É importante compreender direito as **expressões**, dado que toda variável pode ter apenas um operador, então expressões aninhadas terão variáveis "aninhadas", ou seja:
+```
+var a : int := 15;
+if (a > 10 || a < 20)
+```
+
+Deve ser traduzido para:
+```c
+int tmp1 = 15;
+int a = tmp1;
+int tmp2 = a > 10;
+int tmp3 = a < 20;
+int tmp4 = tmp2 || tmp3;
+if (tmp4)
+```
+Os padrões aqui são que: A árvore da expressão será aberta por sua associatividade, com as folhas e, posteriormente subindo a árvore, será criado uma variável tmpN para cada operador e seus 2 operandos. Por fim, uma última variável tmpN terá o valor da expressão completa e será usada para atribuições ou para comparações com Ifs.
+
+Para os blocos, nós teremos que traduzir: **while**, **unless**, **case**, **if/else**.
+
+Caso do while:
+```
+var a : bool := true;
+var b : bool := false;
+while a || b do
+    a = not a
+od;
+```
+
+```c
+bool a = true;
+bool b = false;
+
+while_tmp1:
+bool tmp1 = a || b;
+if (tmp1)
+    goto while_tmp2;
+goto end_while_tmp1;
+
+while_tmp2:
+    a = !a;
+    goto while_tmp1;
+
+end_while_tmp1:
+...
+
+
+## Dúvidas
+- Nossa linguagem não tem array, necessário adicionar? R: Não é necessário adiconar :check:
+- Somente if, ou if else? R: Somente Ifs :check:
