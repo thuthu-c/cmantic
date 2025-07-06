@@ -9,33 +9,72 @@ DECL → VAR_DECL
 DECL → PROC_DECL 
 DECL → REC_DECL
 
-VAR_DECL → VAR name ":" TYPE [ ":=" EXP]
-VAR_DECL → var NAME ":=" EXP
+VAR_DECL → VAR NAME ":" TYPE [ ":=" EXP]            {IfEmpty: VAR_DECL.translate = TYPE.lexeme + NAME.lexeme || VAR_DECL.value = (NAME, TYPE)
+                                                    IfNotEmpty: IfTrue: TYPE == EXP.value.type then VAR_DECL.translate = TYPE.lexeme + NAME.lexeme + " = " + EXP.name || VAR_DECL.value = (NAME, TYPE)
+                                                    }
 
-PROC_DECL → procedure NAME "(" [PARAMFIELD_DECL {"," PARAMFIELD_DECL}] ")" [":" TYPE] begin [[DECL {";" DECL}] in ] STMT_LIST end
+VAR_DECL → var NAME ":=" EXP                        {IfTrue: VAR_DECL.translate = EXP.value.type + NAME.lexeme + " = " + EXP.name || VAR_DECL.value = (NAME, EXP.value.type)}
 
-REC_DECL → struct NAME "{" [ PARAMFIELD_DECL { ";" PARAMFIELD_DECL } ] "}"
+PROC_DECL → procedure NAME "(" [PARAMFIELD_DECL {"," PARAMFIELD_DECL}] ")" [":" TYPE] begin [[DECL {";" DECL}] in ] STMT_LIST end {//Tradução para funções}
 
-PARAMFIELD_DECL → NAME ":" TYPE
+REC_DECL → struct NAME "{" [ PARAMFIELD_DECL { ";" PARAMFIELD_DECL } ] "}"      {// Tradução para typedef de structs}
+
+PARAMFIELD_DECL → NAME ":" TYPE                     {PARAMFIELD_DECL.translate = TYPE.lexeme + NAME.lexeme}
 
 STMT_LIST → [ STMT { ";" STMT} ]
 
-EXP → EXP LOG_OP EXP
-EXP → not EXP
-EXP → EXP REL_OP EXP
-EXP → EXP ARITH_OP EXP
-EXP → LITERAL
+EXP → EXP1 LOG_OP EXP2                              {IfTrue: EXP1.value.type == EXP2.value.type then EXP.value.type = EXP1.value.type
+                                                    || EXP.translate = EXP.value.type + new_name() + " = " + EXP1.value.name + LOG_OP.lexeme + EXP2.value.name 
+                                                    || EXP.value.name = retrieve_last_name()
+                                                    }
+
+EXP → not EXP1                                      {EXP.value.type = EXP1.value.type
+                                                    || EXP.translate = EXP.value.type + new_name() + " = !" + EXP1.value.name
+                                                    || EXP.value.name = retrieve_last_name()
+                                                    }
+
+EXP → EXP1 REL_OP EXP2                              {IfTrue: EXP1.value.type == EXP2.value.type then EXP.value.type = EXP1.value.type
+                                                    || EXP.translate = EXP.value.type + new_name() + " = " + EXP1.value.name + REL_OP.lexeme + EXP2.value.name 
+                                                    || EXP.value.name = retrieve_last_name()
+                                                    }
+
+EXP → EXP1 ARITH_OP EXP2                            {IfTrue: EXP1.value.type == EXP2.value.type then EXP.value.type = EXP1.value.type
+                                                    || EXP.translate = EXP.value.type + new_name() + " = " + EXP1.value.name + ARITH_OP.lexeme + EXP2.value.name 
+                                                    || EXP.value.name = retrieve_last_name()
+                                                    }
+
+EXP → LITERAL                                       {EXP.value.type = Literal.type
+                                                    || EXP.translate = EXP.value.type + new_name() + " = " + Literal.lexeme
+                                                    || EXP.value.name = retrieve_last_name()
+                                                    }
+                                                    
 EXP → CALL_STMT
 EXP → new NAME
-EXP → VAR
-EXP → REF_VAR
-EXP → DEREF_VAR
-EXP → "(" EXP ")"
+EXP → VAR                                           {EXP.value.type = VAR.value.type
+                                                    || EXP.translate = EXP.value.type + new_name() + " = " + VAR.lexeme
+                                                    || EXP.value.name = retrieve_last_name()
+                                                    }
+EXP → REF_VAR                                       {EXP.value.type = REF_VAR.value.type
+                                                    || EXP.translate = EXP.value.type + new_name() + " = " + REF_VAR.translate
+                                                    || EXP.value.name = retrieve_last_name()
+                                                    }
+EXP → DEREF_VAR                                     {EXP.value.type = DEREF_VAR.value.type
+                                                    || EXP.translate = EXP.value.type + new_name() + " = " + DEREF_VAR.translate
+                                                    || EXP.value.name = retrieve_last_name()
+                                                    }
+EXP → "(" EXP1 ")"                                  {EXP.value.type = EXP1.value.type
+                                                    || EXP.translate = EXP.value.type + new_name() + " = (" + EXP1.value.name + ")"
+                                                    || EXP.value.name = retrieve_last_name()
+                                                    }
 
-REF_VAR → ref "(" VAR ")"                       {REF_VAR.value = VAR || //Tradução do Ref}
+REF_VAR → ref "(" VAR ")"                       {REF_VAR.value = VAR || 
+                                                REF_VAR.translate = "&" + VAR.value.name
+                                                }
 
-DEREF_VAR → deref "(" VAR ")"                   {DEREF_VAR.value = VAR || //Tradução do deref}
-DEREF_VAR → DEREF "(" DEREF_VAR ")"             {DEREF_VAR.value = DEREF_VAR || //Tradução do deref}
+DEREF_VAR → deref "(" VAR ")"                   {DEREF_VAR.value = VAR.value || 
+                                                DEREF_VAR.translate = "*" + VAR.value.name}
+DEREF_VAR → DEREF "(" DEREF_VAR1 ")"            {DEREF_VAR.value = DEREF_VAR1.value || 
+                                                DEREF_VAR.translate = "*" + DEREF_VAR1.translate}
 
 VAR → NAME                                      {VAR.value = NAME}
 VAR → EXP "." NAME                              {VAR.value = EXP.NAME}
@@ -74,8 +113,9 @@ STMT → CALL_STMT
 ASSIGN_STMT → VAR ”:=” EXP                                                  {ASSIGN_STMT.value = (VAR.NAME.name, EXP.type)}
 ASSIGN_STMT → DEREF_VAR ”:=” EXP                                            {ASSIGN_STMT.value = (DEREF_VAR.VAR.name, EXP.type)}
 
-IF_STMT → if EXP then STMT_LIST OPTIONAL_ELSE fi                            {IF_STMT.translate = "if (" + EXP.value.name + ") goto " + new_if_label() 
+IF_STMT → if EXP then STMT_LIST OPTIONAL_ELSE fi                            {IF_STMT.translate = "if (" + EXP.value.name + ") goto " + new_if_label() + ";"
                                                                             + OPTIONAL_ELSE.translate + retrieve_last_if + ":" + STMT_LIST.translate + " goto " + new_endif_label() + retrieve_last_endif + ":"}
+
 OPTIONAL_ELSE → ϵ | else STMT_LIST                                          {IfNotEmpty: OPTIONAL_ELSE.translate = "goto " + new_else + retrieve_else + ": " +}
 
 
@@ -100,13 +140,18 @@ TYPE → ref "(" TYPE ")"                                                     {T
 
 
 #### Lista de operações
+|| Pipe de operações realizadas
 +: Concatenação de strings
-IfNotEmpty: Se a produção não resultou em ϵ
+IfEmpty: Se a produção opcional resultou em ϵ
+IfNotEmpty: Se a produção opcional não resultou em ϵ
+IfTrue: Se o resultado da comparação retornar verdadeiro
 
 #### Lista de funções
+new_name: Gera um novo nome para variáveis
 new_if: Gera uma nova label para um bloco if
 new_else: Gera uma nova label para um bloco else
 new_endif: Gera uma nova label para o fim de um bloco if
+retrieve_last_name: Recupera o último nome de variável gerado
 retrieve_last_if: Recupera a última label gerada para blocos if
 retrieve_last_endif: Recupera a última label gerada para o fim de blocos if
 
@@ -115,7 +160,11 @@ retrieve_last_endif: Recupera a última label gerada para o fim de blocos if
 | Simbolo    | Atributo | Descrição
 | -------- | ------- | ------- |
 | LITERAL | type | Tipo |
+| PARAMFIELD_DECL | translate | String resultante da tradução |
+| VAR_DECL | value | Tupla (name, type) |
+| VAR_DECL | translate | String resultante da tradução |
 | EXP | value | Tupla (name, type) |
+| EXP | translate | String resultante da tradução |
 | CALL_STMT | value | Tupla (name, type) |
 | ASSIGN_STMT | value | Tupla (name, type) |
 | IF_STMT | translate | String resultante da tradução |
@@ -124,7 +173,9 @@ retrieve_last_endif: Recupera a última label gerada para o fim de blocos if
 | TYPE | translate | Texto de tradução |
 | VAR | value | Tupla (name, type) |
 | REF_VAR | value | Tupla (name, type) |
+| REF_VAR | translate | String resultante da tradução |
 | DEREF_VAR | value | Tupla (name, type) |
+| DEREF_VAR | translate | String resultante da tradução |
 | NAME | value | Tupla (name, type) |
 
 
