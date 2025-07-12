@@ -12,14 +12,22 @@ DECL → REC_DECL
 
 VAR_DECL → VAR NAME ":" TYPE [ ":=" EXP]            {IfEmpty: VAR_DECL.translate = TYPE.lexeme + NAME.lexeme || VAR_DECL.value = (NAME, TYPE)
                                                     IfNotEmpty: IfTrue: TYPE == EXP.value.type then VAR_DECL.translate = TYPE.lexeme + NAME.lexeme + " = " + EXP.name + ";"
-                                                    || VAR_DECL.value = (NAME, TYPE) || emit(VAR_DECL.translate)
+                                                    || VAR_DECL.value = (NAME, TYPE) 
+                                                    || emit(VAR_DECL.translate)
                                                     }
 
-VAR_DECL → var NAME ":=" EXP                        {IfTrue: VAR_DECL.translate = EXP.value.type + NAME.lexeme + " = " + EXP.name || VAR_DECL.value = (NAME, EXP.value.type)}
+VAR_DECL → var NAME ":=" EXP                        {IfTrue: VAR_DECL.translate = EXP.value.type + NAME.lexeme + " = " + EXP.name 
+                                                    || VAR_DECL.value = (NAME, EXP.value.type)
+                                                    || emit(VAR_DECL.translate)
+                                                    }
 
-PROC_DECL → procedure NAME "(" [PARAMFIELD_DECL {"," PARAMFIELD_DECL}] ")" [":" TYPE] begin [[DECL {";" DECL}] in ] STMT_LIST end   {proc_name := new_label() || create_procedure_scope(proc_name) ||
-                                                                                                                                    || PROC_DECL.translate = proc_name ":" + forEach(DECL): DECL.translate + STMT_LIST.translate + "goto controlProcedure;"
-                                                                                                                                    }
+PROC_DECL → procedure NAME "(" [PARAMFIELD_DECL {"," PARAMFIELD_DECL}] ")" 
+[":" TYPE] begin [[DECL {";" DECL}] in ] STMT_LIST end      {proc_name := new_label() 
+                                                            || create_procedure_scope(proc_name)
+                                                            || PROC_DECL.translate = proc_name ":" + forEach(DECL): DECL.translate + STMT_LIST.translate 
+                                                            + "goto controlProcedure;"
+                                                            || emit(PROC_DECL.translate)
+                                                            }
 
 REC_DECL → struct NAME "{" [ PARAMFIELD_DECL { ";" PARAMFIELD_DECL } ] "}"      {IfNotEmpety: REC_DECL.translate = "typedef struct {" 
                                                                                 + ForEach(PARAMFIELD_DECL):PARAMFIELD_DECL.translate + "} ;"
@@ -56,20 +64,31 @@ EXP → LITERAL                                       {EXP.value.type = Literal.
                                                     || EXP.value.name = t1
                                                     }
                                                     
-EXP → CALL_STMT
-EXP → new NAME
+EXP → CALL_STMT                                     {EXP.value.type = CALL_STMT.value.type || t1 := new_name()
+                                                    || EXP.translate = EXP.value.type + t1 + " = " + CALL_STMT.scope.return_label + ";"
+                                                    || EXP.value.name = t1
+                                                    }
+
+EXP → new NAME                                      {EXP.value.type = NAME.value.type || t1 := new_name()
+                                                    || EXP.translate = "{};" // Cria uma struct vazia
+                                                    || EXP.value.name = t1
+                                                    }
+
 EXP → VAR                                           {EXP.value.type = VAR.value.type || t1 := new_name()
                                                     || EXP.translate = EXP.value.type + t1 + " = " + VAR.lexeme
                                                     || EXP.value.name = t1
                                                     }
+
 EXP → REF_VAR                                       {EXP.value.type = REF_VAR.value.type || t1 := new_name()
                                                     || EXP.translate = EXP.value.type + t1 + " = " + REF_VAR.translate
                                                     || EXP.value.name = t1
                                                     }
+
 EXP → DEREF_VAR                                     {EXP.value.type = DEREF_VAR.value.type || t1 := new_name()
                                                     || EXP.translate = EXP.value.type + t1 + " = " + DEREF_VAR.translate
                                                     || EXP.value.name = t1
                                                     }
+                                                    
 EXP → "(" EXP1 ")"                                  {EXP.value.type = EXP1.value.type || t1 := new_name()
                                                     || EXP.translate = EXP.value.type + t1 + " = (" + EXP1.value.name + ")"
                                                     || EXP.value.name = t1
@@ -123,7 +142,8 @@ ASSIGN_STMT → DEREF_VAR ”:=” EXP                                          
 
 IF_STMT → if EXP then STMT_LIST OPTIONAL_ELSE fi                            { l1 := new_label() || l2 := new_label() 
                                                                             || IF_STMT.translate = "if (" + EXP.value.name + ") goto " + l1 + ";"
-                                                                            + OPTIONAL_ELSE.translate + "goto " + l2 + ";" + l1 + ":" + STMT_LIST.translate + " goto " + l2 + ";" + l2 + ":"} // l1 é o bloco verdadeiro, l2 é o fim do if
+                                                                            + OPTIONAL_ELSE.translate + "goto " + l2 + ";" + l1 + ":" + STMT_LIST.translate + " goto " + l2 + ";" + l2 + ":"
+                                                                            || emit(IF_STMT.translate)} // l1 é o bloco verdadeiro, l2 é o fim do if
 
 OPTIONAL_ELSE → ϵ | else STMT_LIST                                          {IfNotEmpty: l1 := new_label()
                                                                             || OPTIONAL_ELSE.translate = "goto " + l1 + ";" + 
@@ -134,6 +154,7 @@ OPTIONAL_ELSE → ϵ | else STMT_LIST                                          {
 IF_STMT → unless EXP do STMT_LIST OPTIONAL_ELSE od                          { t1 := new_name()  || l1 := new_label() || l2 := new_label() ||
                                                                             IF_STMT.translate = EXP.value.type + t1 " = !" + EXP.value.name + ";" +
                                                                             "if (" + EXP.value.name + ") goto " + l1 + ";" + OPTIONAL_ELSE.translate + "goto" + l2 + ";" + l1 + ":" STMT_LIST.translate + "goto " + l2 + ";" + l2 + ":"
+                                                                            || emit(IF_STMT.translate)
                                                                             } // l1 é bloco verdadero, l2 é o fim do if
 
 IF_STMT → case EXP of CASE { "|" CASE } [ otherwise STMT_LIST ] esac        {// Tradução do case}
@@ -152,16 +173,18 @@ RETURN_STMT → return [ EXP ]                                                {I
                                                                             || emit(RETURN_STMT.translate)
                                                                             }           
 
-CALL_STMT → NAME "(" [ EXP { "," EXP } ] ")"                                {scope := find_scope(NAME)  || return_point := new_label() || call_count := new_call_count() || new_call(call_count, return_point)
+CALL_STMT → NAME "(" [ EXP { "," EXP } ] ")"                                {CALL_STMT.scope := find_scope(NAME)  || CALL_STMT.value.type = NAME.value.type || return_point := new_label() 
+                                                                            || call_count := new_call_count() || new_call(call_count, return_point)
                                                                             || CALL_STMT.translate = ForEach(EXP): scope.params[idx].name = EXP.name + ";" + "CONTROL = " + call_count + ";" + "goto " + scope.proc_name + ";" + return_point + ":"
+                                                                            || emit(CALL_STMT.translate)
                                                                             } // Efetivamente, a tradução está atribuindo os parâmetros da função a partir dos labels criado para os parâmetrose depois fazendo um goto para o label do nome da função. Em seguida cria o label de retorno.
 
-TYPE → float                                                                {TYPE.type = float}
-TYPE → int                                                                  {TYPE.type = int}
-TYPE → string                                                               {TYPE.type = string}
-TYPE → bool                                                                 {TYPE.type = bool}
-TYPE → NAME                                                                 {TYPE.type = NAME.value.name}
-TYPE → ref "(" TYPE ")"                                                     {TYPE.type = TYPE_1}
+TYPE → float                                                                {TYPE.type = float || TYPE.translate = "float"}
+TYPE → int                                                                  {TYPE.type = int || TYPE.translate = "int"}
+TYPE → string                                                               {TYPE.type = string || TYPE.translate = "char*"}
+TYPE → bool                                                                 {TYPE.type = bool || TYPE.translate = "bool"}
+TYPE → NAME                                                                 {TYPE.type = NAME.value.type || TYPE.translate = NAME}
+TYPE → ref "(" TYPE1 ")"                                                    {TYPE.type = TYPE_1 || TYPE.translate = TYPE1.type + "*"}
 
 
 #### Lista de operações
@@ -193,31 +216,31 @@ String2: É a label criada para a função
 String3..n-1: Nomes dos parâmetros criados via new_name() (Ou seja, são os nomes do código intermediário)
 Stringn: É o nome da variável de retorno criado via new_name() (Ou seja, o nome do código intermediário)
 
-CALL_STMT → NAME "(" [ EXP { "," EXP } ] ")"                                {scope := find_scope(NAME)  || return_point := new_label() || call_count := new_call_count() || new_call(call_count, return_point)
-                                                                            || CALL_STMT.translate = ForEach(EXP): scope.params[idx].name = EXP.name + ";" + "CONTROL = " + call_count + ";" + "goto " + scope.proc_name + ";" + return_point + ":"
-                                                                            } // Efetivamente, a tradução está atribuindo os parâmetros da função a partir dos labels criado para os parâmetrose depois fazendo um goto para o label do nome da função. Em seguida cria o label de retorno.
-
-PROC_DECL → procedure NAME "(" [PARAMFIELD_DECL {"," PARAMFIELD_DECL}] ")" [":" TYPE] begin [[DECL {";" DECL}] in ] STMT_LIST end   {proc_name := new_label() || create_procedure_scope(proc_name) ||
-                                                                                                                                    || PROC_DECL.translate = proc_name ":" + forEach(DECL): DECL.translate + STMT_LIST.translate + "goto controlProcedure;"
-                                                                                                                                    }
-
 #### Lista de Atributos por produção
 
 | Simbolo    | Atributo | Descrição
 | -------- | ------- | ------- |
 | LITERAL | type | Tipo |
-| PARAMFIELD_DECL | translate | String resultante da tradução |
+| PROGRAM | translate | String resultante da tradução |
 | VAR_DECL | value | Tupla (name, type) |
 | VAR_DECL | translate | String resultante da tradução |
+| REC_DECL | translate | String resultante da tradução |
+| PROC_DECL | translate | String resultante da tradução |
+| PARAMFIELD_DECL | translate | String resultante da tradução |
+
 | EXP | value | Tupla (name, type) |
 | EXP | translate | String resultante da tradução |
+
+| IF_STMT | translate | String resultante da tradução |
+| CALL_STMT | scope | Escopo da função chamada |
 | CALL_STMT | value | Tupla (name, type) |
+| CALL_STMT | translate | String resultante da tradução |
 | ASSIGN_STMT | value | Tupla (name, type) |
 | ASSIGN_STMT | translate | String resultante da tradução |
 | WHILE_STMT | translate | String resultante da tradução |
 | RETURN_STMT | translate | String resultante da tradução |
-| IF_STMT | translate | String resultante da tradução |
 | OPTIONAL_ELSE | translate | String resultante da tradução |
+
 | TYPE | type | Tipo |
 | TYPE | translate | Texto de tradução |
 | VAR | value | Tupla (name, type) |
