@@ -3,71 +3,76 @@
 
 ## Tradução das produções
 
-PROGRAM → program NAME begin [ DECL {";" DECL}] end
+PROGRAM → program NAME begin [ DECL {";" DECL}] end {PROGRAM.translate = "int CONTROL; + void main(void) {" + build_control_procedure() + ForEach(DECL): DECL.translate + "}
+                                                    }
 
 DECL → VAR_DECL 
 DECL → PROC_DECL 
 DECL → REC_DECL
 
 VAR_DECL → VAR NAME ":" TYPE [ ":=" EXP]            {IfEmpty: VAR_DECL.translate = TYPE.lexeme + NAME.lexeme || VAR_DECL.value = (NAME, TYPE)
-                                                    IfNotEmpty: IfTrue: TYPE == EXP.value.type then VAR_DECL.translate = TYPE.lexeme + NAME.lexeme + " = " + EXP.name || VAR_DECL.value = (NAME, TYPE)
+                                                    IfNotEmpty: IfTrue: TYPE == EXP.value.type then VAR_DECL.translate = TYPE.lexeme + NAME.lexeme + " = " + EXP.name + ";"
+                                                    || VAR_DECL.value = (NAME, TYPE) || emit(VAR_DECL.translate)
                                                     }
 
 VAR_DECL → var NAME ":=" EXP                        {IfTrue: VAR_DECL.translate = EXP.value.type + NAME.lexeme + " = " + EXP.name || VAR_DECL.value = (NAME, EXP.value.type)}
 
-PROC_DECL → procedure NAME "(" [PARAMFIELD_DECL {"," PARAMFIELD_DECL}] ")" [":" TYPE] begin [[DECL {";" DECL}] in ] STMT_LIST end {//Tradução para funções}
+PROC_DECL → procedure NAME "(" [PARAMFIELD_DECL {"," PARAMFIELD_DECL}] ")" [":" TYPE] begin [[DECL {";" DECL}] in ] STMT_LIST end   {proc_name := new_label() || create_procedure_scope(proc_name) ||
+                                                                                                                                    || PROC_DECL.translate = proc_name ":" + forEach(DECL): DECL.translate + STMT_LIST.translate + "goto controlProcedure;"
+                                                                                                                                    }
 
 REC_DECL → struct NAME "{" [ PARAMFIELD_DECL { ";" PARAMFIELD_DECL } ] "}"      {IfNotEmpety: REC_DECL.translate = "typedef struct {" 
                                                                                 + ForEach(PARAMFIELD_DECL):PARAMFIELD_DECL.translate + "} ;"
                                                                                 IfEmpty: REC_DECL.translate = "" // Não é permitido Structs vazias no C
+                                                                                || emit(REC_DECL.translate)
                                                                                 } 
 
 PARAMFIELD_DECL → NAME ":" TYPE                     {PARAMFIELD_DECL.translate = TYPE.lexeme + NAME.lexeme}
 
 STMT_LIST → [ STMT { ";" STMT} ]
 
-EXP → EXP1 LOG_OP EXP2                              {IfTrue: EXP1.value.type == EXP2.value.type then EXP.value.type = EXP1.value.type
-                                                    || EXP.translate = EXP.value.type + new_name() + " = " + EXP1.value.name + LOG_OP.lexeme + EXP2.value.name + ";" 
-                                                    || EXP.value.name = retrieve_last_name()
+EXP → EXP1 LOG_OP EXP2                              {IfTrue: EXP1.value.type == EXP2.value.type then EXP.value.type = EXP1.value.type || t1 := new_name()
+                                                    || EXP.translate = EXP.value.type + t1 + " = " + EXP1.value.name + LOG_OP.lexeme + EXP2.value.name + ";" 
+                                                    || EXP.value.name = t1
                                                     }
 
-EXP → not EXP1                                      {EXP.value.type = EXP1.value.type
-                                                    || EXP.translate = EXP.value.type + new_name() + " = !" + EXP1.value.name + ";"
-                                                    || EXP.value.name = retrieve_last_name()
+EXP → not EXP1                                      {EXP.value.type = EXP1.value.type || t1 := new_name()
+                                                    || EXP.translate = EXP.value.type + t1 + " = !" + EXP1.value.name + ";"
+                                                    || EXP.value.name = t1
                                                     }
 
-EXP → EXP1 REL_OP EXP2                              {IfTrue: EXP1.value.type == EXP2.value.type then EXP.value.type = EXP1.value.type
-                                                    || EXP.translate = EXP.value.type + new_name() + " = " + EXP1.value.name + REL_OP.lexeme + EXP2.value.name + ";" 
-                                                    || EXP.value.name = retrieve_last_name()
+EXP → EXP1 REL_OP EXP2                              {IfTrue: EXP1.value.type == EXP2.value.type then EXP.value.type = EXP1.value.type || t1 := new_name()
+                                                    || EXP.translate = EXP.value.type + t1 + " = " + EXP1.value.name + REL_OP.lexeme + EXP2.value.name + ";" 
+                                                    || EXP.value.name = t1
                                                     }
 
-EXP → EXP1 ARITH_OP EXP2                            {IfTrue: EXP1.value.type == EXP2.value.type then EXP.value.type = EXP1.value.type
-                                                    || EXP.translate = EXP.value.type + new_name() + " = " + EXP1.value.name + ARITH_OP.lexeme + EXP2.value.name + ";"
-                                                    || EXP.value.name = retrieve_last_name()
+EXP → EXP1 ARITH_OP EXP2                            {IfTrue: EXP1.value.type == EXP2.value.type then EXP.value.type = EXP1.value.type || t1 := new_name()
+                                                    || EXP.translate = EXP.value.type + t1 + " = " + EXP1.value.name + ARITH_OP.lexeme + EXP2.value.name + ";"
+                                                    || EXP.value.name = t1
                                                     }
 
-EXP → LITERAL                                       {EXP.value.type = Literal.type
-                                                    || EXP.translate = EXP.value.type + new_name() + " = " + Literal.lexeme + ";"
-                                                    || EXP.value.name = retrieve_last_name()
+EXP → LITERAL                                       {EXP.value.type = Literal.type || t1 := new_name()
+                                                    || EXP.translate = EXP.value.type + t1 + " = " + Literal.lexeme + ";"
+                                                    || EXP.value.name = t1
                                                     }
                                                     
 EXP → CALL_STMT
 EXP → new NAME
-EXP → VAR                                           {EXP.value.type = VAR.value.type
-                                                    || EXP.translate = EXP.value.type + new_name() + " = " + VAR.lexeme
-                                                    || EXP.value.name = retrieve_last_name()
+EXP → VAR                                           {EXP.value.type = VAR.value.type || t1 := new_name()
+                                                    || EXP.translate = EXP.value.type + t1 + " = " + VAR.lexeme
+                                                    || EXP.value.name = t1
                                                     }
-EXP → REF_VAR                                       {EXP.value.type = REF_VAR.value.type
-                                                    || EXP.translate = EXP.value.type + new_name() + " = " + REF_VAR.translate
-                                                    || EXP.value.name = retrieve_last_name()
+EXP → REF_VAR                                       {EXP.value.type = REF_VAR.value.type || t1 := new_name()
+                                                    || EXP.translate = EXP.value.type + t1 + " = " + REF_VAR.translate
+                                                    || EXP.value.name = t1
                                                     }
-EXP → DEREF_VAR                                     {EXP.value.type = DEREF_VAR.value.type
-                                                    || EXP.translate = EXP.value.type + new_name() + " = " + DEREF_VAR.translate
-                                                    || EXP.value.name = retrieve_last_name()
+EXP → DEREF_VAR                                     {EXP.value.type = DEREF_VAR.value.type || t1 := new_name()
+                                                    || EXP.translate = EXP.value.type + t1 + " = " + DEREF_VAR.translate
+                                                    || EXP.value.name = t1
                                                     }
-EXP → "(" EXP1 ")"                                  {EXP.value.type = EXP1.value.type
-                                                    || EXP.translate = EXP.value.type + new_name() + " = (" + EXP1.value.name + ")"
-                                                    || EXP.value.name = retrieve_last_name()
+EXP → "(" EXP1 ")"                                  {EXP.value.type = EXP1.value.type || t1 := new_name()
+                                                    || EXP.translate = EXP.value.type + t1 + " = (" + EXP1.value.name + ")"
+                                                    || EXP.value.name = t1
                                                     }
 
 REF_VAR → ref "(" VAR ")"                       {REF_VAR.value = VAR || 
@@ -116,32 +121,40 @@ STMT → CALL_STMT
 ASSIGN_STMT → VAR ”:=” EXP                                                  {ASSIGN_STMT.value = (VAR.NAME.name, EXP.type)}
 ASSIGN_STMT → DEREF_VAR ”:=” EXP                                            {ASSIGN_STMT.value = (DEREF_VAR.VAR.name, EXP.type)}
 
-IF_STMT → if EXP then STMT_LIST OPTIONAL_ELSE fi                            {IF_STMT.translate = "if (" + EXP.value.name + ") goto " + new_if_label() + ";"
-                                                                            + OPTIONAL_ELSE.translate + retrieve_last_if + ":" + STMT_LIST.translate + " goto " + new_endif_label() + retrieve_last_endif + ":"}
+IF_STMT → if EXP then STMT_LIST OPTIONAL_ELSE fi                            { l1 := new_label() || l2 := new_label() 
+                                                                            || IF_STMT.translate = "if (" + EXP.value.name + ") goto " + l1 + ";"
+                                                                            + OPTIONAL_ELSE.translate + "goto " + l2 + ";" + l1 + ":" + STMT_LIST.translate + " goto " + l2 + ";" + l2 + ":"} // l1 é o bloco verdadeiro, l2 é o fim do if
 
-OPTIONAL_ELSE → ϵ | else STMT_LIST                                          {IfNotEmpty: OPTIONAL_ELSE.translate = "goto " + new_else_label() + ";" + 
-                                                                            retrieve_last_else() +  ": " + STMT_LIST.translate + "goto " + retrieve_last_endif()} // O new_endif_label tem que adicionar o label na pilha antes de chamar o OPTIONAL_ELSE.translate
+OPTIONAL_ELSE → ϵ | else STMT_LIST                                          {IfNotEmpty: l1 := new_label()
+                                                                            || OPTIONAL_ELSE.translate = "goto " + l1 + ";" + 
+                                                                            l1 +  ": " + STMT_LIST.translate
+                                                                            } // l1 é o bloco do else
 
 
-IF_STMT → unless EXP do STMT_LIST OPTIONAL_ELSE od                          {IfEmpty: IF_STMT.translate = EXP.value.type + new_name() " = !" + EXP.value.name + ";" +
-                                                                            "if (" + EXP.value.name + ") goto " + new_if_label() + ";" + OPTIONAL_ELSE.translate + retrieve_last_if + ":" STMT_LIST.translate + "goto " + new_endif_label() + retrieve_last_endif + ":"
-                                                                            }
+IF_STMT → unless EXP do STMT_LIST OPTIONAL_ELSE od                          { t1 := new_name()  || l1 := new_label() || l2 := new_label() ||
+                                                                            IF_STMT.translate = EXP.value.type + t1 " = !" + EXP.value.name + ";" +
+                                                                            "if (" + EXP.value.name + ") goto " + l1 + ";" + OPTIONAL_ELSE.translate + "goto" + l2 + ";" + l1 + ":" STMT_LIST.translate + "goto " + l2 + ";" + l2 + ":"
+                                                                            } // l1 é bloco verdadero, l2 é o fim do if
 
 IF_STMT → case EXP of CASE { "|" CASE } [ otherwise STMT_LIST ] esac        {// Tradução do case}
 
 CASE → INT_LITERAL [ "." "." INT_LITERAL ] { "," INT_LITERAL [ "." "." INT_LITERAL ] } ":" STMT_LIST
 
-WHILE_STMT → while EXP do STMT_LIST od                                      {WHILE_STMT.translate = new_while_label() + ":" + EXP.translate + "if ("  
-                                                                            + EXP.value.name ") goto " + new_while_label() + ";" 
-                                                                            + "goto " + new_end_while_label() + "; " + retrieve_last_while() + ":" + 
-                                                                            STMT_LIST.translate + "goto " + retrieve_last_while() + ";"}
+WHILE_STMT → while EXP do STMT_LIST od                                      { l1 := new_label() || l2 := new_label() || l3 := new_label()
+                                                                            || WHILE_STMT.translate = l1 + ":" + EXP.translate + "if ("  
+                                                                            + EXP.value.name ") goto " + l2 + ";" 
+                                                                            + "goto " + l3 + "; " + l2 + ":" + 
+                                                                            STMT_LIST.translate + "goto " + l1 + ";" + l3 + ":"
+                                                                            || emit(WHILE_STMT.translate)}
 
 RETURN_STMT → return [ EXP ]                                                {IfNotEmpty: RETURN_STMT.translate = "return " + EXP.value.name + ";" 
                                                                             IfEmpty: RETURN_STMT.translate = "return " + ";" 
-}           
+                                                                            || emit(RETURN_STMT.translate)
+                                                                            }           
 
-CALL_STMT → NAME "(" [ EXP { "," EXP } ] ")"                                {CALL_STMT.value = NAME.value ||
-                                                                            // Tradução da chamada de uma procedure }
+CALL_STMT → NAME "(" [ EXP { "," EXP } ] ")"                                {scope := find_scope(NAME)  || return_point := new_label() || call_count := new_call_count() || new_call(call_count, return_point)
+                                                                            || CALL_STMT.translate = ForEach(EXP): scope.params[idx].name = EXP.name + ";" + "CONTROL = " + call_count + ";" + "goto " + scope.proc_name + ";" + return_point + ":"
+                                                                            } // Efetivamente, a tradução está atribuindo os parâmetros da função a partir dos labels criado para os parâmetrose depois fazendo um goto para o label do nome da função. Em seguida cria o label de retorno.
 
 TYPE → float                                                                {TYPE.type = float}
 TYPE → int                                                                  {TYPE.type = int}
@@ -159,14 +172,34 @@ IfNotEmpty: Se a produção opcional não resultou em ϵ
 IfTrue: Se o resultado da comparação retornar verdadeiro
 
 #### Lista de funções
-**As funções devem funcionar com pilhas**
-new_name: Gera um novo nome para variáveis
-new_if: Gera uma nova label para um bloco if
-new_else: Gera uma nova label para um bloco else
-new_endif: Gera uma nova label para o fim de um bloco if
-retrieve_last_name: Recupera o último nome de variável gerado
-retrieve_last_if: Recupera a última label gerada para blocos if
-retrieve_last_endif: Recupera a última label gerada para o fim de blocos if
+new_name: Gera um novo nome para variáveis {std::string name = "t" + GLOBAL_COUNT}
+new_label: Gera uma nova label (push) {std::string name = "l" + GLOBAL_COUNT; label_stack.push(name)}
+retrieve_label: Recupera a última label da pilha (pop) {label_stack.pop()}
+emit: Escreve o texto para o código intermediário {file << translate.str()}
+
+// Funções de procedimentos
+find_type: Se TYPE foi especificado, retorna type; Senão, busca o RETURN_STMT para inferir o tipo
+find_Scope: Busca o escopo pelo nome
+new_call: Adiciona na call_stack uma nova chamada com um id da chamada e o label de retorno, a call_stack se tornará o controlProcedure da forma:
+controlProcedure:
+    if (CONTROL == 1) goto l1;
+    if (CONTROL == 2) goto l2;
+build_control_procedure: Irá traduzir as chamadas armazenadas no call_stack para texto similar ao acima
+A call stack é do tipo Stack<Pair<int, string>>
+
+create_procedure_scope: Irá criar um escopo do tipo Map<String1, Vector<String2, String3..n-1, Stringn> one:
+String1: É o nome original da função no código CMANTIC
+String2: É a label criada para a função
+String3..n-1: Nomes dos parâmetros criados via new_name() (Ou seja, são os nomes do código intermediário)
+Stringn: É o nome da variável de retorno criado via new_name() (Ou seja, o nome do código intermediário)
+
+CALL_STMT → NAME "(" [ EXP { "," EXP } ] ")"                                {scope := find_scope(NAME)  || return_point := new_label() || call_count := new_call_count() || new_call(call_count, return_point)
+                                                                            || CALL_STMT.translate = ForEach(EXP): scope.params[idx].name = EXP.name + ";" + "CONTROL = " + call_count + ";" + "goto " + scope.proc_name + ";" + return_point + ":"
+                                                                            } // Efetivamente, a tradução está atribuindo os parâmetros da função a partir dos labels criado para os parâmetrose depois fazendo um goto para o label do nome da função. Em seguida cria o label de retorno.
+
+PROC_DECL → procedure NAME "(" [PARAMFIELD_DECL {"," PARAMFIELD_DECL}] ")" [":" TYPE] begin [[DECL {";" DECL}] in ] STMT_LIST end   {proc_name := new_label() || create_procedure_scope(proc_name) ||
+                                                                                                                                    || PROC_DECL.translate = proc_name ":" + forEach(DECL): DECL.translate + STMT_LIST.translate + "goto controlProcedure;"
+                                                                                                                                    }
 
 #### Lista de Atributos por produção
 
@@ -282,6 +315,16 @@ while_tmp2:
 
 end_while_tmp1:
 ...
+```
+
+```c++
+// yacc
+std::string block_label = new_label();
+std::string while_label = new_label();
+std::string end_while_label = new_label();
+
+std::sstream translate;
+translate << block_label << ":" << exp.translate << "if (" << exp.value.name << ") goto " << while_label << "; goto " << end_while_label << "; " << while_label ": " << STMT_LIST.translate << "goto " << block_label << "; " << end_while_label;
 ```
 
 Aqui é possível notar primeiramente que deve haver uma label antes de todo o bloco de repetição e a variável de avaliação deve ser a primeira linha deste bloco. Desta forma sempre será possível reavaliar se o while ainda deve executar. Em seguida temos dois casos: o label onde adentrou o while, e o label quando o while foi finalizado pulando o bloco de código interno do while.

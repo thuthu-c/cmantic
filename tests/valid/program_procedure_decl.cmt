@@ -8,4 +8,13 @@ begin
         return resultado
     end
 
+    var a := 10;
+    var b := 20;
+    var c := 30;
+    var call : int := soma(a, b);
+
+    var d := 40;
+    var e := 50;
+    var call2 : = soma(d, e);
+
 end
