@@ -1,5 +1,5 @@
 program teste_referencias
-beginw
+begin
     procedure modificar_status (msg: ref(string), status: ref(bool))
     begin
         deref(msg) := "Status Modificado";
