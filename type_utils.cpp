@@ -17,21 +17,31 @@ std::string type_to_string(const VarType& type) {
             if (type.referenced_type) {
                 return "ref(" + type_to_string(*type.referenced_type) + ")";
             }
-            return "ref(undefined)"; // Ou "ref(invalid)"
+            return "ref(undefined)";
+        // **CORREÇÃO**: Adicionado o caso para o novo tipo DEREF.
+        case PrimitiveType::DEREF:
+            if (type.referenced_type) {
+                return "deref(" + type_to_string(*type.referenced_type) + ")";
+            }
+            return "deref(undefined)";
         case PrimitiveType::UNDEFINED: return "undefined_type";
         default: return "unknown_type";
     }
 }
 
 bool are_types_compatible(const VarType& declared_type, const VarType& assigned_type) {
+    // Se os tipos forem exatamente iguais, são compatíveis.
     if (declared_type == assigned_type) {
         return true;
     }
 
-    if (assigned_type.p_type == PrimitiveType::VOID) {
+    // É possível atribuir 'null' a qualquer tipo de referência ou struct.
+    if (assigned_type.p_type == PrimitiveType::VOID && 
+       (declared_type.p_type == PrimitiveType::REF || declared_type.p_type == PrimitiveType::NOT_PRIMITIVE)) {
         return true;
     }
 
+    // Permite a promoção de int para float.
     if (declared_type.p_type == PrimitiveType::FLOAT && 
         assigned_type.p_type == PrimitiveType::INT) {
         return true;

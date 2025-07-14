@@ -1,0 +1,6 @@
+program sem_main
+begin
+    procedure uma_funcao()
+    begin
+    end
+end

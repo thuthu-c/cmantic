@@ -1,0 +1,17 @@
+program teste_retorno
+begin
+    procedure calcular_imposto(preco_base: int): int
+    begin
+        var imposto: int
+    in
+        imposto := preco_base * 2 / 10;
+        return imposto
+    end;
+
+    procedure main()
+    begin
+        var preco_final: int
+    in
+        preco_final := calcular_imposto(100)
+    end
+end

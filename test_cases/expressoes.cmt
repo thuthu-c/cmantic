@@ -1,0 +1,13 @@
+program expressoes
+begin
+    procedure main()
+    begin
+        var resultado: int;
+        var a: int := 10;
+        var b: int := 5;
+        var c: int := 2;
+        var d: int := 3
+    in
+        resultado := a + b * c - d
+    end
+end

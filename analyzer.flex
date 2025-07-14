@@ -488,14 +488,13 @@ FLOAT_LITERAL [0-9]+"."[0-9]+([Ee][-+][0-9]{2})?
 [ \t\r]+    { m_col += yyleng; }
 
 
-.     { yyerror(*this, "Caractere invalido"); }
+.     { yyerror(*this, ("Caractere inválido ou inesperado: '" + std::string(yytext) + "'").c_str()); }
 
 %%
 
 void yyerror(CustomLexer& lexer, const char *message)
 {
-    std::cerr << "Error: \"" << message << "\"  na Linha " << lexer.getLine() << ", Coluna " << lexer.getColumn()
-              << ". Token = " << lexer.YYText() << std::endl;
+    std::cerr << "Erro Léxico na Linha " << lexer.getLine() << ", Coluna " << lexer.getColumn() << ": " << message << std::endl;
     exit(1);
 }
 

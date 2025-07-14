@@ -1,0 +1,13 @@
+program uso_invalido
+begin
+    procedure fazer_nada()
+    begin
+    end;
+
+    procedure main()
+    begin
+        var x: int
+    in
+        x := fazer_nada()
+    end
+end

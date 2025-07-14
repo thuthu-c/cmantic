@@ -1,0 +1,18 @@
+program registers
+begin
+    procedure testing_case (idade : int) : string
+    begin
+        case idade of
+            0..12: return "Criança" |
+            13..17: return "Adolescente"
+            otherwise: return "Adulto"
+        esac
+    end;
+
+    procedure main()
+    begin
+        var s: string
+    in
+        s := testing_case(15)
+    end
+end

@@ -1,0 +1,13 @@
+program argumentos_errados
+begin
+    procedure soma(a: int, b: int): int
+    begin
+        return a + b
+    end;
+
+    procedure main()
+    begin
+    in
+        soma(10)
+    end
+end

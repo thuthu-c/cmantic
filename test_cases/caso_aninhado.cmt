@@ -1,0 +1,21 @@
+program caso_aninhado
+begin
+    procedure main()
+    begin
+        var pontuacao: int := 85;
+        var nota: string;
+        var status: string
+    in
+        if pontuacao > 50 then
+            status := "Aprovado";
+            case pontuacao of
+                80..100: nota := "A" |
+                60..79: nota := "B"
+                otherwise: nota := "C"
+            esac
+        else
+            status := "Reprovado";
+            nota := "F"
+        fi
+    end
+end

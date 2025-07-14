@@ -1,0 +1,13 @@
+program operadores_avancados
+begin
+    procedure main()
+    begin
+        var saldo_inicial: int := 100;
+        var saldo_negativo: int;
+        var ativo: bool := true;
+        var inativo: bool
+    in
+        saldo_negativo := -saldo_inicial;
+        inativo := not ativo
+    end
+end

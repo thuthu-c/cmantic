@@ -1,0 +1,17 @@
+program controlo
+begin
+    procedure main()
+    begin
+        var x: int := 10;
+        var y: int := 0
+    in
+        while x > 5 do
+            x := x - 1;
+            if x == 7 then
+                y := 100
+            else
+                y := 200
+            fi
+        od
+    end
+end

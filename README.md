@@ -58,7 +58,7 @@ O relatório completo deste trabalho pode ser encontrado neste [arquivo](PDFs/Re
 ```sh
 bison -d parser.y 
 flex analyzer.flex
-g++ -o cmantic main.cpp parser.tab.cc lex.yy.cc symbol_table.cpp type_utils.cpp -lfl
+g++ -o cmantic main.cpp parser.tab.cc lex.yy.cc symbol_table.cpp type_utils.cpp code_generator.cpp -lfl
 ```
 
 Alternativamente, pode-se usar o script ./run.sh que fará as 3 compilações automaticamente.

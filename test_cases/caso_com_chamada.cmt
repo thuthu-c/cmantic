@@ -1,0 +1,19 @@
+program caso_com_chamada
+begin
+    procedure obter_bonus(): int
+    begin
+        return 100
+    end;
+
+    procedure main()
+    begin
+        var nivel: int := 2;
+        var pontos: int := 0
+    in
+        case nivel of
+            1: pontos := 10 |
+            2: pontos := 20 + obter_bonus() |
+            3: pontos := 30
+        esac
+    end
+end

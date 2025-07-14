@@ -1,0 +1,27 @@
+program teste_referencias
+begin
+    // Procedure que modifica os valores originais através de referências.
+    procedure modificar_status (msg: ref(string), status: ref(bool))
+    begin
+        deref(msg) := "Status Modificado";
+        deref(status) := not deref(status)
+    end;
+
+    procedure main()
+    begin
+        var mensagem: string := "Original";
+        var ativo: bool := true;
+        var ref_msg: ref(string);
+        var ref_ativo: ref(bool)
+    in
+        // Cria referências para as variáveis locais.
+        ref_msg := ref(mensagem);
+        ref_ativo := ref(ativo);
+
+        // Chama a procedure, passando as referências.
+        modificar_status(ref_msg, ref_ativo)
+
+        // Após a chamada, 'mensagem' deve ser "Status Modificado"
+        // e 'ativo' deve ser 'false'.
+    end
+end

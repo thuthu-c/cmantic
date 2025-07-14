@@ -1,0 +1,13 @@
+program retorno_invalido
+begin
+    procedure obter_numero(): int
+    begin
+        return "isto não é um número"
+    end;
+
+    procedure main()
+    begin
+    in
+        obter_numero()
+    end
+end

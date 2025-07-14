@@ -1,0 +1,22 @@
+program chamadas_aninhadas
+begin
+    procedure adicionar_bonus(valor: int): int
+    begin
+        return valor + 10
+    end;
+
+    procedure calcular_preco(base: int): int
+    begin
+        var preco_com_bonus: int
+    in
+        preco_com_bonus := adicionar_bonus(base);
+        return preco_com_bonus
+    end;
+
+    procedure main()
+    begin
+        var preco_final: int
+    in
+        preco_final := calcular_preco(100)
+    end
+end

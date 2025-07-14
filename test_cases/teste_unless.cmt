@@ -1,0 +1,12 @@
+program teste_unless
+begin
+    procedure main()
+    begin
+        var acesso_permitido: bool := false;
+        var idade: int := 20
+    in
+        unless idade < 18 do
+            acesso_permitido := true
+        od
+    end
+end

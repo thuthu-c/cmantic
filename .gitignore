@@ -5,3 +5,4 @@ lex.*
 test
 build
 parser.tab.*
+*.c

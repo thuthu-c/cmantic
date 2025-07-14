@@ -1,0 +1,19 @@
+program estruturas
+begin
+    struct Ponto {
+        x: int;
+        y: int
+    };
+
+    procedure main()
+    begin
+        var p1: Ponto;
+        var p2: Ponto;
+        var soma_x: int
+    in
+        p1.x := 10;
+        p1.y := 20;
+        p2 := p1;
+        soma_x := p1.x + p2.x
+    end
+end

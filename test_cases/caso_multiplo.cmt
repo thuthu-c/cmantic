@@ -1,0 +1,14 @@
+program caso_multiplo
+begin
+    procedure main()
+    begin
+        var tipo_produto: int := 5;
+        var categoria: string
+    in
+        case tipo_produto of
+            1, 3, 5..7: categoria := "Eletrónico" |
+            2, 4: categoria := "Vestuário"
+            otherwise: categoria := "Outros"
+        esac
+    end
+end
