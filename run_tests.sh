@@ -2,26 +2,43 @@
 
 # ============================================================================
 # Script para executar a bateria de testes do Compilador Cmantic
+#
+# Para testes VÁLIDOS:
+# 1. Gera o código C com o compilador Cmantic.
+# 2. Compila o código C gerado com o gcc.
+# 3. Executa o programa compilado.
+#    -> O script irá parar imediatamente se qualquer uma dessas etapas falhar.
+#
+# Para testes INVÁLIDOS:
+# 1. Tenta gerar código com o compilador Cmantic.
+#    -> É esperado que esta etapa falhe, gerando um erro.
 # ============================================================================
 
 # --- Configuração ---
-# Nome do seu executável gerado pelo make/cmake
 EXECUTABLE="./cmantic"
-# Diretórios dos casos de teste
 VALID_DIR="tests/valid"
 INVALID_DIR="tests/invalid"
+OUTPUT_DIR="output"
 
-# --- Cores para facilitar a leitura (opcional) ---
+# --- Cores ---
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # Sem Cor
 
-# --- Verificação de Existência do Executável ---
+# --- Lógica de Erro ---
+# Sai imediatamente se qualquer comando falhar. Essencial para os testes válidos.
+set -e
+
+# --- Preparação ---
+# Garante que o diretório de saída existe
+mkdir -p "$OUTPUT_DIR"
+
+# Verificação de Existência do Executável Cmantic
 if [ ! -f "$EXECUTABLE" ]; then
     echo -e "${RED}Erro: O executável '$EXECUTABLE' não foi encontrado!${NC}"
-    echo "Por favor, compile o projeto antes de executar os testes."
+    echo "Por favor, compile o projeto Cmantic antes de executar os testes."
     exit 1
 fi
 
@@ -32,66 +49,56 @@ echo ""
 
 # --- Testes Válidos ---
 echo -e "${GREEN}--- INICIANDO CASOS DE TESTE VÁLIDOS ---${NC}"
-echo "Estes programas devem ser analisados sem erros."
+echo "Para cada teste, o código C será gerado, compilado e executado."
+echo "O script irá parar ao primeiro erro."
 echo "------------------------------------------"
-echo ""
 
-echo -e "${YELLOW}>> Testando: Declaração de variáveis (com/sem tipo, atribuição e reatribuição)${NC}"
-$EXECUTABLE "$VALID_DIR/program_var_decl.cmt"
-echo "------------------------------------------"
-echo ""
+for test_file in "$VALID_DIR"/*.cmt; do
+    if [ -f "$test_file" ]; then
+        echo ""
+        # Extrai o nome base do arquivo, sem o diretório e a extensão .cmt
+        base_name=$(basename "$test_file" .cmt)
+        c_file="$OUTPUT_DIR/$base_name.c"
+        executable_file="$OUTPUT_DIR/$base_name"
 
-echo -e "${YELLOW}>> Testando: Declaração de procedimentos (com variáveis de escopo)${NC}"
-$EXECUTABLE "$VALID_DIR/program_procedure_decl.cmt"
-echo "------------------------------------------"
-echo ""
+        echo -e "${YELLOW}>> [1/3] Gerando código C para: ${test_file}${NC}"
+        $EXECUTABLE "$test_file"
 
-echo -e "${YELLOW}>> Testando: Declaração e atribuição de registros (structs)${NC}"
-$EXECUTABLE "$VALID_DIR/program_register_decl.cmt"
-echo "------------------------------------------"
-echo ""
+        # Verifica se o arquivo .c foi realmente gerado antes de continuar
+        if [ ! -f "$c_file" ]; then
+            echo -e "${RED}ERRO: Compilador Cmantic não gerou o arquivo de saída esperado: $c_file${NC}"
+            exit 1
+        fi
 
-echo -e "${YELLOW}>> Testando: Expressões (lógicas, relacionais, aritméticas)${NC}"
-$EXECUTABLE "$VALID_DIR/program_expressions.cmt"
-echo "------------------------------------------"
-echo ""
+        echo -e "${YELLOW}>> [2/3] Compilando arquivo C gerado: ${c_file}${NC}"
+        gcc "$c_file" -o "$executable_file" -lm # A flag -lm é para linkar a biblioteca de matemática, se necessário
 
-echo -e "${YELLOW}>> Testando: Blocos de código (if, while, unless, case)${NC}"
-$EXECUTABLE "$VALID_DIR/program_code_blocks.cmt"
-echo "------------------------------------------"
-echo ""
+        echo -e "${YELLOW}>> [3/3] Executando o programa compilado: ${executable_file}${NC}"
+        "$executable_file"
 
-echo -e "${YELLOW}>> Testando: Programa de exemplo: Swap${NC}"
-$EXECUTABLE "$VALID_DIR/program_swap.cmt"
-echo "------------------------------------------"
+        echo -e "${GREEN}SUCESSO!${NC}"
+        echo "------------------------------------------"
+    fi
+done
 echo ""
-
 
 
 # --- Testes Inválidos ---
+# Desativa a saída por erro para os testes inválidos, pois esperamos que eles falhem.
+set +e
+
 echo -e "${RED}--- INICIANDO CASOS DE TESTE INVÁLIDOS ---${NC}"
-echo "Estes programas devem gerar erros durante a análise."
+echo "Estes programas devem gerar erros durante a análise pelo Cmantic."
 echo "--------------------------------------------"
-echo ""
 
-echo -e "${YELLOW}>> Testando: Declaração de variável duplicada (inválido)${NC}"
-$EXECUTABLE "$INVALID_DIR/program_duplicate_var.cmt"
-echo "--------------------------------------------"
-echo ""
-
-echo -e "${YELLOW}>> Testando: Declaração de variável com mudança de tipo (inválido)${NC}"
-$EXECUTABLE "$INVALID_DIR/program_type_change.cmt"
-echo "--------------------------------------------"
-echo ""
-
-echo -e "${YELLOW}>> Testando: Acesso a variável fora de escopo (inválido)${NC}"
-$EXECUTABLE "$INVALID_DIR/program_out_of_scope.cmt"
-echo "--------------------------------------------"
-echo ""
-
-echo -e "${YELLOW}>> Testando: Acesso a variável inexistente (inválido)${NC}"
-$EXECUTABLE "$INVALID_DIR/program_inexistent_var.cmt"
-echo "--------------------------------------------"
+for test_file in "$INVALID_DIR"/*.cmt; do
+    if [ -f "$test_file" ]; then
+        echo ""
+        echo -e "${YELLOW}>> Testando arquivo inválido: ${test_file} (espera-se um erro)...${NC}"
+        $EXECUTABLE "$test_file"
+        echo "--------------------------------------------"
+    fi
+done
 echo ""
 
 

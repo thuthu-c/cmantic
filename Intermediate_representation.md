@@ -3,15 +3,17 @@
 
 ## Tradução das produções
 
-PROGRAM → program NAME begin [ DECL {";" DECL}] end {PROGRAM.translate = "int CONTROL; + void main(void) {" + build_control_procedure() + ForEach(DECL): DECL.translate + "}
+PROGRAM → program NAME begin [ DECL {";" DECL}] end {PROGRAM.translate = "int CONTROL; + void main(void) {" + build_control_procedure() 
+                                                    + ForEach(DECL): DECL.translate + "}"
                                                     }
 
 DECL → VAR_DECL 
 DECL → PROC_DECL 
 DECL → REC_DECL
 
-VAR_DECL → VAR NAME ":" TYPE [ ":=" EXP]            {IfEmpty: VAR_DECL.translate = TYPE.lexeme + NAME.lexeme || VAR_DECL.value = (NAME, TYPE)
-                                                    IfNotEmpty: IfTrue: TYPE == EXP.value.type then VAR_DECL.translate = TYPE.lexeme + NAME.lexeme + " = " + EXP.name + ";"
+VAR_DECL → var NAME ":" TYPE [ ":=" EXP]            {IfEmpty: VAR_DECL.translate = TYPE.lexeme + NAME.lexeme || VAR_DECL.value = (NAME, TYPE)
+                                                    IfNotEmpty: IfTrue: TYPE == EXP.value.type then VAR_DECL.translate = TYPE.lexeme + NAME.lexeme + " = " 
+                                                    + EXP.name + ";"
                                                     || VAR_DECL.value = (NAME, TYPE) 
                                                     || emit(VAR_DECL.translate)
                                                     }
@@ -88,7 +90,7 @@ EXP → DEREF_VAR                                     {EXP.value.type = DEREF_VA
                                                     || EXP.translate = EXP.value.type + t1 + " = " + DEREF_VAR.translate
                                                     || EXP.value.name = t1
                                                     }
-                                                    
+
 EXP → "(" EXP1 ")"                                  {EXP.value.type = EXP1.value.type || t1 := new_name()
                                                     || EXP.translate = EXP.value.type + t1 + " = (" + EXP1.value.name + ")"
                                                     || EXP.value.name = t1
@@ -137,8 +139,15 @@ STMT → WHILE_STMT
 STMT → RETURN_STMT
 STMT → CALL_STMT
 
-ASSIGN_STMT → VAR ”:=” EXP                                                  {ASSIGN_STMT.value = (VAR.NAME.name, EXP.type)}
-ASSIGN_STMT → DEREF_VAR ”:=” EXP                                            {ASSIGN_STMT.value = (DEREF_VAR.VAR.name, EXP.type)}
+ASSIGN_STMT → VAR ”:=” EXP                                                  {ASSIGN_STMT.value = (VAR.value.name, EXP.type)
+                                                                            || ASSING_STMT.translate = VAR.value.name + " = " + EXP.translate + ";"
+                                                                            || emit(ASSING_STMT.translate)
+                                                                            }
+
+ASSIGN_STMT → DEREF_VAR ”:=” EXP                                            {ASSIGN_STMT.value = (DEREF_VAR.Value.name, EXP.type)
+                                                                            || ASSING_STMT.translate = "*" + VAR.value.name + " = " + EXP.translate + ";"
+                                                                            || emit(ASSING_STMT.translate)
+                                                                            }
 
 IF_STMT → if EXP then STMT_LIST OPTIONAL_ELSE fi                            { l1 := new_label() || l2 := new_label() 
                                                                             || IF_STMT.translate = "if (" + EXP.value.name + ") goto " + l1 + ";"
@@ -173,7 +182,8 @@ RETURN_STMT → return [ EXP ]                                                {I
                                                                             || emit(RETURN_STMT.translate)
                                                                             }           
 
-CALL_STMT → NAME "(" [ EXP { "," EXP } ] ")"                                {CALL_STMT.scope := find_scope(NAME)  || CALL_STMT.value.type = NAME.value.type || return_point := new_label() 
+CALL_STMT → NAME "(" [ EXP { "," EXP } ] ")"                                {CALL_STMT.scope := find_scope(NAME)  || CALL_STMT.value.type = NAME.value.type 
+                                                                            || return_point := new_label() 
                                                                             || call_count := new_call_count() || new_call(call_count, return_point)
                                                                             || CALL_STMT.translate = ForEach(EXP): scope.params[idx].name = EXP.name + ";" + "CONTROL = " + call_count + ";" + "goto " + scope.proc_name + ";" + return_point + ":"
                                                                             || emit(CALL_STMT.translate)
@@ -210,7 +220,7 @@ controlProcedure:
 build_control_procedure: Irá traduzir as chamadas armazenadas no call_stack para texto similar ao acima
 A call stack é do tipo Stack<Pair<int, string>>
 
-create_procedure_scope: Irá criar um escopo do tipo Map<String1, Vector<String2, String3..n-1, Stringn> one:
+create_procedure_scope: Irá criar um escopo do tipo Map<String1, Vector<String2, String3..n-1, Stringn> onde:
 String1: É o nome original da função no código CMANTIC
 String2: É a label criada para a função
 String3..n-1: Nomes dos parâmetros criados via new_name() (Ou seja, são os nomes do código intermediário)

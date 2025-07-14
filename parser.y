@@ -53,7 +53,7 @@
     bool is_in_main_procedure = false;
     bool found_main = false;
 
-    std::string output_dir = "output_c_lang/";
+    std::string output_dir = "output/";
 }
 
 %union {
