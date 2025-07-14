@@ -1,17 +1,25 @@
 #include "code_generator.hpp"
 #include <algorithm>
-#include <sstream> 
+#include <sstream>
 
-std::string indent_block(const std::string& text, const std::string& indent = "    ") {
+std::string indent_block(const std::string& text, const std::string& indent = "    ", bool ctrl = false) {
     std::stringstream input(text);
     std::stringstream output;
     std::string line;
     while (std::getline(input, line)) {
-        // Não indenta linhas vazias
-        if (!line.empty()) {
+        size_t first_char = line.find_first_not_of(" \t");
+        if (first_char == std::string::npos) {
+            output << "\n";
+            continue;
+        }
+
+        size_t last_char = line.find_last_not_of(" \t");
+        if ((last_char != std::string::npos
+            && (line[last_char] == ':' || line[last_char] == '{' || line[last_char] == '}'))
+            || ctrl) {
             output << indent << line << "\n";
         } else {
-            output << "\n";
+            output << indent << "    " << line << "\n";
         }
     }
     return output.str();
@@ -104,7 +112,7 @@ std::string CodeGenerator::get_final_code() {
 
     final_code << "void main() {\n";
     
-    final_code << indent_block(declarations.str());
+    final_code << indent_block(declarations.str(), "    ", true);
     
     final_code << "    int activation_stack[1024];\n"; 
     final_code << "    int stack_pointer = -1;\n";
