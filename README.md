@@ -29,20 +29,21 @@ O relatório completo deste trabalho pode ser encontrado neste [arquivo](PDFs/Re
 ## Estrutura do Projeto
 
 ```
-├── analyzer.flex           # Definições léxicas (Flex)
-├── parser.y               # Definições sintáticas (Bison)
-├── main.cpp               # Ponto de entrada do programa
-├── symbol_table.cpp/hpp   # Implementação da tabela de símbolos
-├── type_utils.cpp/hpp     # Utilitários para manipulação de tipos
-├── custom_lexer.hpp       # Classe base para analisadores léxicos
-├── run_tests.sh           # Script para rodar todos os testes
-├── run.sh                 # Script para compilar o programa
-├── grammar.md             # Gramática da linguagem
-├── attributes.md          # Atributos sintáticos e semânticos
-├── tokens.md              # Lista de tokens terminais
-├── tests/                 # Casos de teste (válidos e inválidos)
-├── PDFs/                  # Pasta com os arquivos PDFs de base e relatórios
-└── README.md              # Este arquivo
+├── analyzer.flex                           # Definições léxicas (Flex)
+├── parser.y                                # Definições sintáticas (Bison)
+├── main.cpp                                # Ponto de entrada do programa
+├── symbol_table.cpp/hpp                    # Implementação da tabela de símbolos
+├── type_utils.cpp/hpp                      # Utilitários para manipulação de tipos
+├── custom_lexer.hpp                        # Classe base para analisadores léxicos
+├── run_tests.sh                            # Script para rodar todos os testes
+├── run.sh                                  # Script para compilar o programa
+├── grammar.md                              # Gramática da linguagem
+├── intermediate_representation.md          # Arquivo com interpretações para criação da geração de código
+├── tokens.md                               # Lista de tokens terminais
+├── tests/                                  # Casos de teste (válidos e inválidos)
+├── output/                                 # Códigos de três endereços gerados pelo compilador
+├── PDFs/                                   # Pasta com os arquivos PDFs de base e relatórios
+└── README.md                               # Este arquivo
 ```
 
 ## Compilação e Execução
@@ -74,7 +75,7 @@ O executável será gerado como `cmantic`.
 Exemplo:
 
 ```sh
-./cmantic tests/valid/program_var_decl.cmt
+./cmantic tests/valid/caso_aninhado.cmt
 ```
 
 ## Testes
