@@ -352,7 +352,7 @@ rec_declaration:
           std::stringstream rec_code;
           rec_code << "typedef struct {\n";
           for (const auto& field : rec_content.fields) {
-              rec_code << code_generator.type_to_c_type(field.type) << " " << field.name << ";\n";
+              rec_code << "    " << code_generator.type_to_c_type(field.type) << " " << field.name << ";\n";
           }
           rec_code << "} " << *$2 << ";\n";
           code_generator.emit_declaration(rec_code.str());
