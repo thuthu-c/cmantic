@@ -34,6 +34,7 @@ O relatório completo deste trabalho pode ser encontrado neste [arquivo](PDFs/Re
 ├── main.cpp                                # Ponto de entrada do programa
 ├── symbol_table.cpp/hpp                    # Implementação da tabela de símbolos
 ├── type_utils.cpp/hpp                      # Utilitários para manipulação de tipos
+├── code_generator.cpp/hpp                  # Funções para geração de código
 ├── custom_lexer.hpp                        # Classe base para analisadores léxicos
 ├── run_tests.sh                            # Script para rodar todos os testes
 ├── run.sh                                  # Script para compilar o programa
@@ -91,18 +92,6 @@ O script executa casos de teste válidos e inválidos, exibindo mensagens colori
 - Testes válidos estão em `tests/valid/`
 - Testes inválidos estão em `tests/invalid/`
 
-## Principais Arquivos
-
-- [`analyzer.flex`](analyzer.flex): Definições dos padrões léxicos.
-- [`parser.y`](parser.y): Gramática e regras semânticas do parser.
-- [`symbol_table.hpp`](symbol_table.hpp): Estruturas e funções para tabela de símbolos.
-- [`type_utils.hpp`](type_utils.hpp): Funções auxiliares para tipos.
-- [`run_tests.sh`](run_tests.sh): Script de automação de testes.
-- [`run.sh`](run.sh): Script de automação de compilação.
-- [`grammar.md`](grammar.md): Gramática formal da linguagem.
-- [`attributes.md`](attributes.md): Descrição dos atributos sintáticos e semânticos.
-- [`tokens.md`](tokens.md): Lista de tokens reconhecidos pelo léxico.
-
 ## Gramática da Linguagem
 
 A gramática completa está documentada em [`grammar.md`](grammar.md). Exemplo de fragmento:
@@ -117,7 +106,7 @@ DECL -> VAR_DECL | PROC_DECL | REC_DECL
 
 ## Atributos
 
-Os atributos utilizados nas produções estão descritos em [`attributes.md`](attributes.md), incluindo informações sobre escopo, tipos e validação semântica.
+Os atributos utilizados nas produções estão descritos tanto em [`attributes.md`](attributes.md) para verificação de tipos, como em [`Intermediate_representation.md`](Intermediate_representation.md) para a geração de código, incluindo informações sobre escopo, tipos e validação semântica.
 
 ---
 
