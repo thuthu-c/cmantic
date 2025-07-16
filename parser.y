@@ -175,16 +175,15 @@ var_declaration:
         if ($5->type && !are_types_compatible(*$4, *$5->type)) {
             error(@2, "Incompatibilidade de tipos para a variável '" + *$2 + "'.");
         } else {
-          std::string symbol_unique_name = symbol_table.generate_unique_name(*$2);
-          Variable var_content{*$4, symbol_unique_name};
+          Variable var_content{*$4};
           Symbol new_symbol{*$2, SymbolCategory::VARIABLE, var_content};
           symbol_table.insert_symbol(*$2, new_symbol);
 
           $$ = new NodeInfo();
           std::string c_type = code_generator.type_to_c_type(*$4);
-          code_generator.emit_declaration(c_type + " " + symbol_unique_name + ";\n");
+          code_generator.emit_declaration(c_type + " " + *$2 + ";\n");
           if ($5->type) {
-              $$->code = $5->code + symbol_unique_name + " = " + $5->place + ";\n";
+              $$->code = $5->code + *$2 + " = " + $5->place + ";\n";
           }
         }
       }
@@ -195,15 +194,14 @@ var_declaration:
         if (symbol_table.lookup_current_scope_only(*$2)) {
           error(@2, "Variável '" + *$2 + "' já declarada neste escopo.");
         } else {
-          std::string symbol_unique_name = symbol_table.generate_unique_name(*$2);
-          Variable var_content{*$4->type, symbol_unique_name};
+          Variable var_content{*$4->type};
           Symbol new_symbol{*$2, SymbolCategory::VARIABLE, var_content};
           symbol_table.insert_symbol(*$2, new_symbol);
 
           $$ = new NodeInfo();
           std::string c_type = code_generator.type_to_c_type(*$4->type);
-          code_generator.emit_declaration(c_type + " " + symbol_unique_name + ";\n");
-          $$->code = $4->code + symbol_unique_name + " = " + $4->place + ";\n";
+          code_generator.emit_declaration(c_type + " " + *$2 + ";\n");
+          $$->code = $4->code + *$2 + " = " + $4->place + ";\n";
         }
         delete $2; delete $4;
       }
@@ -580,9 +578,8 @@ var_access:
           error(@1, "Símbolo '" + *$1 + "' não é uma variável declarada.");
           $$ = new NodeInfo(new VarType{PrimitiveType::UNDEFINED});
       } else {
-          const auto& var = std::get<Variable>(s->content);
-          $$ = new NodeInfo(new VarType(var.type));
-          $$->place = var.unique_name;
+          $$ = new NodeInfo(new VarType{std::get<Variable>(s->content).type});
+          $$->place = *$1;
       }
       delete $1;
     }

@@ -113,7 +113,6 @@ struct Procedure {
 
 struct Variable {
     VarType type;
-    std::string unique_name;
 };
 
 struct Record {
