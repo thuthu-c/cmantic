@@ -22,6 +22,7 @@ class SymbolTable {
 
         Scope* current_scope;
         std::vector<std::unique_ptr<Scope>> all_scopes;
+        int scope_depth;
 
         std::string symbolCategory_to_string(SymbolCategory category) const;
         std::string varType_to_string(const VarType& varType) const;
@@ -30,25 +31,26 @@ class SymbolTable {
         std::string variable_to_string(const Variable& var) const;
         std::string symbol_to_string(const Symbol& symbol) const;
         void print_scope(const Scope* scope) const;
-
-    public:
-        SymbolTable() {
+        
+        public:
+        SymbolTable() : scope_depth(0) {
             auto root_scope = std::make_unique<Scope>();
             current_scope = root_scope.get();
             all_scopes.push_back(std::move(root_scope));
         }
-
+        
         void push_scope();
         void pop_scope();
-
+        
         bool insert_symbol(const std::string& name, Symbol symbol);
         Symbol* lookup(const std::string& name);
         Symbol* lookup_current_scope_only(const std::string& name);
         Symbol* lookup_root_scope_only(const std::string& name);
-
+        
         void print() const;
-
+        
         std::optional<VarType> get_symbol_type(const std::string& name);
+        std::string generate_unique_name(const std::string& original_name);
 };
 
 #endif

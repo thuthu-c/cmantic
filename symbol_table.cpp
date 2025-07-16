@@ -68,6 +68,10 @@ std::optional<VarType> SymbolTable::get_symbol_type(const std::string& name) {
     }
 }
 
+std::string SymbolTable::generate_unique_name(const std::string& original_name) {
+    return original_name + "_" + std::to_string(scope_depth++);
+}
+
 
 
 

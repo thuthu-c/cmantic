@@ -94,12 +94,12 @@ std::string CodeGenerator::build_control_procedure() {
 
     std::stringstream control;
     control << "control_procedure:\n";
-    control << "switch (stack_pointer < 0 ? -1 : activation_stack[stack_pointer--]) {\n";
+    control << "    switch (stack_pointer < 0 ? -1 : activation_stack[stack_pointer--]) {\n";
     for (const auto& pair : call_map) {
         control << "    case " << pair.first << ": goto " << pair.second << ";\n";
     }
     control << "    default: goto end_program;\n";
-    control << "}\n";
+    control << "    }\n";
     return control.str();
 }
 

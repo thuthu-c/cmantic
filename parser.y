@@ -32,7 +32,7 @@
     };
 
     struct CaseClauseInfo {
-        std::string condition_code;
+        NodeInfo* condition_node;
         NodeInfo* body_node;
     };
 
@@ -79,9 +79,8 @@
 %type<node_info> optional_assign_exp
 %type<node_info> declaration var_declaration declaration_list optional_declaration_list optional_proc_decls_in_block
 %type<node_info> lvalue
-%type<node_info> case_label_element
+%type<node_info> case_label_element case_label_list
 
-%type<sval> case_label_list
 %type<case_clause_info> case_clause
 %type<case_list_info> case_list
 
@@ -176,15 +175,16 @@ var_declaration:
         if ($5->type && !are_types_compatible(*$4, *$5->type)) {
             error(@2, "Incompatibilidade de tipos para a variável '" + *$2 + "'.");
         } else {
-          Variable var_content{*$4};
+          std::string symbol_unique_name = symbol_table.generate_unique_name(*$2);
+          Variable var_content{*$4, symbol_unique_name};
           Symbol new_symbol{*$2, SymbolCategory::VARIABLE, var_content};
           symbol_table.insert_symbol(*$2, new_symbol);
 
           $$ = new NodeInfo();
           std::string c_type = code_generator.type_to_c_type(*$4);
-          code_generator.emit_declaration(c_type + " " + *$2 + ";\n");
+          code_generator.emit_declaration(c_type + " " + symbol_unique_name + ";\n");
           if ($5->type) {
-              $$->code = $5->code + *$2 + " = " + $5->place + ";\n";
+              $$->code = $5->code + symbol_unique_name + " = " + $5->place + ";\n";
           }
         }
       }
@@ -195,14 +195,15 @@ var_declaration:
         if (symbol_table.lookup_current_scope_only(*$2)) {
           error(@2, "Variável '" + *$2 + "' já declarada neste escopo.");
         } else {
-          Variable var_content{*$4->type};
+          std::string symbol_unique_name = symbol_table.generate_unique_name(*$2);
+          Variable var_content{*$4->type, symbol_unique_name};
           Symbol new_symbol{*$2, SymbolCategory::VARIABLE, var_content};
           symbol_table.insert_symbol(*$2, new_symbol);
 
           $$ = new NodeInfo();
           std::string c_type = code_generator.type_to_c_type(*$4->type);
-          code_generator.emit_declaration(c_type + " " + *$2 + ";\n");
-          $$->code = $4->code + *$2 + " = " + $4->place + ";\n";
+          code_generator.emit_declaration(c_type + " " + symbol_unique_name + ";\n");
+          $$->code = $4->code + symbol_unique_name + " = " + $4->place + ";\n";
         }
         delete $2; delete $4;
       }
@@ -579,8 +580,9 @@ var_access:
           error(@1, "Símbolo '" + *$1 + "' não é uma variável declarada.");
           $$ = new NodeInfo(new VarType{PrimitiveType::UNDEFINED});
       } else {
-          $$ = new NodeInfo(new VarType{std::get<Variable>(s->content).type});
-          $$->place = *$1;
+          const auto& var = std::get<Variable>(s->content);
+          $$ = new NodeInfo(new VarType(var.type));
+          $$->place = var.unique_name;
       }
       delete $1;
     }
@@ -743,11 +745,13 @@ if_stmt:
         }
 
         for (size_t i = 0; i < clauses.size(); ++i) {
-            std::string condition = clauses[i]->condition_code;
+            std::string condition_code = clauses[i]->condition_node->code;
             size_t pos;
-            while((pos = condition.find("%%VAR_PLACE%%")) != std::string::npos)
-                condition.replace(pos, 13, $2->place);
-            case_code << "if (" << condition << ") goto " << body_labels[i] << ";\n";
+            while((pos = condition_code.find("%%VAR_PLACE%%")) != std::string::npos)
+                condition_code.replace(pos, 13, $2->place);
+
+            case_code << condition_code;
+            case_code << "if (" << clauses[i]->condition_node->place << ") goto " << body_labels[i] << ";\n";
         }
 
         if ($5) {
@@ -781,23 +785,43 @@ case_list:
 case_clause:
     case_label_list ':' stmt_list
     {
-        $$ = new CaseClauseInfo{ *$1, $3 };
-        delete $1;
+        $$ = new CaseClauseInfo{ $1, $3 };
     }
     ;
 
 case_label_list:
-    case_label_element { $$ = new std::string($1->place); delete $1; }
+    case_label_element { $$ = $1; }
     | case_label_list ',' case_label_element
     {
-        $$ = new std::string(*$1 + " || " + $3->place);
+        $$ = new NodeInfo();
+        $$->type = new VarType{PrimitiveType::BOOL};
+        $$->place = code_generator.new_temp();
+        code_generator.emit_declaration("int " + $$->place + ";\n");
+        $$->code = $1->code + $3->code + $$->place + " = " + $1->place + " || " + $3->place + ";\n";
         delete $1; delete $3;
     }
     ;
 
 case_label_element:
-    A_INT_LITERAL { $$= new NodeInfo();$$->place = "%%VAR_PLACE%% == " + std::to_string($1); }
-    | A_INT_LITERAL A_RANGE A_INT_LITERAL { $$= new NodeInfo();$$->place = "(%%VAR_PLACE%% >= " + std::to_string($1) + " && %%VAR_PLACE%% <= " + std::to_string($3) + ")"; }
+    A_INT_LITERAL
+    { 
+        $$ = new NodeInfo(new VarType{PrimitiveType::BOOL});
+        $$->place = code_generator.new_temp();
+        code_generator.emit_declaration("int " + $$->place + ";\n");
+        $$->code = $$->place + " = %%VAR_PLACE%% == " + std::to_string($1) + ";\n";
+    }
+    | A_INT_LITERAL A_RANGE A_INT_LITERAL { 
+        $$ = new NodeInfo(new VarType{PrimitiveType::BOOL});
+        std::string t1 = code_generator.new_temp();
+        std::string t2 = code_generator.new_temp();
+        $$->place = code_generator.new_temp();
+        code_generator.emit_declaration("int " + t1 + ";\n");
+        code_generator.emit_declaration("int " + t2 + ";\n");
+        code_generator.emit_declaration("int " + $$->place + ";\n");
+        $$->code = t1 + " = %%VAR_PLACE%% >= " + std::to_string($1) + ";\n";
+        $$->code += t2 + " = %%VAR_PLACE%% <= " + std::to_string($3) + ";\n";
+        $$->code += $$->place + " = " + t1 + " && " + t2 + ";\n";
+    }
     ;
 
 optional_otherwise_clause:
